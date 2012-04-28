@@ -43,6 +43,17 @@
             android:label="Find by Attributes"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
+        <activity
+            android:name=".activities.FlashmobListActivity"
+            android:label="Find by List"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        </activity>
+        <activity
+            android:name=".activities.FlashmobDetailsActivity"
+            android:label="Flashmob Details"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        </activity>
+        
     </application>
 
 </manifest>
