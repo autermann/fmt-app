@@ -12,7 +12,7 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
-import de.ifgi.fmt.classes.Flashmob;
+import de.ifgi.fmt.objects.Flashmob;
 
 public class FlashmobListActivity extends SherlockListActivity
 {

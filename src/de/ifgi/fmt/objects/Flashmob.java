@@ -1,4 +1,4 @@
-package de.ifgi.fmt.classes;
+package de.ifgi.fmt.objects;
 
 public class Flashmob
 {
