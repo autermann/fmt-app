@@ -56,6 +56,11 @@
             android:label="Flashmob Details"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:label="Login"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        </activity>
     </application>
 
 </manifest>
