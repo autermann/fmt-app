@@ -10,12 +10,14 @@ import com.actionbarsherlock.view.SubMenu;
 import com.google.android.maps.MapView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MapView.LayoutParams;
- 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
+
+import java.util.List;
+import com.google.android.maps.Overlay; 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Point;
+
 
 import de.ifgi.fmt.R;
 
@@ -23,7 +25,7 @@ public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LAYER_MAP = 1;
 	private static final int MENU_LAYER_SATELLITE = 2;
 
-	private MapView mapView;
+	MapView mapView;
     MapController mc;
     GeoPoint p;
 
@@ -39,13 +41,25 @@ public class MapActivity extends SherlockMapActivity {
         String coordinates[] = {"51.962956", "7.629592"};
         double lat = Double.parseDouble(coordinates[0]);
         double lng = Double.parseDouble(coordinates[1]);
- 
+        
+        //start position when loading the map
         p = new GeoPoint(
             (int) (lat * 1E6), 
             (int) (lng * 1E6));
+        
  
         mc.animateTo(p);
         mc.setZoom(13); 
+        mapView.invalidate();
+        
+        
+        // map-overlay: icons as location markers instead of points
+     
+        MapOverlay mapOverlay = new MapOverlay();
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.clear();
+        listOfOverlays.add(mapOverlay);        
+ 
         mapView.invalidate();
         
 	}
@@ -70,6 +84,7 @@ public class MapActivity extends SherlockMapActivity {
 		}
 	}
 
+    
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -88,4 +103,25 @@ public class MapActivity extends SherlockMapActivity {
 
 		return super.onCreateOptionsMenu(menu);
 	}
-}
+	
+	class MapOverlay extends com.google.android.maps.Overlay
+	{						
+	    @Override
+	    public boolean draw(Canvas canvas, MapView mapView, 
+	    boolean shadow, long when) 
+	    {
+	        super.draw(canvas, mapView, shadow);                   
+
+	        //---translate the GeoPoint to screen pixels---
+	        Point screenPts = new Point();
+	        mapView.getProjection().toPixels(p, screenPts);
+
+	        //---add the marker---
+	        Bitmap bmp = BitmapFactory.decodeResource(
+	            getResources(), R.drawable.location);            
+	        canvas.drawBitmap(bmp, screenPts.x, screenPts.y-48, null);         
+	        return true;
+	    }
+	} 
+}    
+
