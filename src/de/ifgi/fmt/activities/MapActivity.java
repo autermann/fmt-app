@@ -8,6 +8,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.google.android.maps.MapView;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MapView.LayoutParams;
+ 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import de.ifgi.fmt.R;
 
@@ -16,6 +24,8 @@ public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LAYER_SATELLITE = 2;
 
 	private MapView mapView;
+    MapController mc;
+    GeoPoint p;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -24,6 +34,20 @@ public class MapActivity extends SherlockMapActivity {
 		setContentView(R.layout.map_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (MapView) findViewById(R.id.mapview);
+		
+		mc = mapView.getController();
+        String coordinates[] = {"51.962956", "7.629592"};
+        double lat = Double.parseDouble(coordinates[0]);
+        double lng = Double.parseDouble(coordinates[1]);
+ 
+        p = new GeoPoint(
+            (int) (lat * 1E6), 
+            (int) (lng * 1E6));
+ 
+        mc.animateTo(p);
+        mc.setZoom(13); 
+        mapView.invalidate();
+        
 	}
 
 	@Override
