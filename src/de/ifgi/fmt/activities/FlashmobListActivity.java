@@ -43,8 +43,8 @@ public class FlashmobListActivity extends SherlockListActivity
 				
 				bundle.putString("id", tfmc.flashmobs[position].getId());
 				bundle.putString("title", tfmc.flashmobs[position].getTitle());
-				bundle.putDouble("latitude", tfmc.flashmobs[position].getLocation().getLatitude());
-				bundle.putDouble("longitude", tfmc.flashmobs[position].getLocation().getLongitude());
+				bundle.putInt("latitude", tfmc.flashmobs[position].getLocation().getLatitudeE6());
+				bundle.putInt("longitude", tfmc.flashmobs[position].getLocation().getLongitudeE6());
 				bundle.putBoolean("isPublic", tfmc.flashmobs[position].isPublic());
 				bundle.putInt("participants", tfmc.flashmobs[position].getParticipants());
 				bundle.putString("description", tfmc.flashmobs[position].getDescription());

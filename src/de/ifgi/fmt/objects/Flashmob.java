@@ -1,17 +1,19 @@
 package de.ifgi.fmt.objects;
 
+import com.google.android.maps.GeoPoint;
+
 public class Flashmob
 {
 	// Attributes
 	private String id;
 	private String title;
-	private Point location;
+	private GeoPoint location;
 	private boolean isPublic;
 	private int participants;
 	private String description;
 
 	// Constructor
-	public Flashmob(String _id, String _title, Point _location, boolean _isPublic,
+	public Flashmob(String _id, String _title, GeoPoint _location, boolean _isPublic,
 			int _participants, String _description)
 	{
 		this.id = _id;
@@ -43,12 +45,12 @@ public class Flashmob
 		this.title = title;
 	}
 
-	public void setLocation(Point location)
+	public void setLocation(GeoPoint location)
 	{
 		this.location = location;
 	}
 
-	public Point getLocation()
+	public GeoPoint getLocation()
 	{
 		return location;
 	}
