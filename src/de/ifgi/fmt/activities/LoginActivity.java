@@ -26,7 +26,8 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 import de.ifgi.fmt.R;
 
-public class LoginActivity extends SherlockActivity {
+public class LoginActivity extends SherlockActivity
+{
 	public static final int STATUS_NOT_VALID = 12;
 	public static final int STATUS_OK = 11;
 
@@ -39,7 +40,8 @@ public class LoginActivity extends SherlockActivity {
 	private ProgressDialog progressDialog;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_activity);
 		setTitle("Login");
@@ -49,10 +51,12 @@ public class LoginActivity extends SherlockActivity {
 		// already in XML, specially for HTC in Java
 		username.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 		password = (EditText) findViewById(R.id.password);
-		password.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
-				if (actionId == 0) {
+		password.setOnEditorActionListener(new OnEditorActionListener()
+		{
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+			{
+				if (actionId == 0)
+				{
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
 					login.performClick();
@@ -62,8 +66,10 @@ public class LoginActivity extends SherlockActivity {
 		});
 
 		login = (Button) findViewById(R.id.login);
-		login.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
+		login.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View v)
+			{
 				authenticate();
 			}
 		});
@@ -72,50 +78,59 @@ public class LoginActivity extends SherlockActivity {
 		progressDialog.setMessage("Authenticating...");
 	}
 
-	private void authenticate() {
-		if (username.getText().toString().equals("")
-				|| password.getText().toString().equals("")) {
+	private void authenticate()
+	{
+		if (username.getText().toString().equals("") || password.getText().toString().equals(""))
+		{
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Missing data");
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setMessage("Please enter your user name and password.")
-					.setNeutralButton("OK",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.cancel();
-								}
-							});
+			builder.setMessage("Please enter your user name and password.").setNeutralButton("OK",
+					new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int which)
+						{
+							dialog.cancel();
+						}
+					});
 			builder.create().show();
-		} else {
+		}
+		else
+		{
 			progressDialog.show();
-			new Thread() {
-				public void run() {
+			new Thread()
+			{
+				public void run()
+				{
 
 					// Login request (server) goes here...
-					try {
+					try
+					{
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
+					}
+					catch (InterruptedException e)
+					{
 						e.printStackTrace();
 					}
 					handler.sendEmptyMessage(0);
 
 				};
 
-				private Handler handler = new Handler() {
+				private Handler handler = new Handler()
+				{
 					@Override
-					public void handleMessage(Message msg) {
+					public void handleMessage(Message msg)
+					{
 						// work with the result
-						switch (msg.what) {
+						switch (msg.what)
+						{
 						default:
 							SharedPreferences preferences = PreferenceManager
 									.getDefaultSharedPreferences(getApplicationContext());
-							SharedPreferences.Editor editor = preferences
-									.edit();
+							SharedPreferences.Editor editor = preferences.edit();
 							editor.putInt("user_id", 123);
 							editor.putString("user_name", "markymark");
-							editor.putString("user_email",
-									"wahlberg@hollywood.com");
+							editor.putString("user_email", "wahlberg@hollywood.com");
 							editor.commit();
 							break;
 						}
@@ -127,9 +142,11 @@ public class LoginActivity extends SherlockActivity {
 		}
 	}
 
-	public void redirect() {
+	public void redirect()
+	{
 		Intent intent = null;
-		switch (getIntent().getExtras().getInt("startActivity")) {
+		switch (getIntent().getExtras().getInt("startActivity"))
+		{
 		case REDIRECT_TO_ACTIVITY_1:
 			intent = new Intent(this, StartActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

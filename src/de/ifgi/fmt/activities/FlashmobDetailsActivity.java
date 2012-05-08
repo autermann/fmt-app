@@ -16,25 +16,24 @@ public class FlashmobDetailsActivity extends SherlockActivity
 	private TextView fmIsPublicTV;
 	private TextView fmParticipantsTV;
 	private TextView fmDescriptionTV;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flashmob_details_activity);
-		
+
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		
+
 		fmIdTV = (TextView) findViewById(R.id.fmIdTV);
 		fmTitleTV = (TextView) findViewById(R.id.fmTitleTV);
 		fmIsPublicTV = (TextView) findViewById(R.id.fmIsPublicTV);
 		fmParticipantsTV = (TextView) findViewById(R.id.fmParticipantsTV);
 		fmDescriptionTV = (TextView) findViewById(R.id.fmDescriptionTV);
-		
+
 		fillTextViews();
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -50,11 +49,11 @@ public class FlashmobDetailsActivity extends SherlockActivity
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	public void fillTextViews()
 	{
 		Bundle extras = getIntent().getExtras();
-		
+
 		String id = extras.getString("id");
 		String title = extras.getString("title");
 		boolean isPublic = extras.getBoolean("isPublic");
@@ -62,7 +61,7 @@ public class FlashmobDetailsActivity extends SherlockActivity
 		String description = extras.getString("description");
 
 		String isPublicString = "";
-		if(isPublic)
+		if (isPublic)
 		{
 			isPublicString = "Yes";
 		}
@@ -70,7 +69,7 @@ public class FlashmobDetailsActivity extends SherlockActivity
 		{
 			isPublicString = "No";
 		}
-		
+
 		fmIdTV.setText("ID: " + id);
 		fmTitleTV.setText("Title: " + title);
 		fmIsPublicTV.setText("Is public: " + isPublicString);

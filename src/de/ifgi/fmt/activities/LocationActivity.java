@@ -20,24 +20,27 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 
-public class LocationActivity extends SherlockActivity {
+public class LocationActivity extends SherlockActivity
+{
 	LocationManager locationManager;
 	LocationListener locationListener;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_activity);
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Acquire a reference to the system Location Manager
-		locationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Define a listener that responds to location updates
-		locationListener = new LocationListener() {
-			public void onLocationChanged(Location location) {
+		locationListener = new LocationListener()
+		{
+			public void onLocationChanged(Location location)
+			{
 				// Called when a new location is found by the network location
 				// provider.
 				LinearLayout waitingForLocation = (LinearLayout) findViewById(R.id.waiting_for_location);
@@ -45,44 +48,50 @@ public class LocationActivity extends SherlockActivity {
 
 				Geocoder geocoder = new Geocoder(getApplicationContext());
 				List<Address> addresses = null;
-				try {
-					addresses = geocoder.getFromLocation(
-							location.getLatitude(), location.getLongitude(), 1);
-				} catch (IOException e) {
+				try
+				{
+					addresses = geocoder.getFromLocation(location.getLatitude(),
+							location.getLongitude(), 1);
+				}
+				catch (IOException e)
+				{
 					e.printStackTrace();
 				}
 				Address address = addresses.get(0);
 
 				TextView addressText = (TextView) findViewById(R.id.address_text);
 				TextView locationText = (TextView) findViewById(R.id.location_text);
-				addressText.setText(address.getLocality() + ", "
-						+ address.getCountryName());
-				locationText.setText("Latitude: " + location.getLatitude()
-						+ "\n" + "Longitude: " + location.getLongitude());
+				addressText.setText(address.getLocality() + ", " + address.getCountryName());
+				locationText.setText("Latitude: " + location.getLatitude() + "\n" + "Longitude: "
+						+ location.getLongitude());
 				// Remove the listener
 				locationManager.removeUpdates(locationListener);
 			}
 
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
+			public void onStatusChanged(String provider, int status, Bundle extras)
+			{
 			}
 
-			public void onProviderEnabled(String provider) {
+			public void onProviderEnabled(String provider)
+			{
 			}
 
-			public void onProviderDisabled(String provider) {
+			public void onProviderDisabled(String provider)
+			{
 			}
 		};
 
 		// Register the listener with the Location Manager to receive location
 		// updates
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+				locationListener);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);

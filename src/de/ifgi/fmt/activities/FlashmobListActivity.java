@@ -13,13 +13,14 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.Point;
+import de.ifgi.fmt.objects.TestFlashmobContainer;
 
 public class FlashmobListActivity extends SherlockListActivity
 {
 	// Fake set of flashmobs
-	private Flashmob[] flashmobs = new Flashmob[3];
-	private String[] flashmobTitles = new String[flashmobs.length];
-	
+	private TestFlashmobContainer tfmc = new TestFlashmobContainer();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -27,27 +28,29 @@ public class FlashmobListActivity extends SherlockListActivity
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		createFakeFlashmobData();
-
 		// Setting the layout and content for the list
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.flashmob_list_activity, flashmobTitles));
+		setListAdapter(new ArrayAdapter<String>(this, R.layout.flashmob_list_activity,
+				tfmc.flashmobTitles));
 		final ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setOnItemClickListener(new OnItemClickListener()
 		{
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) 
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				// TODO: Add the flashmob data to the intent
 				Intent i = new Intent(FlashmobListActivity.this, FlashmobDetailsActivity.class);
-				
+
 				Bundle bundle = new Bundle();
-				bundle.putString("id", flashmobs[position].getId());
-				bundle.putString("title", flashmobs[position].getTitle());
-				bundle.putBoolean("isPublic", flashmobs[position].isPublic());
-				bundle.putInt("participants", flashmobs[position].getParticipants());
-				bundle.putString("description", flashmobs[position].getDescription());
+				
+				bundle.putString("id", tfmc.flashmobs[position].getId());
+				bundle.putString("title", tfmc.flashmobs[position].getTitle());
+				bundle.putDouble("latitude", tfmc.flashmobs[position].getLocation().getLatitude());
+				bundle.putDouble("longitude", tfmc.flashmobs[position].getLocation().getLongitude());
+				bundle.putBoolean("isPublic", tfmc.flashmobs[position].isPublic());
+				bundle.putInt("participants", tfmc.flashmobs[position].getParticipants());
+				bundle.putString("description", tfmc.flashmobs[position].getDescription());
+				
 				i.putExtras(bundle);
+				
 				startActivity(i);
 			}
 		});
@@ -57,7 +60,7 @@ public class FlashmobListActivity extends SherlockListActivity
 	{
 		startActivity(new Intent(this, FlashmobDetailsActivity.class));
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -73,30 +76,4 @@ public class FlashmobListActivity extends SherlockListActivity
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	/**
-	 * Create fake flashmob data for testing.
-	 */
-	public void createFakeFlashmobData()
-	{
-		// Creating pseudo-flashmobs
-		Flashmob danceFlashmob = new Flashmob("001", "Dance Flashmob", true, 66,
-		"People dance in public to a certain song.");
-		Flashmob freezeFlashmob = new Flashmob("002", "Freeze Flashmob", true, 1001,
-				"People freeze for 2 minutes.");
-		Flashmob zombieFlashmob = new Flashmob("003", "Zombie Flashmob", false, 42,
-				"People dressed as zombies act on command.");
-
-		// Adding the flashmobs to the array
-		flashmobs[0] = danceFlashmob;
-		flashmobs[1] = freezeFlashmob;
-		flashmobs[2] = zombieFlashmob;
-		
-		// Adding the flashmobs titles to the array for displaying on the list view
-		for(int i=0; i<flashmobs.length; i++)
-		{
-			flashmobTitles[i] = flashmobs[i].getTitle();
-		}
-	}
-	
 }

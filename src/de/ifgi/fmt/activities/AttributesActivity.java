@@ -8,10 +8,12 @@ import de.ifgi.fmt.R;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class AttributesActivity extends SherlockActivity {
+public class AttributesActivity extends SherlockActivity
+{
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.attributes_activity);
 
@@ -19,8 +21,10 @@ public class AttributesActivity extends SherlockActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);
