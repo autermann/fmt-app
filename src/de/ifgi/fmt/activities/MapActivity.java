@@ -1,7 +1,10 @@
 package de.ifgi.fmt.activities;
 
+//import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
@@ -13,12 +16,11 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.OverlayItem;
 
 import java.util.List;
-import com.google.android.maps.Overlay; 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import java.util.ArrayList;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MyLocationOverlay;
+
 
 
 import de.ifgi.fmt.R;
@@ -27,9 +29,11 @@ public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LAYER_MAP = 1;
 	private static final int MENU_LAYER_SATELLITE = 2;
 
-	MapView mapView;
+	private MapView mapView = null;
     MapController mc;
-    GeoPoint p;
+    GeoPoint p;    
+    private MyLocationOverlay me=null;
+	public Context mContext;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -38,45 +42,25 @@ public class MapActivity extends SherlockMapActivity {
 		setContentView(R.layout.map_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (MapView) findViewById(R.id.mapview);
+		Drawable marker=getResources().getDrawable(R.drawable.location);
 		
+		
+		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
+                marker.getIntrinsicHeight());
+
+		mapView.getOverlays().add(new SitesOverlay(marker));
+
+		me=new MyLocationOverlay(this, mapView);
+		mapView.getOverlays().add(me);
+
+
+		
+		//start position when loading the map
 		mc = mapView.getController();
         String coordinates[] = {"51.962956", "7.629592"};
         double lat = Double.parseDouble(coordinates[0]);
         double lng = Double.parseDouble(coordinates[1]);
-        
-        List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(R.drawable.location);
-		ItemizedOverlay itemizedoverlay = new ItemizedOverlay(drawable, this);
-		
-		
-		String coordinates_point1[] = {"51.962960", "7.629596"};
-        double lat2 = Double.parseDouble(coordinates_point1[0]);
-        double lng2 = Double.parseDouble(coordinates_point1[1]);
-		GeoPoint point = new GeoPoint((int) (lat2 * 1E6),(int) (lng2 * 1E6));
-		OverlayItem overlayitem = new OverlayItem(point, "Freeze Flashmob MS \n 23.05.2012", "test");
-        
-		String coordinates_point2[] = {"51.962952", "7.629588"};
-		double lat3 = Double.parseDouble(coordinates_point2[0]);
-		double lng3 = Double.parseDouble(coordinates_point2[1]);
-		GeoPoint point2 = new GeoPoint((int) (lat3 * 1E6),(int) (lng3 * 1E6));
-		OverlayItem overlayitem2 = new OverlayItem(point2, "Pillow Flashmob MS \n 24.05.2012", "Let's meet tomorrow");
-		
-				
-		itemizedoverlay.addOverlay(overlayitem);
-		mapOverlays.add(itemizedoverlay);
-		itemizedoverlay.addOverlay(overlayitem2);
-		mapOverlays.add(itemizedoverlay);
-		
-        // map-overlay: icons as location markers instead of points     
-//        MapOverlay mapOverlay = new MapOverlay();
-//        List<Overlay> listOfOverlays = mapView.getOverlays();
-//        listOfOverlays.clear();
-//        listOfOverlays.add(mapOverlay);        
-// 
-//        mapView.invalidate();
-		
-		
-        //start position when loading the map
+       
         p = new GeoPoint(
             (int) (lat * 1E6), 
             (int) (lng * 1E6));
@@ -87,6 +71,7 @@ public class MapActivity extends SherlockMapActivity {
         mapView.invalidate();
 	}
 
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -107,7 +92,12 @@ public class MapActivity extends SherlockMapActivity {
 		}
 	}
 
-    
+	 private GeoPoint getPoint(double lat, double lon) {
+		    return(new GeoPoint((int)(lat*1000000.0),
+		                          (int)(lon*1000000.0)));
+		  }
+	 
+	 
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -127,24 +117,68 @@ public class MapActivity extends SherlockMapActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-//	class MapOverlay extends com.google.android.maps.Overlay
-//	{						
-//	    @Override
-//	    public boolean draw(Canvas canvas, MapView mapView, 
-//	    boolean shadow, long when) 
-//	    {
-//	        super.draw(canvas, mapView, shadow);                   
-//
-//	        //translates the GeoPoint to screen pixels
-//	        Point screenPts = new Point();
-//	        mapView.getProjection().toPixels(p, screenPts);
-//
-//	        //add's the marker to the screen
-//	        Bitmap bmp = BitmapFactory.decodeResource(
-//	            getResources(), R.drawable.location);            
-//	        canvas.drawBitmap(bmp, screenPts.x, screenPts.y-48, null);         
-//	        return true;
-//	    }
-//	} 
+	
+	
+	
+	 private class SitesOverlay extends ItemizedOverlay<OverlayItem> {
+		    private List<OverlayItem> items=new ArrayList<OverlayItem>();
+		    
+		    
+		    public SitesOverlay(Drawable marker) {
+		    	super(marker);	      
+
+		      
+		      boundCenterBottom(marker);
+		      
+		      // List of Points (FMs) to display
+		      items.add(new OverlayItem(getPoint(51.940932,
+		    		  7.609992),
+		                                "Freeze Flashmob", " Come here on 23.05.2012"));
+		      items.add(new OverlayItem(getPoint(51.951195,
+		    		  7.603297),
+		                                "Freeze Flashmob", "Starting on 24.05.2012"));
+		      items.add(new OverlayItem(getPoint(51.962409,
+		    		  7.631621),
+		                                "Pillow Flashmob", "Party @ 25.05.2012"));
+		      items.add(new OverlayItem(getPoint(51.963995,
+		    		  7.610507),
+		                                "Pillow Flashmob", "Let's meet: 26.05.2012"));
+
+		      populate();
+		    }
+		    
+		    @Override
+		    protected OverlayItem createItem(int i) {
+		      return(items.get(i));
+		    }
+		    
+		    // Traditional way of displaying the information with a AlertDialog
+//		    @Override
+//		    protected boolean onTap(int i) { 
+//			OverlayItem item = items.get(i);
+//		      AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+//		      dialog.setTitle(item.getTitle());
+//		      dialog.setMessage(item.getSnippet());
+//		      dialog.show();
+//		      return true;
+//		    }
+		    
+			//Cool Way of displaying the information of the FM 		   
+		    @Override
+		    protected boolean onTap(int i) {
+		      Toast.makeText(MapActivity.this,
+		                      items.get(i).getTitle() + "\n" + items.get(i).getSnippet(),
+		                      Toast.LENGTH_LONG).show();
+		      
+		      return(true);
+		    }
+		    
+		    
+		    @Override
+		    public int size() {
+		      return(items.size());
+		    }
+		  }
+
 }    
 
