@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:stretchColumns="1,3"
+  android:background="@drawable/popup_frame">
+  <TableRow>
+    <TextView
+      android:text="Title:"
+      android:textStyle="bold"
+      android:layout_marginRight="10dip"
+      android:textColor="#FFFFFF"
+    />
+    <TextView android:id="@+id/title"
+        android:textColor="#FFFFFF" />
+     </TableRow>
+     
+     <TableRow>
+    <TextView
+      android:text="Description:"
+      android:textStyle="bold"
+      android:layout_marginRight="10dip"
+      android:textColor="#FFFFFF"
+     />
+    
+    <TextView android:id="@+id/description"
+        android:textColor="#FFFFFF"
+        android:layout_span="2" />
+  </TableRow>  
+  
+     <TableRow> 
+         <Button
+     		android:layout_height="wrap_content"
+     		android:layout_width="wrap_content"
+     		android:layout_marginRight="10dip"
+     		android:textColor="#FFFFFF"
+     		android:text="More Information"
+     		android:onClick=""
+     		android:id="@+id/more"
+     		android:layout_span="2" />
+         
+         
+         
+     </TableRow> 
+</TableLayout>
