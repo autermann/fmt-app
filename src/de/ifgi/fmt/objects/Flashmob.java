@@ -2,8 +2,7 @@ package de.ifgi.fmt.objects;
 
 import com.google.android.maps.GeoPoint;
 
-public class Flashmob
-{
+public class Flashmob {
 	// Attributes
 	private String id;
 	private String title;
@@ -12,10 +11,12 @@ public class Flashmob
 	private int participants;
 	private String description;
 
-	// Constructor
-	public Flashmob(String _id, String _title, GeoPoint _location, boolean _isPublic,
-			int _participants, String _description)
-	{
+	// Constructors
+	public Flashmob() {
+	}
+
+	public Flashmob(String _id, String _title, GeoPoint _location,
+			boolean _isPublic, int _participants, String _description) {
 		this.id = _id;
 		this.title = _title;
 		this.location = _location;
@@ -25,63 +26,51 @@ public class Flashmob
 	}
 
 	// Getter & Setter
-	public String getId()
-	{
+	public String getId() {
 		return id;
 	}
 
-	public void setId(String id)
-	{
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	public void setLocation(GeoPoint location)
-	{
+	public void setLocation(GeoPoint location) {
 		this.location = location;
 	}
 
-	public GeoPoint getLocation()
-	{
+	public GeoPoint getLocation() {
 		return location;
 	}
 
-	public boolean isPublic()
-	{
+	public boolean isPublic() {
 		return isPublic;
 	}
 
-	public void setPublic(boolean isPublic)
-	{
+	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
 
-	public int getParticipants()
-	{
+	public int getParticipants() {
 		return participants;
 	}
 
-	public void setParticipants(int participants)
-	{
+	public void setParticipants(int participants) {
 		this.participants = participants;
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 }

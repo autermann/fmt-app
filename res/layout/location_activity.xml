@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/waiting_for_location"
+        android:id="@+id/progress_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
@@ -21,23 +21,34 @@
             android:layout_marginRight="5dp" />
 
         <TextView
+            android:id="@+id/progress_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Waiting for Location..." />
+            android:text="Waiting for..." />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/results_layout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="10dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/results_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/address_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -49,5 +60,11 @@
             android:gravity="center"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff" />
 
 </LinearLayout>

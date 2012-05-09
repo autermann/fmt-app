@@ -1,6 +1,7 @@
 package de.ifgi.fmt.activities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -10,88 +11,96 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.Store;
+import de.ifgi.fmt.network.NetworkRequest;
+import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.parser.FlashmobJSONParser;
 
-public class LocationActivity extends SherlockActivity
-{
+public class LocationActivity extends SherlockActivity {
 	LocationManager locationManager;
 	LocationListener locationListener;
+	LinearLayout progressLayout;
+	TextView progressView;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_activity);
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-
 		// Acquire a reference to the system Location Manager
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+		progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
+		progressView = (TextView) findViewById(R.id.progress_view);
+		progressView.setText("Waiting for location...");
 
 		// Define a listener that responds to location updates
-		locationListener = new LocationListener()
-		{
-			public void onLocationChanged(Location location)
-			{
+		locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
 				// Called when a new location is found by the network location
 				// provider.
-				LinearLayout waitingForLocation = (LinearLayout) findViewById(R.id.waiting_for_location);
-				waitingForLocation.setVisibility(View.GONE);
-
 				Geocoder geocoder = new Geocoder(getApplicationContext());
 				List<Address> addresses = null;
-				try
-				{
-					addresses = geocoder.getFromLocation(location.getLatitude(),
-							location.getLongitude(), 1);
-				}
-				catch (IOException e)
-				{
+				try {
+					addresses = geocoder.getFromLocation(
+							location.getLatitude(), location.getLongitude(), 1);
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				Address address = addresses.get(0);
 
 				TextView addressText = (TextView) findViewById(R.id.address_text);
 				TextView locationText = (TextView) findViewById(R.id.location_text);
-				addressText.setText(address.getLocality() + ", " + address.getCountryName());
-				locationText.setText("Latitude: " + location.getLatitude() + "\n" + "Longitude: "
-						+ location.getLongitude());
+				addressText.setText(address.getLocality() + ", "
+						+ address.getCountryName());
+				locationText.setText("Latitude: " + location.getLatitude()
+						+ "\n" + "Longitude: " + location.getLongitude());
 				// Remove the listener
 				locationManager.removeUpdates(locationListener);
+				loadFlashmobs();
 			}
 
-			public void onStatusChanged(String provider, int status, Bundle extras)
-			{
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
 			}
 
-			public void onProviderEnabled(String provider)
-			{
+			public void onProviderEnabled(String provider) {
 			}
 
-			public void onProviderDisabled(String provider)
-			{
+			public void onProviderDisabled(String provider) {
 			}
 		};
 
 		// Register the listener with the Location Manager to receive location
 		// updates
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-				locationListener);
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+	}
+
+	private void loadFlashmobs() {
+		new DownloadTask()
+				.execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);
@@ -101,5 +110,59 @@ public class LocationActivity extends SherlockActivity
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	// AsyncTask instead of a Thread, in order to download the online data
+	class DownloadTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			progressView.setText("Searching for flashmobs...");
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String doInBackground(String... url) {
+			NetworkRequest request = new NetworkRequest(url[0]);
+			request.send();
+			return request.getResult();
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			// parsing the result
+			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result);
+			// get access to the store and save the new flashmobs
+			((Store) getApplicationContext()).setFlashmobs(flashmobs);
+			
+			TextView resultsText = (TextView) findViewById(R.id.results_text);
+			resultsText.setText(flashmobs.size() + " flashmobs found near");
+			
+			// Simple list, to be replaced later
+			String[] stringarray = new String[flashmobs.size()];
+			for (int i = 0; i < flashmobs.size(); i++) {
+				Flashmob f = flashmobs.get(i);
+				stringarray[i] = f.getTitle();
+			}
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+					getApplicationContext(), R.layout.simple_list_item,
+					stringarray);
+			ListView list = (ListView) findViewById(android.R.id.list);
+			list.setAdapter(adapter);
+			list.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					Intent intent = new Intent(getApplicationContext(), FlashmobDetailsActivity.class);
+					intent.putExtra("id", flashmobs.get(arg2).getId());
+					startActivity(intent);
+				}
+			});
+
+			progressLayout.setVisibility(View.GONE);
+			((LinearLayout) findViewById(R.id.results_layout))
+					.setVisibility(View.VISIBLE);
+		}
+
 	}
 }
