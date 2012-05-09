@@ -1,26 +1,14 @@
 package de.ifgi.fmt.activities;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
-import android.os.Bundle;
-
-
-import com.actionbarsherlock.app.SherlockMapActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-import com.google.android.maps.MapView;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-import com.google.android.maps.OverlayItem;
-
-import java.util.List;
-import android.graphics.drawable.Drawable;
-import java.util.ArrayList;
-import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MyLocationOverlay;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -28,7 +16,22 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.OverlayItem;
+
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.Store;
+import de.ifgi.fmt.network.NetworkRequest;
+import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.parser.FlashmobJSONParser;
 
 public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LAYER_MAP = 1;
@@ -38,6 +41,7 @@ public class MapActivity extends SherlockMapActivity {
 	MapController mc;
 	GeoPoint p;
 	private MyLocationOverlay me = null;
+	Drawable marker;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -46,12 +50,6 @@ public class MapActivity extends SherlockMapActivity {
 		setContentView(R.layout.map_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (MapView) findViewById(R.id.mapview);
-		Drawable marker = getResources().getDrawable(R.drawable.location);
-
-		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
-				marker.getIntrinsicHeight());
-
-		mapView.getOverlays().add(new SitesOverlay(marker));
 
 		me = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(me);
@@ -68,7 +66,12 @@ public class MapActivity extends SherlockMapActivity {
 		mc.setZoom(13);
 		mapView.invalidate();
 		
-		
+		marker = getResources().getDrawable(R.drawable.location);
+		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
+				marker.getIntrinsicHeight());
+		new DownloadTask()
+		.execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
+
 	}
 
 	@Override
@@ -133,21 +136,18 @@ public class MapActivity extends SherlockMapActivity {
 
 		public SitesOverlay(Drawable marker) {
 			super(marker);
-			this.marker=marker; 
-			
+			this.marker = marker;
+
 			boundCenterBottom(marker);
 
 			// List of Points (FMs) to display
-			items.add(new OverlayItem(getPoint(51.940932, 7.609992),
-					"Freeze Flashmob", " Come here on 23.05.2012"));
-			items.add(new OverlayItem(getPoint(51.951195, 7.603297),
-					"Freeze Flashmob", "Starting on 24.05.2012"));
-			items.add(new OverlayItem(getPoint(51.962409, 7.631621),
-					"Pillow Flashmob", "Party @ 25.05.2012"));
-			items.add(new OverlayItem(getPoint(51.963995, 7.610507),
-					"Pillow Flashmob", "Let's meet: 26.05.2012"));
-
+			ArrayList<Flashmob> flashmobs = ((Store) getApplicationContext()).getFlashmobs();
+			for (Flashmob f : flashmobs) {
+				items.add(new OverlayItem(getPoint(f.getLocation().getLatitudeE6()/1e6, f.getLocation().getLongitudeE6()/1e6),
+						f.getTitle(), f.getDescription()));
+			}
 			populate();
+			mapView.invalidate();
 		}
 
 		@Override
@@ -161,10 +161,7 @@ public class MapActivity extends SherlockMapActivity {
 
 			boundCenterBottom(marker);
 		}
-		
-		
-		
-		
+
 		@Override
 		protected boolean onTap(int i) {
 			OverlayItem item = getItem(i);
@@ -172,23 +169,21 @@ public class MapActivity extends SherlockMapActivity {
 			Point pt = mapView.getProjection().toPixels(geo, null);
 
 			View view = panel.getView();
-			 
-            ((TextView) view.findViewById(R.id.title)).setText(String.valueOf(item.getTitle()));
-            ((TextView) view.findViewById(R.id.description)).setText(String.valueOf(item.getSnippet()));
-            
-            Button more = (Button) view.findViewById(R.id.more);
-            more.setOnClickListener(new OnClickListener() {
-            	public void onClick(View v) {
-            			System.out.println("YAHOOOOOOO ");
-            			//funktioniert!            
-            			}
-            	});
-            
-            
-            
+
+			((TextView) view.findViewById(R.id.title)).setText(String
+					.valueOf(item.getTitle()));
+			((TextView) view.findViewById(R.id.description)).setText(String
+					.valueOf(item.getSnippet()));
+
+			Button more = (Button) view.findViewById(R.id.more);
+			more.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					System.out.println("YAHOOOOOOO ");
+					// funktioniert!
+				}
+			});
+
 			panel.show(pt.y * 2 > mapView.getHeight());
-			
-			
 
 			return (true);
 		}
@@ -197,8 +192,7 @@ public class MapActivity extends SherlockMapActivity {
 		public int size() {
 			return (items.size());
 		}
-		
-	
+
 	}
 
 	class PopupPanel {
@@ -215,16 +209,16 @@ public class MapActivity extends SherlockMapActivity {
 					hide();
 				}
 			});
-			
+
 			mapView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					isVisible = false;
-					((ViewGroup) popup.getParent()).removeView(popup);			
+					((ViewGroup) popup.getParent()).removeView(popup);
 				}
 			});
-			
+
 		}
-		
+
 		View getView() {
 			return (popup);
 		}
@@ -256,4 +250,25 @@ public class MapActivity extends SherlockMapActivity {
 		}
 	}
 
+	class DownloadTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... url) {
+			NetworkRequest request = new NetworkRequest(url[0]);
+			request.send();
+			return request.getResult();
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			// parsing the result
+			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser
+					.parse(result);
+			// get access to the store and save the new flashmobs
+			((Store) getApplicationContext()).setFlashmobs(flashmobs);
+			mapView.getOverlays().add(new SitesOverlay(marker));
+		}
+
+	}
 }
