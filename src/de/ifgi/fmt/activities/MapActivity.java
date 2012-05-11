@@ -1,31 +1,24 @@
 package de.ifgi.fmt.activities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.Store;
@@ -43,7 +36,8 @@ public class MapActivity extends SherlockMapActivity {
 	private MyLocationOverlay me = null;
 	Drawable marker;
 
-	/** Called when the activity is first created. */
+	FlashmobsOverlay itemizedOverlay;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,7 +57,7 @@ public class MapActivity extends SherlockMapActivity {
 		p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 
 		mc.animateTo(p);
-		mc.setZoom(13);
+		mc.setZoom(15);
 		mapView.invalidate();
 		
 		marker = getResources().getDrawable(R.drawable.location);
@@ -98,11 +92,92 @@ public class MapActivity extends SherlockMapActivity {
 		return (new GeoPoint((int) (lat * 1000000.0), (int) (lon * 1000000.0)));
 	}
 
+	private class FlashmobsOverlay extends BalloonItemizedOverlay<OverlayItem> {
+		private ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+		private ArrayList<Flashmob> flashmobs = new ArrayList<Flashmob>();
+
+		public FlashmobsOverlay(Drawable defaultMarker, MapView mapView) {
+			super(boundCenter(defaultMarker), mapView);
+		}
+
+		public void addOverlay(OverlayItem overlay, Flashmob flashmob) {
+		    items.add(overlay);
+		    flashmobs.add(flashmob);
+		    populate();
+		}
+		
+		@Override
+		protected OverlayItem createItem(int i) {
+			return (items.get(i));
+		}
+
+		@Override
+		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+			super.draw(canvas, mapView, shadow);
+
+			boundCenterBottom(marker);
+		}
+		
+		@Override
+		protected boolean onBalloonTap(int index, OverlayItem item) {
+			Intent intent = new Intent(getApplicationContext(), FlashmobDetailsActivity.class);
+			intent.putExtra("id", flashmobs.get(index).getId());
+			startActivity(intent);
+			return true;
+		}
+
+		@Override
+		public int size() {
+			return (items.size());
+		}
+
+	}
+
+	class DownloadTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... url) {
+			NetworkRequest request = new NetworkRequest(url[0]);
+			request.send();
+			return request.getResult();
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			// parsing the result
+			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser
+					.parse(result);
+			// get access to the store and save the new flashmobs
+			((Store) getApplicationContext()).setFlashmobs(flashmobs);
+			
+			// create new overlay
+			itemizedOverlay = new FlashmobsOverlay(marker, mapView);
+			// List of Points (FMs) to display
+			for (Flashmob f : flashmobs) {
+				OverlayItem o = new OverlayItem(getPoint(f.getLocation()
+						.getLatitudeE6() / 1e6, f.getLocation()
+						.getLongitudeE6() / 1e6), f.getTitle(),
+						f.getDescription());
+				itemizedOverlay.addOverlay(o, f);
+			}
+			mapView.getOverlays().add(itemizedOverlay);
+			mapView.invalidate();
+		}
+
+	}
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
 
+	// avoid resuming activity on switch from portrait to landscape, etc.
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -127,148 +202,5 @@ public class MapActivity extends SherlockMapActivity {
 				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	private class SitesOverlay extends ItemizedOverlay<OverlayItem> {
-		private List<OverlayItem> items = new ArrayList<OverlayItem>();
-		private Drawable marker = null;
-		private PopupPanel panel = new PopupPanel(R.layout.popup);
-
-		public SitesOverlay(Drawable marker) {
-			super(marker);
-			this.marker = marker;
-
-			boundCenterBottom(marker);
-
-			// List of Points (FMs) to display
-			ArrayList<Flashmob> flashmobs = ((Store) getApplicationContext()).getFlashmobs();
-			for (Flashmob f : flashmobs) {
-				items.add(new OverlayItem(getPoint(f.getLocation().getLatitudeE6()/1e6, f.getLocation().getLongitudeE6()/1e6),
-						f.getTitle(), f.getDescription()));
-			}
-			populate();
-			mapView.invalidate();
-		}
-
-		@Override
-		protected OverlayItem createItem(int i) {
-			return (items.get(i));
-		}
-
-		@Override
-		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-			super.draw(canvas, mapView, shadow);
-
-			boundCenterBottom(marker);
-		}
-
-		@Override
-		protected boolean onTap(int i) {
-			OverlayItem item = getItem(i);
-			GeoPoint geo = item.getPoint();
-			Point pt = mapView.getProjection().toPixels(geo, null);
-
-			View view = panel.getView();
-
-			((TextView) view.findViewById(R.id.title)).setText(String
-					.valueOf(item.getTitle()));
-			((TextView) view.findViewById(R.id.description)).setText(String
-					.valueOf(item.getSnippet()));
-
-			Button more = (Button) view.findViewById(R.id.more);
-			more.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					System.out.println("YAHOOOOOOO ");
-					// funktioniert!
-				}
-			});
-
-			panel.show(pt.y * 2 > mapView.getHeight());
-
-			return (true);
-		}
-
-		@Override
-		public int size() {
-			return (items.size());
-		}
-
-	}
-
-	class PopupPanel {
-		View popup;
-		boolean isVisible = false;
-
-		PopupPanel(int layout) {
-			ViewGroup parent = (ViewGroup) mapView.getParent();
-
-			popup = getLayoutInflater().inflate(layout, parent, false);
-
-			popup.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					hide();
-				}
-			});
-
-			mapView.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					isVisible = false;
-					((ViewGroup) popup.getParent()).removeView(popup);
-				}
-			});
-
-		}
-
-		View getView() {
-			return (popup);
-		}
-
-		void show(boolean alignTop) {
-			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-			if (alignTop) {
-				lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-				lp.setMargins(0, 20, 0, 0);
-			} else {
-				lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				lp.setMargins(0, 0, 0, 60);
-			}
-
-			hide();
-
-			((ViewGroup) mapView.getParent()).addView(popup, lp);
-			isVisible = true;
-		}
-
-		void hide() {
-			if (isVisible) {
-				isVisible = false;
-				((ViewGroup) popup.getParent()).removeView(popup);
-			}
-		}
-	}
-
-	class DownloadTask extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected String doInBackground(String... url) {
-			NetworkRequest request = new NetworkRequest(url[0]);
-			request.send();
-			return request.getResult();
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			// parsing the result
-			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser
-					.parse(result);
-			// get access to the store and save the new flashmobs
-			((Store) getApplicationContext()).setFlashmobs(flashmobs);
-			mapView.getOverlays().add(new SitesOverlay(marker));
-		}
-
 	}
 }
