@@ -1,9 +1,11 @@
 package de.ifgi.fmt.activities;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -17,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,27 +34,27 @@ import de.ifgi.fmt.parser.FlashmobJSONParser;
 public class LocationActivity extends SherlockActivity {
 	LocationManager locationManager;
 	LocationListener locationListener;
-	LinearLayout progressLayout;
-	TextView progressView;
+	Location currentLocation;
+	TextView locationText;
+	ProgressDialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_activity);
-
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setMessage("Loading flashmobs...");
+		
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
-		progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
-		progressView = (TextView) findViewById(R.id.progress_view);
-		progressView.setText("Waiting for location...");
-
 		// Define a listener that responds to location updates
 		locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
 				// Called when a new location is found by the network location
 				// provider.
+				currentLocation = location;
 				Geocoder geocoder = new Geocoder(getApplicationContext());
 				List<Address> addresses = null;
 				try {
@@ -63,13 +64,11 @@ public class LocationActivity extends SherlockActivity {
 					e.printStackTrace();
 				}
 				Address address = addresses.get(0);
-
-				TextView addressText = (TextView) findViewById(R.id.address_text);
-				TextView locationText = (TextView) findViewById(R.id.location_text);
-				addressText.setText(address.getLocality() + ", "
+				locationText = (TextView) findViewById(R.id.location_text);
+				locationText.setText(address.getLocality() + ", "
 						+ address.getCountryName());
-				locationText.setText("Latitude: " + location.getLatitude()
-						+ "\n" + "Longitude: " + location.getLongitude());
+//				locationText.setText("Latitude: " + location.getLatitude()
+//						+ "\n" + "Longitude: " + location.getLongitude());
 				// Remove the listener
 				locationManager.removeUpdates(locationListener);
 				loadFlashmobs();
@@ -117,8 +116,8 @@ public class LocationActivity extends SherlockActivity {
 
 		@Override
 		protected void onPreExecute() {
-			progressView.setText("Searching for flashmobs...");
 			super.onPreExecute();
+			progressDialog.show();
 		}
 
 		@Override
@@ -136,14 +135,12 @@ public class LocationActivity extends SherlockActivity {
 			// get access to the store and save the new flashmobs
 			((Store) getApplicationContext()).setFlashmobs(flashmobs);
 			
-			TextView resultsText = (TextView) findViewById(R.id.results_text);
-			resultsText.setText(flashmobs.size() + " flashmobs found near");
-			
 			// Simple list, to be replaced later
 			String[] stringarray = new String[flashmobs.size()];
 			for (int i = 0; i < flashmobs.size(); i++) {
 				Flashmob f = flashmobs.get(i);
-				stringarray[i] = f.getTitle();
+				DecimalFormat df = new DecimalFormat("0.#");
+				stringarray[i] = f.getTitle() +" ("+ df.format(f.getDistanceInKilometersTo(currentLocation)) +" km)";
 			}
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 					getApplicationContext(), R.layout.simple_list_item,
@@ -158,10 +155,7 @@ public class LocationActivity extends SherlockActivity {
 					startActivity(intent);
 				}
 			});
-
-			progressLayout.setVisibility(View.GONE);
-			((LinearLayout) findViewById(R.id.results_layout))
-					.setVisibility(View.VISIBLE);
+			progressDialog.dismiss();
 		}
 
 	}

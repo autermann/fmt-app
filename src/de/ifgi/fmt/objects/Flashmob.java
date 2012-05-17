@@ -1,5 +1,7 @@
 package de.ifgi.fmt.objects;
 
+import android.location.Location;
+
 import com.google.android.maps.GeoPoint;
 
 public class Flashmob {
@@ -25,6 +27,17 @@ public class Flashmob {
 		this.description = _description;
 	}
 
+	public double getDistanceInKilometersTo(Location location) {
+		double latitude = getLocation().getLatitudeE6() / 1E6;
+		double longitude = getLocation().getLongitudeE6() / 1E6;
+		Location l = new Location("");
+		l.setLatitude(latitude);
+		l.setLongitude(longitude);
+		float distanceInMeters = location.distanceTo(l);
+		float distanceInKilometers = distanceInMeters / 1000;
+		return distanceInKilometers;
+	}
+	
 	// Getter & Setter
 	public String getId() {
 		return id;
