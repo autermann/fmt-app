@@ -1,5 +1,8 @@
 package de.ifgi.fmt.objects;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
@@ -9,9 +12,14 @@ public class Flashmob {
 	private String id;
 	private String title;
 	private GeoPoint location;
+	private String country;
+	private String city;
+	private String streetAddress;
 	private boolean isPublic;
 	private int participants;
 	private String description;
+	private Date startTime;
+	private Date endTime;
 
 	// Constructors
 	public Flashmob() {
@@ -27,6 +35,27 @@ public class Flashmob {
 		this.description = _description;
 	}
 
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getStartDate() {
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		return dateFormat.format(startTime);
+	}
+
 	public double getDistanceInKilometersTo(Location location) {
 		double latitude = getLocation().getLatitudeE6() / 1E6;
 		double longitude = getLocation().getLongitudeE6() / 1E6;
@@ -37,7 +66,7 @@ public class Flashmob {
 		float distanceInKilometers = distanceInMeters / 1000;
 		return distanceInKilometers;
 	}
-	
+
 	// Getter & Setter
 	public String getId() {
 		return id;
@@ -86,4 +115,29 @@ public class Flashmob {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+
 }

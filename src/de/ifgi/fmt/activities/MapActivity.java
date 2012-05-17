@@ -147,7 +147,7 @@ public class MapActivity extends SherlockMapActivity {
 			super.onPostExecute(result);
 			// parsing the result
 			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser
-					.parse(result);
+					.parse(result, getApplicationContext());
 			// get access to the store and save the new flashmobs
 			((Store) getApplicationContext()).setFlashmobs(flashmobs);
 			
