@@ -38,15 +38,12 @@ public class LocationActivity extends SherlockActivity {
 	LocationListener locationListener;
 	Location currentLocation;
 	TextView locationText;
-	ProgressDialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setMessage("Loading flashmobs...");
 
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this
@@ -93,8 +90,14 @@ public class LocationActivity extends SherlockActivity {
 	}
 
 	private void loadFlashmobs() {
-		new DownloadTask()
+		new DownloadTask(this)
 				.execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		locationManager.removeUpdates(locationListener);
 	}
 
 	@Override
@@ -113,6 +116,12 @@ public class LocationActivity extends SherlockActivity {
 
 	// AsyncTask instead of a Thread, in order to download the online data
 	class DownloadTask extends AsyncTask<String, Void, String> {
+		ProgressDialog progressDialog;
+
+		public DownloadTask(Context context) {
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setMessage("Loading flashmobs...");
+		}
 
 		@Override
 		protected void onPreExecute() {

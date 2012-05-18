@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
@@ -18,6 +19,8 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
+import com.readystatesoftware.maps.OnSingleTapListener;
+import com.readystatesoftware.maps.TapControlledMapView;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 import de.ifgi.fmt.R;
@@ -30,7 +33,7 @@ public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LAYER_MAP = 1;
 	private static final int MENU_LAYER_SATELLITE = 2;
 
-	private MapView mapView = null;
+	private TapControlledMapView mapView = null;
 	MapController mc;
 	GeoPoint p;
 	private MyLocationOverlay me = null;
@@ -43,8 +46,17 @@ public class MapActivity extends SherlockMapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-		mapView = (MapView) findViewById(R.id.mapview);
-
+		mapView = (TapControlledMapView) findViewById(R.id.mapview);
+		// dismiss balloon upon single tap of MapView (iOS behavior) 
+		mapView.setOnSingleTapListener(new OnSingleTapListener() {		
+			@Override
+			public boolean onSingleTap(MotionEvent e) {
+				itemizedOverlay.hideAllBalloons();
+				return true;
+			}
+		});
+		mapView.setBuiltInZoomControls(true);
+		
 		me = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(me);
 
@@ -153,12 +165,14 @@ public class MapActivity extends SherlockMapActivity {
 			
 			// create new overlay
 			itemizedOverlay = new FlashmobsOverlay(marker, mapView);
+			itemizedOverlay.setShowClose(false);
+			itemizedOverlay.setShowDisclosure(true);
 			// List of Points (FMs) to display
 			for (Flashmob f : flashmobs) {
 				OverlayItem o = new OverlayItem(getPoint(f.getLocation()
 						.getLatitudeE6() / 1e6, f.getLocation()
 						.getLongitudeE6() / 1e6), f.getTitle(),
-						f.getDescription());
+						f.getStreetAddress() + " \u00B7 " + f.getStartDate());
 				itemizedOverlay.addOverlay(o, f);
 			}
 			mapView.getOverlays().add(itemizedOverlay);

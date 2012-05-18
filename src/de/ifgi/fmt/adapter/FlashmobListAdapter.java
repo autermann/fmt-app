@@ -39,7 +39,7 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 				.setText(new DecimalFormat("0.#").format(f
 						.getDistanceInKilometersTo(location)) + " km");
 		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f
-				.getStreetAddress() + " · " + f.getStartDate());
+				.getStreetAddress() + " \u00B7 " + f.getStartDate());
 		return v;
 	}
 
