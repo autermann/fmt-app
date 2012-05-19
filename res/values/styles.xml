@@ -2,14 +2,15 @@
 <resources>
 
     <style name="startActivityButton">
-        <item name="android:layout_width">175dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">80dp</item>
         <item name="android:background">@drawable/start_activity_button_background</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
@@ -20,10 +21,17 @@
         <item name="android:layout_marginRight">12dp</item>
     </style>
 
-    <style name="startActivityButtonText">
+    <style name="startActivityButtonTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="startActivityButtonDescription">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="Button">
