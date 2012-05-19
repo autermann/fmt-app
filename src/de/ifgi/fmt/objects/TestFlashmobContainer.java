@@ -7,12 +7,12 @@ public class TestFlashmobContainer
 	// Fake set of flashmobs
 	public Flashmob[] flashmobs = new Flashmob[3];
 	public String[] flashmobTitles = new String[flashmobs.length];
-	
+
 	public TestFlashmobContainer()
 	{
 		createFakeFlashmobData();
 	}
-	
+
 	/**
 	 * Create fake flashmob data for testing.
 	 */
@@ -25,10 +25,13 @@ public class TestFlashmobContainer
 		double lon2 = 7.634722;
 		double lat3 = 51.958472;
 		double lon3 = 7.611111;
-		
-		GeoPoint location1 = new GeoPoint((int) (lat1 * 1E6), (int) (lon1 * 1E6)); // MŸnster, Domplatz
-		GeoPoint location2 = new GeoPoint((int) (lat2 * 1E6), (int) (lon2 * 1E6)); // MŸnster, Hauptbahnhof
-		GeoPoint location3 = new GeoPoint((int) (lat3 * 1E6), (int) (lon3 * 1E6)); // MŸnster, Zentralfriedhof
+
+		GeoPoint location1 = new GeoPoint((int) (lat1 * 1E6), (int) (lon1 * 1E6)); // MŸnster,
+																					// Domplatz
+		GeoPoint location2 = new GeoPoint((int) (lat2 * 1E6), (int) (lon2 * 1E6)); // MŸnster,
+																					// Hauptbahnhof
+		GeoPoint location3 = new GeoPoint((int) (lat3 * 1E6), (int) (lon3 * 1E6)); // MŸnster,
+																					// Zentralfriedhof
 
 		// Creating pseudo-flashmobs
 		Flashmob danceFlashmob = new Flashmob("001", "Dance Flashmob", location1, true, 66,

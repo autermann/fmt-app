@@ -7,7 +7,8 @@ import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
 
-public class Flashmob {
+public class Flashmob
+{
 	// Attributes
 	private String id;
 	private String title;
@@ -22,11 +23,13 @@ public class Flashmob {
 	private Date endTime;
 
 	// Constructors
-	public Flashmob() {
+	public Flashmob()
+	{
 	}
 
-	public Flashmob(String _id, String _title, GeoPoint _location,
-			boolean _isPublic, int _participants, String _description) {
+	public Flashmob(String _id, String _title, GeoPoint _location, boolean _isPublic,
+			int _participants, String _description)
+	{
 		this.id = _id;
 		this.title = _title;
 		this.location = _location;
@@ -35,28 +38,34 @@ public class Flashmob {
 		this.description = _description;
 	}
 
-	public Date getStartTime() {
+	public Date getStartTime()
+	{
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(Date startTime)
+	{
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public Date getEndTime()
+	{
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(Date endTime)
+	{
 		this.endTime = endTime;
 	}
 
-	public String getStartDate() {
+	public String getStartDate()
+	{
 		DateFormat dateFormat = DateFormat.getDateInstance();
 		return dateFormat.format(startTime);
 	}
 
-	public double getDistanceInKilometersTo(Location location) {
+	public double getDistanceInKilometersTo(Location location)
+	{
 		double latitude = getLocation().getLatitudeE6() / 1E6;
 		double longitude = getLocation().getLongitudeE6() / 1E6;
 		Location l = new Location("");
@@ -68,75 +77,93 @@ public class Flashmob {
 	}
 
 	// Getter & Setter
-	public String getId() {
+	public String getId()
+	{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
-	public String getTitle() {
+	public String getTitle()
+	{
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(String title)
+	{
 		this.title = title;
 	}
 
-	public void setLocation(GeoPoint location) {
+	public void setLocation(GeoPoint location)
+	{
 		this.location = location;
 	}
 
-	public GeoPoint getLocation() {
+	public GeoPoint getLocation()
+	{
 		return location;
 	}
 
-	public boolean isPublic() {
+	public boolean isPublic()
+	{
 		return isPublic;
 	}
 
-	public void setPublic(boolean isPublic) {
+	public void setPublic(boolean isPublic)
+	{
 		this.isPublic = isPublic;
 	}
 
-	public int getParticipants() {
+	public int getParticipants()
+	{
 		return participants;
 	}
 
-	public void setParticipants(int participants) {
+	public void setParticipants(int participants)
+	{
 		this.participants = participants;
 	}
 
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
 
-	public String getCountry() {
+	public String getCountry()
+	{
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(String country)
+	{
 		this.country = country;
 	}
 
-	public String getCity() {
+	public String getCity()
+	{
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(String city)
+	{
 		this.city = city;
 	}
 
-	public String getStreetAddress() {
+	public String getStreetAddress()
+	{
 		return streetAddress;
 	}
 
-	public void setStreetAddress(String streetAddress) {
+	public void setStreetAddress(String streetAddress)
+	{
 		this.streetAddress = streetAddress;
 	}
 

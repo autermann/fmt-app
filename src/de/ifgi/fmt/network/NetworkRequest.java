@@ -16,8 +16,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-
-public class NetworkRequest {
+public class NetworkRequest
+{
 	public static final int METHOD_GET = 1;
 	public static final int METHOD_POST = 2;
 
@@ -31,65 +31,80 @@ public class NetworkRequest {
 	private ArrayList<NameValuePair> parameters;
 	private String result;
 
-	public NetworkRequest(String url, int method,
-			ArrayList<NameValuePair> parameters) {
+	public NetworkRequest(String url, int method, ArrayList<NameValuePair> parameters)
+	{
 		this.url = url;
-		if (method != 0) {
+		if (method != 0)
+		{
 			this.method = method;
 		}
-		if (parameters != null) {
+		if (parameters != null)
+		{
 			this.parameters = parameters;
 		}
 	}
 
-	public NetworkRequest(String url, int method) {
+	public NetworkRequest(String url, int method)
+	{
 		this.url = url;
-		if (method != 0) {
+		if (method != 0)
+		{
 			this.method = method;
 		}
 	}
 
-	public NetworkRequest(String url) {
+	public NetworkRequest(String url)
+	{
 		this.url = url;
 	}
 
-	public int send() {
-		try {
-			if (this.method == METHOD_GET) {
-				InputStream in = new URL(url)
-						.openStream();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(in));
+	public int send()
+	{
+		try
+		{
+			if (this.method == METHOD_GET)
+			{
+				InputStream in = new URL(url).openStream();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 				StringBuilder sb = new StringBuilder();
 				String line = null;
-				while ((line = reader.readLine()) != null) {
+				while ((line = reader.readLine()) != null)
+				{
 					sb.append(line + "\n");
 				}
 				in.close();
-				if (sb.toString().equals("")) {
+				if (sb.toString().equals(""))
+				{
 					return DATA_PROBLEM;
 				}
 				setResult((sb.toString()));
-			} else if (this.method == METHOD_POST) {
+			}
+			else if (this.method == METHOD_POST)
+			{
 				HttpClient httpClient = new DefaultHttpClient();
 				HttpPost postMethod = new HttpPost(url);
 				postMethod.setEntity(new UrlEncodedFormEntity(parameters));
 				HttpResponse response = httpClient.execute(postMethod);
-				String responseBody = EntityUtils
-						.toString(response.getEntity());
+				String responseBody = EntityUtils.toString(response.getEntity());
 				setResult(responseBody);
 			}
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e)
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 			return NETWORK_PROBLEM;
 		}
 		return RESULT_OK;
 	}
 
-	public static String getMessage(int statusCode) {
-		switch (statusCode) {
+	public static String getMessage(int statusCode)
+	{
+		switch (statusCode)
+		{
 		case NETWORK_PROBLEM:
 			return "There is a problem with the network connection.";
 		case DATA_PROBLEM:
@@ -98,35 +113,44 @@ public class NetworkRequest {
 			return null;
 		}
 	}
-	public String getUrl() {
+
+	public String getUrl()
+	{
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public void setUrl(String url)
+	{
 		this.url = url;
 	}
 
-	public int getMethod() {
+	public int getMethod()
+	{
 		return method;
 	}
 
-	public void setMethod(int method) {
+	public void setMethod(int method)
+	{
 		this.method = method;
 	}
 
-	public ArrayList<NameValuePair> getParameters() {
+	public ArrayList<NameValuePair> getParameters()
+	{
 		return parameters;
 	}
 
-	public void setParameters(ArrayList<NameValuePair> parameters) {
+	public void setParameters(ArrayList<NameValuePair> parameters)
+	{
 		this.parameters = parameters;
 	}
-	
-	public String getResult() {
+
+	public String getResult()
+	{
 		return result;
 	}
 
-	public void setResult(String result) {
+	public void setResult(String result)
+	{
 		this.result = result;
 	}
 }

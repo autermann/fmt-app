@@ -29,7 +29,8 @@ import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 
-public class MapActivity extends SherlockMapActivity {
+public class MapActivity extends SherlockMapActivity
+{
 	private static final int MENU_LAYER_MAP = 1;
 	private static final int MENU_LAYER_SATELLITE = 2;
 
@@ -42,21 +43,24 @@ public class MapActivity extends SherlockMapActivity {
 	FlashmobsOverlay itemizedOverlay;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (TapControlledMapView) findViewById(R.id.mapview);
-		// dismiss balloon upon single tap of MapView (iOS behavior) 
-		mapView.setOnSingleTapListener(new OnSingleTapListener() {		
+		// dismiss balloon upon single tap of MapView (iOS behavior)
+		mapView.setOnSingleTapListener(new OnSingleTapListener()
+		{
 			@Override
-			public boolean onSingleTap(MotionEvent e) {
+			public boolean onSingleTap(MotionEvent e)
+			{
 				itemizedOverlay.hideAllBalloons();
 				return true;
 			}
 		});
 		mapView.setBuiltInZoomControls(true);
-		
+
 		me = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(me);
 
@@ -71,18 +75,18 @@ public class MapActivity extends SherlockMapActivity {
 		mc.animateTo(p);
 		mc.setZoom(15);
 		mapView.invalidate();
-		
+
 		marker = getResources().getDrawable(R.drawable.location);
-		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
-				marker.getIntrinsicHeight());
-		new DownloadTask()
-		.execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
+		marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
+		new DownloadTask().execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
 
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);
@@ -100,38 +104,45 @@ public class MapActivity extends SherlockMapActivity {
 		}
 	}
 
-	private GeoPoint getPoint(double lat, double lon) {
+	private GeoPoint getPoint(double lat, double lon)
+	{
 		return (new GeoPoint((int) (lat * 1000000.0), (int) (lon * 1000000.0)));
 	}
 
-	private class FlashmobsOverlay extends BalloonItemizedOverlay<OverlayItem> {
+	private class FlashmobsOverlay extends BalloonItemizedOverlay<OverlayItem>
+	{
 		private ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 		private ArrayList<Flashmob> flashmobs = new ArrayList<Flashmob>();
 
-		public FlashmobsOverlay(Drawable defaultMarker, MapView mapView) {
+		public FlashmobsOverlay(Drawable defaultMarker, MapView mapView)
+		{
 			super(boundCenter(defaultMarker), mapView);
 		}
 
-		public void addOverlay(OverlayItem overlay, Flashmob flashmob) {
-		    items.add(overlay);
-		    flashmobs.add(flashmob);
-		    populate();
+		public void addOverlay(OverlayItem overlay, Flashmob flashmob)
+		{
+			items.add(overlay);
+			flashmobs.add(flashmob);
+			populate();
 		}
-		
+
 		@Override
-		protected OverlayItem createItem(int i) {
+		protected OverlayItem createItem(int i)
+		{
 			return (items.get(i));
 		}
 
 		@Override
-		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		public void draw(Canvas canvas, MapView mapView, boolean shadow)
+		{
 			super.draw(canvas, mapView, shadow);
 
 			boundCenterBottom(marker);
 		}
-		
+
 		@Override
-		protected boolean onBalloonTap(int index, OverlayItem item) {
+		protected boolean onBalloonTap(int index, OverlayItem item)
+		{
 			Intent intent = new Intent(getApplicationContext(), FlashmobDetailsActivity.class);
 			intent.putExtra("id", flashmobs.get(index).getId());
 			startActivity(intent);
@@ -139,40 +150,44 @@ public class MapActivity extends SherlockMapActivity {
 		}
 
 		@Override
-		public int size() {
+		public int size()
+		{
 			return (items.size());
 		}
 
 	}
 
-	class DownloadTask extends AsyncTask<String, Void, String> {
+	class DownloadTask extends AsyncTask<String, Void, String>
+	{
 
 		@Override
-		protected String doInBackground(String... url) {
+		protected String doInBackground(String... url)
+		{
 			NetworkRequest request = new NetworkRequest(url[0]);
 			request.send();
 			return request.getResult();
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(String result)
+		{
 			super.onPostExecute(result);
 			// parsing the result
-			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser
-					.parse(result, getApplicationContext());
+			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result,
+					getApplicationContext());
 			// get access to the store and save the new flashmobs
 			((Store) getApplicationContext()).setFlashmobs(flashmobs);
-			
+
 			// create new overlay
 			itemizedOverlay = new FlashmobsOverlay(marker, mapView);
 			itemizedOverlay.setShowClose(false);
 			itemizedOverlay.setShowDisclosure(true);
 			// List of Points (FMs) to display
-			for (Flashmob f : flashmobs) {
-				OverlayItem o = new OverlayItem(getPoint(f.getLocation()
-						.getLatitudeE6() / 1e6, f.getLocation()
-						.getLongitudeE6() / 1e6), f.getTitle(),
-						f.getStreetAddress() + " \u00B7 " + f.getStartDate());
+			for (Flashmob f : flashmobs)
+			{
+				OverlayItem o = new OverlayItem(getPoint(f.getLocation().getLatitudeE6() / 1e6, f
+						.getLocation().getLongitudeE6() / 1e6), f.getTitle(), f.getStreetAddress()
+						+ " \u00B7 " + f.getStartDate());
 				itemizedOverlay.addOverlay(o, f);
 			}
 			mapView.getOverlays().add(itemizedOverlay);
@@ -180,32 +195,37 @@ public class MapActivity extends SherlockMapActivity {
 		}
 
 	}
-	
+
 	@Override
-	protected boolean isRouteDisplayed() {
+	protected boolean isRouteDisplayed()
+	{
 		return false;
 	}
 
 	// avoid resuming activity on switch from portrait to landscape, etc.
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(Configuration newConfig)
+	{
 		super.onConfigurationChanged(newConfig);
 	}
-	
+
 	@Override
-	public void onResume() {
+	public void onResume()
+	{
 		super.onResume();
 		me.enableCompass();
 	}
 
 	@Override
-	public void onPause() {
+	public void onPause()
+	{
 		super.onPause();
 		me.disableCompass();
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		SubMenu layers = menu.addSubMenu("Layers");
 		layers.add(0, MENU_LAYER_MAP, 0, "Map");
 		layers.add(0, MENU_LAYER_SATELLITE, 0, "Satellite");

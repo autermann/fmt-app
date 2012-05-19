@@ -18,34 +18,43 @@ import com.google.android.maps.GeoPoint;
 
 import de.ifgi.fmt.objects.Flashmob;
 
-public class FlashmobJSONParser {
-	public static ArrayList<Flashmob> parse(String json, Context context) {
+public class FlashmobJSONParser
+{
+	public static ArrayList<Flashmob> parse(String json, Context context)
+	{
 		ArrayList<Flashmob> flashmobList = new ArrayList<Flashmob>();
-		try {
+		try
+		{
 			JSONArray flashmobs = new JSONArray(json);
-			for (int i = 0; i < flashmobs.length(); i++) {
+			for (int i = 0; i < flashmobs.length(); i++)
+			{
 				JSONObject flashmob = flashmobs.getJSONObject(i);
 				Flashmob f = new Flashmob();
 				f.setId(flashmob.getString("id"));
 				f.setTitle(flashmob.getString("title"));
 				f.setPublic(flashmob.getBoolean("public"));
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				try {
+				try
+				{
 					f.setStartTime(df.parse(flashmob.getString("startTime")));
-				} catch (ParseException e1) {
+				}
+				catch (ParseException e1)
+				{
 					e1.printStackTrace();
 				}
 				f.setDescription(flashmob.getString("description"));
 				JSONObject location = flashmob.getJSONObject("location");
-				f.setLocation(new GeoPoint((int) (location
-						.getDouble("latitude") * 1e6), (int) (location
-						.getDouble("longitude") * 1e6)));
+				f.setLocation(new GeoPoint((int) (location.getDouble("latitude") * 1e6),
+						(int) (location.getDouble("longitude") * 1e6)));
 				Geocoder geocoder = new Geocoder(context);
 				List<Address> addresses = null;
-				try {
-					addresses = geocoder.getFromLocation(
-							f.getLocation().getLatitudeE6()/1E6, f.getLocation().getLongitudeE6()/1E6, 1);
-				} catch (IOException e) {
+				try
+				{
+					addresses = geocoder.getFromLocation(f.getLocation().getLatitudeE6() / 1E6, f
+							.getLocation().getLongitudeE6() / 1E6, 1);
+				}
+				catch (IOException e)
+				{
 					e.printStackTrace();
 				}
 				Address address = addresses.get(0);
@@ -54,7 +63,9 @@ public class FlashmobJSONParser {
 				f.setStreetAddress(address.getAddressLine(0));
 				flashmobList.add(f);
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 		}
 		return flashmobList;

@@ -40,7 +40,7 @@ public class FlashmobListActivity extends SherlockListActivity
 				Intent i = new Intent(FlashmobListActivity.this, FlashmobDetailsActivity.class);
 
 				Bundle bundle = new Bundle();
-				
+
 				bundle.putString("id", tfmc.flashmobs[position].getId());
 				bundle.putString("title", tfmc.flashmobs[position].getTitle());
 				bundle.putInt("latitude", tfmc.flashmobs[position].getLocation().getLatitudeE6());
@@ -48,9 +48,9 @@ public class FlashmobListActivity extends SherlockListActivity
 				bundle.putBoolean("isPublic", tfmc.flashmobs[position].isPublic());
 				bundle.putInt("participants", tfmc.flashmobs[position].getParticipants());
 				bundle.putString("description", tfmc.flashmobs[position].getDescription());
-				
+
 				i.putExtras(bundle);
-				
+
 				startActivity(i);
 			}
 		});
