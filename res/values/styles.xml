@@ -47,12 +47,14 @@
     
     <style name="fmDetailsLabel">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/icsBlueLight</item>
+        <item name="android:textColor">@color/the_green</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="fmDetailsTextView">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
     </style>
     
 </resources>

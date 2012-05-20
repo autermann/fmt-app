@@ -26,6 +26,7 @@
 
             <TextView
                 android:id="@+id/fmTitleTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -48,6 +49,7 @@
 
             <TextView
                 android:id="@+id/fmParticipantsTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -70,6 +72,7 @@
 
             <TextView
                 android:id="@+id/fmIsPublicTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -92,6 +95,7 @@
 
             <TextView
                 android:id="@+id/fmLatitudeTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -114,6 +118,7 @@
 
             <TextView
                 android:id="@+id/fmLongitudeTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -136,6 +141,7 @@
 
             <TextView
                 android:id="@+id/fmAddressLineTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -158,6 +164,7 @@
 
             <TextView
                 android:id="@+id/fmDescriptionTV"
+                style="@style/fmDetailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
