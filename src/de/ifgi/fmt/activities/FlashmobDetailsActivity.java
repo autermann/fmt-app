@@ -1,6 +1,7 @@
 package de.ifgi.fmt.activities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -14,16 +15,15 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapController;
-import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import com.readystatesoftware.maps.TapControlledMapView;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
-import de.ifgi.fmt.objects.FlashmobOverlay;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity
 {
@@ -40,8 +40,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private CheckBox participateCheckBox;
 	
 	// Map stuff
-	private TapControlledMapView mapView = null;
-	private MyLocationOverlay locationOverlay = null;
+	private MapView mapView = null;
 	private MapController mapController;
 	private GeoPoint fmLocation;
 
@@ -73,10 +72,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		}
 		
 		// Map stuff
-		mapView = (TapControlledMapView) findViewById(R.id.miniMapView);
-		mapView.setBuiltInZoomControls(true);
-		locationOverlay = new MyLocationOverlay(this, mapView);
-		mapView.getOverlays().add(locationOverlay);
+		mapView = (MapView) findViewById(R.id.miniMapView);
 		mapController = mapView.getController();
 		fmLocation = new GeoPoint((int) latitudeE6, (int) longitudeE6);
 		mapController.animateTo(fmLocation);
@@ -84,7 +80,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		mapView.invalidate();
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.location);
-		FlashmobOverlay fmOverlay = new FlashmobOverlay(drawable);
+		FlashmobItemizedOverlay fmOverlay = new FlashmobItemizedOverlay(drawable);
 		OverlayItem overlayItem = new OverlayItem(fmLocation, "", "");
 		fmOverlay.addOverlay(overlayItem);
 		mapOverlays.add(fmOverlay);
@@ -111,7 +107,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -153,6 +149,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		locality = address.getLocality();
 		country = address.getCountryName();
 		addressLine = address.getAddressLine(0);
+		
+		setTitle(flashmob.getTitle());
 	}
 	
 	public void fillTextViews() throws IOException
@@ -169,7 +167,29 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	@Override
 	protected boolean isRouteDisplayed()
 	{
-		// TODO Auto-generated method stub
 		return false;
+	}
+}
+
+class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
+	
+	public FlashmobItemizedOverlay(Drawable defaultMarker) {
+		  super(boundCenterBottom(defaultMarker));
+	}
+	
+	public void addOverlay(OverlayItem overlay) {
+	    overlays.add(overlay);
+	    populate();
+	}
+	
+	@Override
+	protected OverlayItem createItem(int i) {
+		return overlays.get(i);
+	}
+
+	@Override
+	public int size() {
+		return overlays.size();
 	}
 }
