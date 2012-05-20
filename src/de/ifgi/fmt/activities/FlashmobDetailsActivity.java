@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
@@ -26,7 +27,7 @@ import de.ifgi.fmt.objects.FlashmobOverlay;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity
 {
-	private TextView fmIdTV;
+	// TextViews
 	private TextView fmTitleTV;
 	private TextView fmIsPublicTV;
 	private TextView fmParticipantsTV;
@@ -35,12 +36,14 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private TextView fmLatitudeTv;
 	private TextView fmLongitudeTv;
 	
+	// Checkbox
+	private CheckBox participateCheckBox;
+	
 	// Map stuff
 	private TapControlledMapView mapView = null;
 	private MyLocationOverlay locationOverlay = null;
 	private MapController mapController;
 	private GeoPoint fmLocation;
-
 
 	// Flashmob and it's attributes
 	private Flashmob flashmob;
@@ -50,8 +53,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private String addressLine;
 	private String locality;
 	private String country;
-	
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -71,7 +72,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			e1.printStackTrace();
 		}
 		
-		// Map
+		// Map stuff
 		mapView = (TapControlledMapView) findViewById(R.id.miniMapView);
 		mapView.setBuiltInZoomControls(true);
 		locationOverlay = new MyLocationOverlay(this, mapView);
@@ -89,7 +90,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		mapOverlays.add(fmOverlay);
 		
 		// TextViews
-		fmIdTV = (TextView) findViewById(R.id.fmIdTV);
 		fmTitleTV = (TextView) findViewById(R.id.fmTitleTV);
 		fmIsPublicTV = (TextView) findViewById(R.id.fmIsPublicTV);
 		fmParticipantsTV = (TextView) findViewById(R.id.fmParticipantsTV);
@@ -97,6 +97,9 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		fmAddressLineTv = (TextView) findViewById(R.id.fmAddressLineTV);
 		fmLatitudeTv = (TextView) findViewById(R.id.fmLatitudeTV);
 		fmLongitudeTv = (TextView) findViewById(R.id.fmLongitudeTV);
+		
+		// Checkbox
+		participateCheckBox = (CheckBox) findViewById(R.id.participateCheckBox);
 
 		try
 		{
@@ -154,14 +157,13 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	
 	public void fillTextViews() throws IOException
 	{
-		fmIdTV.setText("ID: " + flashmob.getId());
-		fmTitleTV.setText("Title: " + flashmob.getTitle());
-		fmIsPublicTV.setText("Is public: " + isPublicString);
-		fmParticipantsTV.setText("Participants: ");
-		fmDescriptionTV.setText("Description: " + flashmob.getDescription());
-		fmAddressLineTv.setText("Address: " + addressLine + ", " + locality + ", " + country);
-		fmLatitudeTv.setText("Latitude: " + latitudeE6 / 1E6);
-		fmLongitudeTv.setText("Longitude: " + longitudeE6 / 1E6);
+		fmTitleTV.setText(flashmob.getTitle());
+		fmIsPublicTV.setText(isPublicString);
+//		fmParticipantsTV.setText("");
+		fmDescriptionTV.setText(flashmob.getDescription());
+		fmAddressLineTv.setText(addressLine + ", " + locality + ", " + country);
+		fmLatitudeTv.setText("" + latitudeE6 / 1E6);
+		fmLongitudeTv.setText("" + longitudeE6 / 1E6);
 	}
 
 	@Override

@@ -2,4 +2,16 @@
 <resources>
     <color name="the_green">#A4C639</color>
     
+    <!-- Android 4.0 colors -->
+    <color name="icsBlueLight">#33B5E5</color>
+	<color name="icsBlueDark">#0099CC</color>
+	<color name="icsViolettLight">#AA66CC</color>
+	<color name="icsViolettDark">#9933CC</color>
+	<color name="icsGreenLight">#99CC00</color>
+	<color name="icsGreenDark">#669900</color>
+	<color name="icsOrangeLight">#FFBB33</color>
+	<color name="icsOrangeDark">#FF8800</color>
+	<color name="icsRedLight">#FF4444</color>
+	<color name="icsRedDark">#CC0000</color>
+    
 </resources>
