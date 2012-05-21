@@ -31,8 +31,9 @@ import de.ifgi.fmt.parser.FlashmobJSONParser;
 
 public class MapActivity extends SherlockMapActivity
 {
-	private static final int MENU_LAYER_MAP = 1;
-	private static final int MENU_LAYER_SATELLITE = 2;
+	private static final int MENU_LOCATION = 1;
+	private static final int MENU_LAYER_MAP = 2;
+	private static final int MENU_LAYER_SATELLITE = 3;
 
 	private TapControlledMapView mapView = null;
 	MapController mc;
@@ -231,10 +232,15 @@ public class MapActivity extends SherlockMapActivity
 		layers.add(0, MENU_LAYER_SATELLITE, 0, "Satellite");
 
 		MenuItem layersItem = layers.getItem();
-		layersItem.setIcon(R.drawable.ic_layers);
+		layersItem.setIcon(R.drawable.ic_action_layers);
 		layersItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
 				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
+		
+		menu.add(0, MENU_LOCATION, 0, "Location")
+		.setIcon(R.drawable.ic_action_location)
+		.setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_ALWAYS
+						| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		return super.onCreateOptionsMenu(menu);
 	}
 }

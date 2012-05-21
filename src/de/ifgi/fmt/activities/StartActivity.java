@@ -72,16 +72,11 @@ public class StartActivity extends SherlockActivity {
 				.getDefaultSharedPreferences(getApplicationContext());
 		if (preferences.getInt("user_id", 0) == 0) {
 			menu.add(0, MENU_LOGIN, 1, "Login")
-					.setIcon(R.drawable.ic_login)
-					.setShowAsAction(
-							MenuItem.SHOW_AS_ACTION_ALWAYS
-									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+					.setIcon(R.drawable.ic_action_login)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		} else {
 			menu.add(0, MENU_LOGOUT, 1, "Logout")
-					.setIcon(R.drawable.ic_logout)
-					.setShowAsAction(
-							MenuItem.SHOW_AS_ACTION_ALWAYS
-									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
