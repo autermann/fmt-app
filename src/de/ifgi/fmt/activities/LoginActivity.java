@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -32,8 +31,8 @@ public class LoginActivity extends SherlockActivity
 	public static final int STATUS_NOT_VALID = 12;
 	public static final int STATUS_OK = 11;
 
-	public static final int REDIRECT_TO_ACTIVITY_1 = 1;
-	public static final int REDIRECT_TO_ACTIVITY_2 = 2;
+	public static final int REDIRECT_TO_START_ACTIVITY = 1;
+	public static final int REDIRECT_TO_MY_FLASHMOBS_ACTIVITY = 2;
 	// ...
 
 	private EditText username, password;
@@ -148,12 +147,13 @@ public class LoginActivity extends SherlockActivity
 		Intent intent = null;
 		switch (getIntent().getExtras().getInt("startActivity"))
 		{
-		case REDIRECT_TO_ACTIVITY_1:
+		case REDIRECT_TO_START_ACTIVITY:
 			intent = new Intent(this, StartActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			break;
-		case REDIRECT_TO_ACTIVITY_2:
-			// ...
+		case REDIRECT_TO_MY_FLASHMOBS_ACTIVITY:
+			intent = new Intent(this, StartActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			break;
 		}
 		startActivity(intent);

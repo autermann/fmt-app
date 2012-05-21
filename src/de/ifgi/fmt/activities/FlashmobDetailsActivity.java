@@ -115,7 +115,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		{
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, FlashmobListActivity.class);
+			Intent intent = new Intent(this, StartActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;

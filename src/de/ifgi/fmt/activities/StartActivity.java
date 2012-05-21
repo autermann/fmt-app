@@ -41,7 +41,13 @@ public class StartActivity extends SherlockActivity {
 	}
 
 	public void startMyFlashmobsActivity(View v) {
-		startActivity(new Intent(this, AttributesActivity.class));
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		if (preferences.getInt("user_id", 0) == 0) {
+			startActivity(new Intent(this, LoginActivity.class));
+		} else {
+			startActivity(new Intent(this, MyFlashmobsActivity.class));
+		}
 	}
 
 	@Override
@@ -49,7 +55,7 @@ public class StartActivity extends SherlockActivity {
 		switch (item.getItemId()) {
 		case MENU_LOGIN:
 			startActivity(new Intent(this, LoginActivity.class).putExtra(
-					"startActivity", LoginActivity.REDIRECT_TO_ACTIVITY_1));
+					"startActivity", LoginActivity.REDIRECT_TO_START_ACTIVITY));
 			break;
 		case MENU_LOGOUT:
 			SharedPreferences preferences = PreferenceManager
@@ -73,10 +79,13 @@ public class StartActivity extends SherlockActivity {
 		if (preferences.getInt("user_id", 0) == 0) {
 			menu.add(0, MENU_LOGIN, 1, "Login")
 					.setIcon(R.drawable.ic_action_login)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
+					.setShowAsAction(
+							MenuItem.SHOW_AS_ACTION_WITH_TEXT
+									| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		} else {
-			menu.add(0, MENU_LOGOUT, 1, "Logout")
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
+			menu.add(0, MENU_LOGOUT, 1, "Logout").setShowAsAction(
+					MenuItem.SHOW_AS_ACTION_WITH_TEXT
+							| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
 		return super.onCreateOptionsMenu(menu);
 	}

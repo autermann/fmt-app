@@ -30,32 +30,27 @@
         </activity>
         <activity
             android:name=".activities.MapActivity"
-            android:label="Find by Map"
+            android:label="Map"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.LocationActivity"
-            android:label="Find by Location"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
-        </activity>
-        <activity
-            android:name=".activities.NameActivity"
-            android:label="Find by Name"
+            android:label="Nearby"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.AttributesActivity"
-            android:label="Find by Attributes"
+            android:label="Advanced Search"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
-            android:name=".activities.FlashmobListActivity"
-            android:label="Find by List"
+            android:name=".activities.MyFlashmobsActivity"
+            android:label="My Flashmobs"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.FlashmobDetailsActivity"
-            android:label="Flashmob Details"
+            android:label="Details"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
