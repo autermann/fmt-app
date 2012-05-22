@@ -23,6 +23,16 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.location.Location;
+import android.widget.Toast;
+
+
+
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.network.NetworkRequest;
@@ -39,6 +49,7 @@ public class MapActivity extends SherlockMapActivity
 	MapController mc;
 	GeoPoint p;
 	private MyLocationOverlay me = null;
+	private MyLocationOverlay myLocationOverlay;
 	Drawable marker;
 
 	FlashmobsOverlay itemizedOverlay;
@@ -61,10 +72,17 @@ public class MapActivity extends SherlockMapActivity
 			}
 		});
 		mapView.setBuiltInZoomControls(true);
-
+		
 		me = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(me);
+		
+		// create an overlay that shows our current location
+		myLocationOverlay = new MyCustomLocationOverlay(this, mapView);
 
+		// add this overlay to the MapView and refresh it
+		mapView.getOverlays().add(myLocationOverlay);
+		mapView.postInvalidate();
+		
 		// start position when loading the map
 		mc = mapView.getController();
 		String coordinates[] = { "51.962956", "7.629592" };
@@ -76,12 +94,48 @@ public class MapActivity extends SherlockMapActivity
 		mc.animateTo(p);
 		mc.setZoom(15);
 		mapView.invalidate();
+		
+//        final Button button = (Button) findViewById(R.id.button_id);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                mapView.zoomToMyLocation();
+//            }
 
+            
 		marker = getResources().getDrawable(R.drawable.location);
 		marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
 		new DownloadTask().execute("http://giv-webteam.uni-muenster.de/matthias/flashmobs");
 
 	}
+	
+	 @Override
+     protected void onResume() {
+             super.onResume();
+             // when our activity resumes, we want to register for location updates
+             myLocationOverlay.enableMyLocation();
+     }
+
+     @Override
+     protected void onPause() {
+             super.onPause();
+             // when our activity pauses, we want to remove listening for location updates
+             myLocationOverlay.disableMyLocation();
+     }
+     
+     /**
+      * This method zooms to the user's location with a zoom level of 10.
+      */
+     private void zoomToMyLocation() {
+             GeoPoint myLocationGeoPoint = myLocationOverlay.getMyLocation();
+             if(myLocationGeoPoint != null) {
+                     mapView.getController().animateTo(myLocationGeoPoint);
+                     mapView.getController().setZoom(10);
+             }
+             else {
+                     Toast.makeText(this, "Cannot determine location", Toast.LENGTH_SHORT).show();
+             }
+     }
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -100,6 +154,10 @@ public class MapActivity extends SherlockMapActivity
 		case MENU_LAYER_SATELLITE:
 			mapView.setSatellite(true);
 			return true;
+		case MENU_LOCATION:
+			zoomToMyLocation();
+			
+			
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -157,7 +215,60 @@ public class MapActivity extends SherlockMapActivity
 		}
 
 	}
+	
+	
+	public class MyCustomLocationOverlay extends MyLocationOverlay {
+	    private Context mContext;
+	    private float   mOrientation;
 
+	    public MyCustomLocationOverlay(Context context, MapView mapView) {
+	        super(context, mapView);
+	        mContext = context;
+	    }
+
+	    @Override 
+	    protected void drawMyLocation(Canvas canvas, MapView mapView, Location lastFix, GeoPoint myLocation, long when) {
+	        // translate the GeoPoint to screen pixels
+	        Point screenPts = mapView.getProjection().toPixels(myLocation, null);
+
+	        // create a rotated copy of the marker
+	        Bitmap arrowBitmap = BitmapFactory.decodeResource( mContext.getResources(), R.drawable.arrow_red);
+	        Matrix matrix = new Matrix();
+	        matrix.postRotate(mOrientation);
+
+
+	        
+	        Bitmap rotatedBmp = Bitmap.createBitmap(
+	            arrowBitmap, 
+	            0, 0, 
+	            arrowBitmap.getWidth(), 
+	            arrowBitmap.getHeight(), 
+	            matrix, 
+	            true
+	        );
+	        // add the rotated marker to the canvas
+	        canvas.drawBitmap(
+	            rotatedBmp, 
+	            screenPts.x - (rotatedBmp.getWidth()  / 2), 
+	            screenPts.y - (rotatedBmp.getHeight() / 2), 
+	            null
+	        );
+	        
+	        
+
+	    }
+
+	    public void setOrientation(float newOrientation) {
+	         mOrientation = newOrientation;
+	    }
+	}
+
+	
+	
+	
+	
+	
+	
 	class DownloadTask extends AsyncTask<String, Void, String>
 	{
 
@@ -210,19 +321,7 @@ public class MapActivity extends SherlockMapActivity
 		super.onConfigurationChanged(newConfig);
 	}
 
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-		me.enableCompass();
-	}
 
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-		me.disableCompass();
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -235,12 +334,12 @@ public class MapActivity extends SherlockMapActivity
 		layersItem.setIcon(R.drawable.ic_action_layers);
 		layersItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
 				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		
+
 		menu.add(0, MENU_LOCATION, 0, "Location")
 		.setIcon(R.drawable.ic_action_location)
 		.setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_ALWAYS
-						| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		return super.onCreateOptionsMenu(menu);
 	}
 }
