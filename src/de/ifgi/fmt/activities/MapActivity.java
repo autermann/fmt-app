@@ -94,13 +94,6 @@ public class MapActivity extends SherlockMapActivity
 		mc.animateTo(p);
 		mc.setZoom(15);
 		mapView.invalidate();
-		
-//        final Button button = (Button) findViewById(R.id.button_id);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                mapView.zoomToMyLocation();
-//            }
-
             
 		marker = getResources().getDrawable(R.drawable.location);
 		marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
@@ -129,7 +122,6 @@ public class MapActivity extends SherlockMapActivity
              GeoPoint myLocationGeoPoint = myLocationOverlay.getMyLocation();
              if(myLocationGeoPoint != null) {
                      mapView.getController().animateTo(myLocationGeoPoint);
-                     mapView.getController().setZoom(10);
              }
              else {
                      Toast.makeText(this, "Cannot determine location", Toast.LENGTH_SHORT).show();
@@ -156,6 +148,7 @@ public class MapActivity extends SherlockMapActivity
 			return true;
 		case MENU_LOCATION:
 			zoomToMyLocation();
+			return true;
 			
 			
 		default:
@@ -236,8 +229,6 @@ public class MapActivity extends SherlockMapActivity
 	        Matrix matrix = new Matrix();
 	        matrix.postRotate(mOrientation);
 
-
-	        
 	        Bitmap rotatedBmp = Bitmap.createBitmap(
 	            arrowBitmap, 
 	            0, 0, 
@@ -253,21 +244,12 @@ public class MapActivity extends SherlockMapActivity
 	            screenPts.y - (rotatedBmp.getHeight() / 2), 
 	            null
 	        );
-	        
-	        
-
 	    }
 
 	    public void setOrientation(float newOrientation) {
 	         mOrientation = newOrientation;
 	    }
 	}
-
-	
-	
-	
-	
-	
 	
 	class DownloadTask extends AsyncTask<String, Void, String>
 	{
@@ -320,8 +302,6 @@ public class MapActivity extends SherlockMapActivity
 	{
 		super.onConfigurationChanged(newConfig);
 	}
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
