@@ -25,7 +25,8 @@ public class FlashmobJSONParser
 		ArrayList<Flashmob> flashmobList = new ArrayList<Flashmob>();
 		try
 		{
-			JSONArray flashmobs = new JSONArray(json);
+			JSONObject root = new JSONObject(json);
+			JSONArray flashmobs = root.getJSONArray("flashmobs");
 			for (int i = 0; i < flashmobs.length(); i++)
 			{
 				JSONObject flashmob = flashmobs.getJSONObject(i);
@@ -33,7 +34,7 @@ public class FlashmobJSONParser
 				f.setId(flashmob.getString("id"));
 				f.setTitle(flashmob.getString("title"));
 				f.setPublic(flashmob.getBoolean("public"));
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				try
 				{
 					f.setStartTime(df.parse(flashmob.getString("startTime")));
@@ -43,9 +44,9 @@ public class FlashmobJSONParser
 					e1.printStackTrace();
 				}
 				f.setDescription(flashmob.getString("description"));
-				JSONObject location = flashmob.getJSONObject("location");
-				f.setLocation(new GeoPoint((int) (location.getDouble("latitude") * 1e6),
-						(int) (location.getDouble("longitude") * 1e6)));
+				JSONArray coordinates = flashmob.getJSONObject("location").getJSONArray("coordinates");
+				f.setLocation(new GeoPoint((int) (coordinates.getDouble(0) * 1e6),
+						(int) (coordinates.getDouble(1) * 1e6)));
 				Geocoder geocoder = new Geocoder(context);
 				List<Address> addresses = null;
 				try
