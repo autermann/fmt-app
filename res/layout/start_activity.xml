@@ -76,11 +76,11 @@
 
                 <TextView
                     style="@style/startActivityButtonTitle"
-                    android:text="Advanced Search" />
+                    android:text="Attributes" />
 
                 <TextView
                     style="@style/startActivityButtonDescription"
-                    android:text="Find flashmobs by specifying some attributes" />
+                    android:text="Find flashmobs by specifying attributes, e.g. time or public" />
             </LinearLayout>
         </LinearLayout>
 
