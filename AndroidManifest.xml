@@ -40,7 +40,7 @@
         </activity>
         <activity
             android:name=".activities.AttributesActivity"
-            android:label="Advanced Search"
+            android:label="Attributes"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
