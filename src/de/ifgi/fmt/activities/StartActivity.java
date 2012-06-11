@@ -2,6 +2,7 @@ package de.ifgi.fmt.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -13,8 +14,9 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 
 public class StartActivity extends SherlockActivity {
-	private static final int MENU_LOGIN = 1;
-	private static final int MENU_LOGOUT = 2;
+	private static final int MENU_WEBSITE = 1;
+	private static final int MENU_LOGIN = 2;
+	private static final int MENU_LOGOUT = 3;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class StartActivity extends SherlockActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case MENU_WEBSITE:
+			startActivity(new Intent(Intent.ACTION_VIEW,
+					Uri.parse("http://www.google.com")));
+			break;
 		case MENU_LOGIN:
 			startActivity(new Intent(this, LoginActivity.class).putExtra(
 					"startActivity", LoginActivity.REDIRECT_TO_START_ACTIVITY));
@@ -76,14 +82,19 @@ public class StartActivity extends SherlockActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
+		menu.add(0, MENU_WEBSITE, 0, "Website")
+				.setIcon(R.drawable.ic_action_website)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_WITH_TEXT
+								| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		if (preferences.getInt("user_id", 0) == 0) {
-			menu.add(0, MENU_LOGIN, 1, "Login")
+			menu.add(0, MENU_LOGIN, 0, "Login")
 					.setIcon(R.drawable.ic_action_login)
 					.setShowAsAction(
 							MenuItem.SHOW_AS_ACTION_WITH_TEXT
 									| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		} else {
-			menu.add(0, MENU_LOGOUT, 1, "Logout").setShowAsAction(
+			menu.add(0, MENU_LOGOUT, 0, "Logout").setShowAsAction(
 					MenuItem.SHOW_AS_ACTION_WITH_TEXT
 							| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		}
