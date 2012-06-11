@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background">#DDD</color>
     <color name="the_green">#A4C639</color>
     
     <!-- Android 4.0 colors -->
