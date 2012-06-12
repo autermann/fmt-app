@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#eeeeee"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp" >
+    android:background="@color/background"
+    android:stretchColumns="1" >
 
+    <TableRow
+        android:id="@+id/start_date_row"
+        style="@style/attributesRow"
+        android:clickable="true" >
 
-</LinearLayout>
+        <TextView
+            style="@style/attributesLabel"
+            android:text="Start date" />
+
+        <TextView
+            android:id="@+id/start_date"
+            style="@style/attributesValue"
+            android:text="Aug 12, 2012" />
+
+        <ImageView
+            android:src="@drawable/ic_expand" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/end_date_row"
+        style="@style/attributesRow" >
+
+        <TextView
+            style="@style/attributesLabel"
+            android:text="End date" />
+
+        <TextView
+            android:id="@+id/end_date"
+            style="@style/attributesValue"
+            android:text="Aug 12, 2012" />
+
+        <ImageView
+            android:src="@drawable/ic_expand" />
+    </TableRow>
+
+    <TableRow style="@style/attributesRow" >
+
+        <TextView
+            style="@style/attributesLabel"
+            android:text="Only public" />
+
+        <CheckBox
+            android:id="@+id/only_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </TableRow>
+
+</TableLayout>
