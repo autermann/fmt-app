@@ -9,7 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.widget.CheckBox;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
@@ -35,10 +36,10 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private TextView fmAddressLineTv;
 	private TextView fmLatitudeTv;
 	private TextView fmLongitudeTv;
-	
-	// Checkbox
-	private CheckBox participateCheckBox;
-	
+
+	// Button
+	private Button participateButton;
+
 	// Map stuff
 	private MapView mapView = null;
 	private MapController mapController;
@@ -52,7 +53,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private String addressLine;
 	private String locality;
 	private String country;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -60,7 +61,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		setContentView(R.layout.flashmob_details_activity);
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		try
 		{
 			getFlashmobData();
@@ -70,7 +71,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		// Map stuff
 		mapView = (MapView) findViewById(R.id.miniMapView);
 		mapController = mapView.getController();
@@ -84,7 +85,19 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		OverlayItem overlayItem = new OverlayItem(fmLocation, "", "");
 		fmOverlay.addOverlay(overlayItem);
 		mapOverlays.add(fmOverlay);
-		
+
+		// Button
+		participateButton = (Button) findViewById(R.id.participateButton);
+		participateButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				// TODO: ParticipateActivity šffnen
+				startParticipateActivity(v);
+			}
+		});
+
 		// TextViews
 		fmTitleTV = (TextView) findViewById(R.id.fmTitleTV);
 		fmIsPublicTV = (TextView) findViewById(R.id.fmIsPublicTV);
@@ -93,9 +106,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		fmAddressLineTv = (TextView) findViewById(R.id.fmAddressLineTV);
 		fmLatitudeTv = (TextView) findViewById(R.id.fmLatitudeTV);
 		fmLongitudeTv = (TextView) findViewById(R.id.fmLongitudeTV);
-		
-		// Checkbox
-		participateCheckBox = (CheckBox) findViewById(R.id.participateCheckBox);
 
 		try
 		{
@@ -107,7 +117,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -129,10 +139,10 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		// Identify the flashmob
 		Bundle extras = getIntent().getExtras();
 		String id = extras.getString("id");
-		
+
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(id);
-		
+
 		// Get the flashmob data
 		latitudeE6 = flashmob.getLocation().getLatitudeE6();
 		longitudeE6 = flashmob.getLocation().getLongitudeE6();
@@ -141,7 +151,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		{
 			isPublicString = "No";
 		}
-		
+
 		// Convert coordinates into an address
 		Geocoder geocoder = new Geocoder(getApplicationContext());
 		List<Address> list = geocoder.getFromLocation(latitudeE6 / 1E6, longitudeE6 / 1E6, 1);
@@ -149,15 +159,15 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		locality = address.getLocality();
 		country = address.getCountryName();
 		addressLine = address.getAddressLine(0);
-		
+
 		setTitle(flashmob.getTitle());
 	}
-	
+
 	public void fillTextViews() throws IOException
 	{
 		fmTitleTV.setText(flashmob.getTitle());
 		fmIsPublicTV.setText(isPublicString);
-//		fmParticipantsTV.setText("");
+		// fmParticipantsTV.setText("");
 		fmDescriptionTV.setText(flashmob.getDescription());
 		fmAddressLineTv.setText(addressLine + ", " + locality + ", " + country);
 		fmLatitudeTv.setText("" + latitudeE6 / 1E6);
@@ -169,27 +179,37 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	{
 		return false;
 	}
+
+	public void startParticipateActivity(View v)
+	{
+		startActivity(new Intent(this, ParticipateActivity.class));
+	}
 }
 
-class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem>
+{
 	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
-	
-	public FlashmobItemizedOverlay(Drawable defaultMarker) {
-		  super(boundCenterBottom(defaultMarker));
+
+	public FlashmobItemizedOverlay(Drawable defaultMarker)
+	{
+		super(boundCenterBottom(defaultMarker));
 	}
-	
-	public void addOverlay(OverlayItem overlay) {
-	    overlays.add(overlay);
-	    populate();
+
+	public void addOverlay(OverlayItem overlay)
+	{
+		overlays.add(overlay);
+		populate();
 	}
-	
+
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected OverlayItem createItem(int i)
+	{
 		return overlays.get(i);
 	}
 
 	@Override
-	public int size() {
+	public int size()
+	{
 		return overlays.size();
 	}
 }

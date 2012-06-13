@@ -171,27 +171,10 @@
                 android:text="" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmParticipateLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Participate: " />
-
-            <CheckBox android:id="@+id/participateCheckBox" />
-        </TableRow>
-
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="250dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="8dp"
             android:background="@android:color/darker_gray"
             android:padding="2dp" >
 
@@ -202,6 +185,22 @@
                 android:apiKey="08JlLseVZKSCDKH5r9vqDzchXreLQQ3JhDYFe-Q"
                 android:clickable="false" />
         </FrameLayout>
+        
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp" >
+            
+            <Button 
+                android:id="@+id/participateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Participate"/>
+            
+        </TableRow>
+            
     </LinearLayout>
 
 </ScrollView>

@@ -44,7 +44,8 @@ public class FlashmobJSONParser
 					e1.printStackTrace();
 				}
 				f.setDescription(flashmob.getString("description"));
-				JSONArray coordinates = flashmob.getJSONObject("location").getJSONArray("coordinates");
+				JSONArray coordinates = flashmob.getJSONObject("location").getJSONArray(
+						"coordinates");
 				f.setLocation(new GeoPoint((int) (coordinates.getDouble(0) * 1e6),
 						(int) (coordinates.getDouble(1) * 1e6)));
 				Geocoder geocoder = new Geocoder(context);

@@ -63,6 +63,12 @@
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
             android:label="Results">
         </activity>
+        <activity 
+            android:name=".activities.ParticipateActivity"
+            android:label="Participation"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
+        </activity>
+        
     </application>
 
 </manifest>
