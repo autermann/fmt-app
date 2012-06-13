@@ -1,5 +1,7 @@
 package de.ifgi.fmt.activities;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,31 +86,38 @@ public class AttributesActivity extends SherlockActivity {
 								.show();
 					}
 				});
-		
-		findViewById(R.id.submit).setOnClickListener(
-				new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						DateFormat dateFormat = DateFormat
-								.getDateInstance(DateFormat.MEDIUM);
-						
-						Intent intent = new Intent(AttributesActivity.this, AttributesResultsActivity.class);
-						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
-						url += "?";
-//						url += "from=" + dateFormat.format(startDate) + "&" + "to=" + dateFormat.format(endDate);
-						if (!showPrivate.isChecked()) {
-							url += "&" + "show=" + "PUBLIC";
-						}
-						if (search.getText().toString().compareTo("") != 0) {
-							url += "&" + "search=" + search.getText();
-						}
-						
-						intent.putExtra("URL", url);
-						Log.i("wichtig", "URL: "+ intent.getExtras().getString("URL"));
-						startActivity(intent);
-					}
-				});
+		findViewById(R.id.submit).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				SimpleDateFormat df = new SimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+				Intent intent = new Intent(AttributesActivity.this,
+						AttributesResultsActivity.class);
+				String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
+				url += "?";
+				try {
+					url += "from="
+							+ URLEncoder.encode(df.format(startDate), "UTF-8")
+							+ "&" + "to="
+							+ URLEncoder.encode(df.format(endDate), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				if (!showPrivate.isChecked()) {
+					url += "&" + "show=" + "PUBLIC";
+				}
+				if (search.getText().toString().compareTo("") != 0) {
+					url += "&" + "search=" + search.getText();
+				}
+
+				intent.putExtra("URL", url);
+				Log.i("wichtig", "URL: " + intent.getExtras().getString("URL"));
+				startActivity(intent);
+			}
+		});
 	}
 
 	private void updateStartDate() {
