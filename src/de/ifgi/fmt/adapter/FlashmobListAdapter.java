@@ -38,8 +38,12 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob>
 		}
 		Flashmob f = flashmobs.get(position);
 		((TextView) v.findViewById(R.id.flashmob_title)).setText(f.getTitle());
-		((TextView) v.findViewById(R.id.flashmob_distance)).setText(new DecimalFormat("0.#")
+		if (location != null) {
+			((TextView) v.findViewById(R.id.flashmob_distance)).setText(new DecimalFormat("0.#")
 				.format(f.getDistanceInKilometersTo(location)) + " km");
+		} else {
+			((TextView) v.findViewById(R.id.flashmob_distance)).setVisibility(View.GONE);
+		}
 		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f.getStreetAddress()
 				+ " \u00B7 " + f.getStartDate());
 		return v;

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -29,7 +30,7 @@ public class AttributesActivity extends SherlockActivity {
 	int endYear;
 	int endMonth;
 	int endDay;
-	static final int DATE_DIALOG_ID = 0;
+	CheckBox showPrivate;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,10 @@ public class AttributesActivity extends SherlockActivity {
 		startDay = c.get(Calendar.DAY_OF_MONTH);
 
 		endYear = c.get(Calendar.YEAR);
-		endMonth = c.get(Calendar.MONTH);
-		endDay = c.get(Calendar.DAY_OF_MONTH);
+		endMonth = 11;
+		endDay = 31;
+
+		showPrivate = (CheckBox) findViewById(R.id.show_private);
 
 		// display the current date (this method is below)
 		updateStartDate();
@@ -74,6 +77,17 @@ public class AttributesActivity extends SherlockActivity {
 						new DatePickerDialog(AttributesActivity.this,
 								endDateSetListener, endYear, endMonth, endDay)
 								.show();
+					}
+				});
+		
+		findViewById(R.id.submit).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(AttributesActivity.this, AttributesResultsActivity.class);
+						intent.putExtra("URL", "http://giv-flashmob.uni-muenster.de/fmt/flashmobs");
+						startActivity(intent);
 					}
 				});
 	}

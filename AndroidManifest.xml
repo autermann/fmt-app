@@ -58,6 +58,11 @@
             android:label="Login"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
+        <activity
+            android:name=".activities.AttributesResultsActivity"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
+            android:label="Results">
+        </activity>
     </application>
 
 </manifest>

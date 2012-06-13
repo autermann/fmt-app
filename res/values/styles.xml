@@ -58,19 +58,21 @@
     </style>
 
     <style name="attributesLabel">
-        <item name="android:paddingRight">48dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:textColor">#999</item>
         <item name="android:gravity">right</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="attributesValue">
         <item name="android:layout_weight">1</item>
+        <item name="android:textSize">16sp</item>
     </style>
     
     <style name="attributesRow">
         <item name="android:gravity">center_vertical</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
+        <item name="android:minHeight">56dp</item>
         <item name="android:background">@drawable/table_row_background</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>

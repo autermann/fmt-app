@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/background"
-    android:stretchColumns="1" >
+    android:orientation="vertical" >
 
-    <TableRow
-        android:id="@+id/start_date_row"
-        style="@style/attributesRow"
-        android:clickable="true" >
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
 
-        <TextView
-            style="@style/attributesLabel"
-            android:text="Start date" />
+        <TableRow style="@style/attributesRow" >
 
-        <TextView
-            android:id="@+id/start_date"
-            style="@style/attributesValue"
-            android:text="Aug 12, 2012" />
+            <TextView
+                style="@style/attributesLabel"
+                android:text="Search" />
 
-        <ImageView
-            android:src="@drawable/ic_expand" />
-    </TableRow>
+            <EditText
+                android:id="@+id/search"
+                style="@style/attributesValue" />
+        </TableRow>
 
-    <TableRow
-        android:id="@+id/end_date_row"
-        style="@style/attributesRow" >
+        <TableRow
+            android:id="@+id/start_date_row"
+            style="@style/attributesRow"
+            android:clickable="true"
+            android:focusable="true" >
 
-        <TextView
-            style="@style/attributesLabel"
-            android:text="End date" />
+            <TextView
+                style="@style/attributesLabel"
+                android:text="Start date" />
 
-        <TextView
-            android:id="@+id/end_date"
-            style="@style/attributesValue"
-            android:text="Aug 12, 2012" />
+            <TextView
+                android:id="@+id/start_date"
+                style="@style/attributesValue"
+                android:text="Aug 12, 2012" />
 
-        <ImageView
-            android:src="@drawable/ic_expand" />
-    </TableRow>
+            <ImageView android:src="@drawable/ic_expand" />
+        </TableRow>
 
-    <TableRow style="@style/attributesRow" >
+        <TableRow
+            android:id="@+id/end_date_row"
+            style="@style/attributesRow"
+            android:clickable="true"
+            android:focusable="true" >
 
-        <TextView
-            style="@style/attributesLabel"
-            android:text="Only public" />
+            <TextView
+                style="@style/attributesLabel"
+                android:text="End date" />
 
-        <CheckBox
-            android:id="@+id/only_public"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </TableRow>
+            <TextView
+                android:id="@+id/end_date"
+                style="@style/attributesValue"
+                android:text="Aug 12, 2012" />
 
-</TableLayout>
+            <ImageView android:src="@drawable/ic_expand" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/show_private_row"
+            style="@style/attributesRow" >
+
+            <TextView
+                style="@style/attributesLabel"
+                android:text="Show private" />
+
+            <CheckBox
+                android:id="@+id/show_private"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/submit"
+        style="@style/Button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Submit" />
+
+</LinearLayout>
