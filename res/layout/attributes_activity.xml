@@ -29,7 +29,7 @@
 
             <TextView
                 style="@style/attributesLabel"
-                android:text="Start date" />
+                android:text="From" />
 
             <TextView
                 android:id="@+id/start_date"
@@ -47,7 +47,7 @@
 
             <TextView
                 style="@style/attributesLabel"
-                android:text="End date" />
+                android:text="To" />
 
             <TextView
                 android:id="@+id/end_date"

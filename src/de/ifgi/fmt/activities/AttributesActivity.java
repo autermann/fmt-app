@@ -10,6 +10,7 @@ import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -22,11 +23,14 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 
 public class AttributesActivity extends SherlockActivity {
-	TextView startDate;
+	TextView search;
+	Date startDate;
+	TextView startDateTextView;
 	int startYear;
 	int startMonth;
 	int startDay;
-	TextView endDate;
+	Date endDate;
+	TextView endDateTextView;
 	int endYear;
 	int endMonth;
 	int endDay;
@@ -39,8 +43,8 @@ public class AttributesActivity extends SherlockActivity {
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		startDate = (TextView) findViewById(R.id.start_date);
-		endDate = (TextView) findViewById(R.id.end_date);
+		startDateTextView = (TextView) findViewById(R.id.start_date);
+		endDateTextView = (TextView) findViewById(R.id.end_date);
 
 		// get the current date
 		final Calendar c = Calendar.getInstance();
@@ -52,6 +56,7 @@ public class AttributesActivity extends SherlockActivity {
 		endMonth = 11;
 		endDay = 31;
 
+		search = (TextView) findViewById(R.id.search);
 		showPrivate = (CheckBox) findViewById(R.id.show_private);
 
 		// display the current date (this method is below)
@@ -85,8 +90,22 @@ public class AttributesActivity extends SherlockActivity {
 
 					@Override
 					public void onClick(View v) {
+						DateFormat dateFormat = DateFormat
+								.getDateInstance(DateFormat.MEDIUM);
+						
 						Intent intent = new Intent(AttributesActivity.this, AttributesResultsActivity.class);
-						intent.putExtra("URL", "http://giv-flashmob.uni-muenster.de/fmt/flashmobs");
+						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
+						url += "?";
+//						url += "from=" + dateFormat.format(startDate) + "&" + "to=" + dateFormat.format(endDate);
+						if (!showPrivate.isChecked()) {
+							url += "&" + "show=" + "PUBLIC";
+						}
+						if (search.getText().toString().compareTo("") != 0) {
+							url += "&" + "search=" + search.getText();
+						}
+						
+						intent.putExtra("URL", url);
+						Log.i("wichtig", "URL: "+ intent.getExtras().getString("URL"));
 						startActivity(intent);
 					}
 				});
@@ -94,11 +113,11 @@ public class AttributesActivity extends SherlockActivity {
 
 	private void updateStartDate() {
 		try {
-			Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+			startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
 					.parse(startYear + "-" + (startMonth + 1) + "-" + startDay);
 			DateFormat dateFormat = DateFormat
 					.getDateInstance(DateFormat.MEDIUM);
-			startDate.setText(dateFormat.format(date));
+			startDateTextView.setText(dateFormat.format(startDate));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -106,11 +125,11 @@ public class AttributesActivity extends SherlockActivity {
 
 	private void updateEndDate() {
 		try {
-			Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+			endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
 					.parse(endYear + "-" + (endMonth + 1) + "-" + endDay);
 			DateFormat dateFormat = DateFormat
 					.getDateInstance(DateFormat.MEDIUM);
-			endDate.setText(dateFormat.format(date));
+			endDateTextView.setText(dateFormat.format(endDate));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
