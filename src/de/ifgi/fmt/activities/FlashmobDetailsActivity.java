@@ -38,7 +38,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	private TextView fmLongitudeTv;
 
 	// Button
-	private Button participateButton;
+	private Button openParticipateActivityButton;
 
 	// Map stuff
 	private MapView mapView = null;
@@ -87,14 +87,17 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		mapOverlays.add(fmOverlay);
 
 		// Button
-		participateButton = (Button) findViewById(R.id.participateButton);
-		participateButton.setOnClickListener(new View.OnClickListener()
+		openParticipateActivityButton = (Button) findViewById(R.id.openParticipateActivityButton);
+		openParticipateActivityButton.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				// TODO: ParticipateActivity öffnen
 				startParticipateActivity(v);
+
+				// TODO: Buttontext dynamisch ändern (anhängig von Participation)
+				// TODO: Dafür shared resources nutzen
+
 			}
 		});
 
@@ -182,7 +185,12 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 	public void startParticipateActivity(View v)
 	{
-		startActivity(new Intent(this, ParticipateActivity.class));
+		Bundle extras = getIntent().getExtras();
+		String id = extras.getString("id");
+		
+		Intent intent = new Intent(this, ParticipateActivity.class);
+		intent.putExtra("id", id);
+		startActivity(intent);
 	}
 }
 
