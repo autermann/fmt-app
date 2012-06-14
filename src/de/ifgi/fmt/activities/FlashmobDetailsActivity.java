@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +29,8 @@ import de.ifgi.fmt.objects.Flashmob;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity
 {
+	// TODO: Change button text depending on user's participation status
+	
 	// TextViews
 	private TextView fmTitleTV;
 	private TextView fmIsPublicTV;
@@ -40,6 +43,11 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	// Button
 	private Button openParticipateActivityButton;
 
+	// SharedPreferences
+	private SharedPreferences prefs;
+	
+	private String PARTICIPATION_PREF_KEY;
+
 	// Map stuff
 	private MapView mapView = null;
 	private MapController mapController;
@@ -47,6 +55,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 	// Flashmob and it's attributes
 	private Flashmob flashmob;
+	private String id;
 	private double latitudeE6;
 	private double longitudeE6;
 	private String isPublicString;
@@ -62,6 +71,15 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
+		// Initialize id
+		id = getFlashmobID();
+		
+		// This is a unique key string for saving the user's participation status
+		PARTICIPATION_PREF_KEY = id + "Pref";
+		
+		// Initialize SharedPreferences
+		prefs = SettingsActivity.getSettings(this);
+		
 		try
 		{
 			getFlashmobData();
@@ -71,6 +89,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		setTitle(flashmob.getTitle());
 
 		// Map stuff
 		mapView = (MapView) findViewById(R.id.miniMapView);
@@ -94,10 +114,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			public void onClick(View v)
 			{
 				startParticipateActivity(v);
-
-				// TODO: Buttontext dynamisch ändern (anhängig von Participation)
-				// TODO: Dafür shared resources nutzen
-
 			}
 		});
 
@@ -139,10 +155,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 	private void getFlashmobData() throws IOException
 	{
-		// Identify the flashmob
-		Bundle extras = getIntent().getExtras();
-		String id = extras.getString("id");
-
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(id);
 
@@ -162,10 +174,13 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		locality = address.getLocality();
 		country = address.getCountryName();
 		addressLine = address.getAddressLine(0);
-
-		setTitle(flashmob.getTitle());
 	}
 
+	/**
+	 * Fills the TextViews with the flashmob's data.
+	 * 
+	 * @throws IOException
+	 */
 	public void fillTextViews() throws IOException
 	{
 		fmTitleTV.setText(flashmob.getTitle());
@@ -183,11 +198,24 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 		return false;
 	}
 
-	public void startParticipateActivity(View v)
+	/**
+	 * Gets the flashmob's id from the intent that is starting this Activity.
+	 * 
+	 * @return
+	 */
+	public String getFlashmobID()
 	{
+		// Identify the flashmob
 		Bundle extras = getIntent().getExtras();
-		String id = extras.getString("id");
 		
+		// Get the ID
+		String theID = extras.getString("id");
+		
+		return theID;
+	}
+	
+	private void startParticipateActivity(View v)
+	{
 		Intent intent = new Intent(this, ParticipateActivity.class);
 		intent.putExtra("id", id);
 		startActivity(intent);
