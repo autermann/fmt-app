@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -24,9 +25,10 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 
-public class AttributesActivity extends SherlockActivity
-{
-	TextView search;
+public class AttributesActivity extends SherlockActivity {
+	EditText search;
+	EditText minParticipants;
+	EditText maxParticipants;
 	Date startDate;
 	TextView startDateTextView;
 	int startYear;
@@ -40,8 +42,7 @@ public class AttributesActivity extends SherlockActivity
 	CheckBox showPrivate;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.attributes_activity);
 
@@ -60,62 +61,67 @@ public class AttributesActivity extends SherlockActivity
 		endMonth = 11;
 		endDay = 31;
 
-		search = (TextView) findViewById(R.id.search);
+		search = (EditText) findViewById(R.id.search);
+		minParticipants = (EditText) findViewById(R.id.min_participants);
+		maxParticipants = (EditText) findViewById(R.id.max_participants);
 		showPrivate = (CheckBox) findViewById(R.id.show_private);
 
 		// display the current date (this method is below)
 		updateStartDate();
 		updateEndDate();
 
-		findViewById(R.id.start_date_row).setOnClickListener(new OnClickListener()
-		{
+		findViewById(R.id.start_date_row).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						new DatePickerDialog(AttributesActivity.this,
+								startDateSetListener, startYear, startMonth,
+								startDay).show();
+					}
+				});
+
+		findViewById(R.id.end_date_row).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						new DatePickerDialog(AttributesActivity.this,
+								endDateSetListener, endYear, endMonth, endDay)
+								.show();
+					}
+				});
+
+		findViewById(R.id.submit).setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v)
-			{
-				new DatePickerDialog(AttributesActivity.this, startDateSetListener, startYear,
-						startMonth, startDay).show();
-			}
-		});
+			public void onClick(View v) {
+				SimpleDateFormat df = new SimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-		findViewById(R.id.end_date_row).setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v)
-			{
-				new DatePickerDialog(AttributesActivity.this, endDateSetListener, endYear,
-						endMonth, endDay).show();
-			}
-		});
-
-		findViewById(R.id.submit).setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v)
-			{
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-				Intent intent = new Intent(AttributesActivity.this, AttributesResultsActivity.class);
+				Intent intent = new Intent(AttributesActivity.this,
+						AttributesResultsActivity.class);
 				String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
 				url += "?";
-				try
-				{
-					url += "from=" + URLEncoder.encode(df.format(startDate), "UTF-8") + "&" + "to="
+				try {
+					url += "from="
+							+ URLEncoder.encode(df.format(startDate), "UTF-8")
+							+ "&" + "to="
 							+ URLEncoder.encode(df.format(endDate), "UTF-8");
-				}
-				catch (UnsupportedEncodingException e)
-				{
+				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				if (!showPrivate.isChecked())
-				{
+				if (!showPrivate.isChecked()) {
 					url += "&" + "show=" + "PUBLIC";
 				}
-				if (search.getText().toString().compareTo("") != 0)
-				{
+				if (search.getText().toString().compareTo("") != 0) {
 					url += "&" + "search=" + search.getText();
+				}
+				if (minParticipants.getText().toString().compareTo("") != 0) {
+					url += "&" + "minParticipants=" + minParticipants.getText();
+				}
+				if (maxParticipants.getText().toString().compareTo("") != 0) {
+					url += "&" + "maxParticipants=" + maxParticipants.getText();
 				}
 
 				intent.putExtra("URL", url);
@@ -125,42 +131,35 @@ public class AttributesActivity extends SherlockActivity
 		});
 	}
 
-	private void updateStartDate()
-	{
-		try
-		{
-			startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(startYear + "-"
-					+ (startMonth + 1) + "-" + startDay);
-			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+	private void updateStartDate() {
+		try {
+			startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+					.parse(startYear + "-" + (startMonth + 1) + "-" + startDay);
+			DateFormat dateFormat = DateFormat
+					.getDateInstance(DateFormat.MEDIUM);
 			startDateTextView.setText(dateFormat.format(startDate));
-		}
-		catch (ParseException e)
-		{
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void updateEndDate()
-	{
-		try
-		{
-			endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(endYear + "-"
-					+ (endMonth + 1) + "-" + endDay);
-			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+	private void updateEndDate() {
+		try {
+			endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+					.parse(endYear + "-" + (endMonth + 1) + "-" + endDay);
+			DateFormat dateFormat = DateFormat
+					.getDateInstance(DateFormat.MEDIUM);
 			endDateTextView.setText(dateFormat.format(endDate));
-		}
-		catch (ParseException e)
-		{
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private DatePickerDialog.OnDateSetListener startDateSetListener = new DatePickerDialog.OnDateSetListener()
-	{
+	private DatePickerDialog.OnDateSetListener startDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
 		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-		{
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
 			startYear = year;
 			startMonth = monthOfYear;
 			startDay = dayOfMonth;
@@ -169,12 +168,11 @@ public class AttributesActivity extends SherlockActivity
 
 	};
 
-	private DatePickerDialog.OnDateSetListener endDateSetListener = new DatePickerDialog.OnDateSetListener()
-	{
+	private DatePickerDialog.OnDateSetListener endDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
 		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-		{
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
 			endYear = year;
 			endMonth = monthOfYear;
 			endDay = dayOfMonth;
@@ -184,10 +182,8 @@ public class AttributesActivity extends SherlockActivity
 	};
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);

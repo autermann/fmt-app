@@ -80,7 +80,7 @@
 
                 <TextView
                     style="@style/startActivityButtonDescription"
-                    android:text="Find flashmobs by specifying attributes, e.g. time or public" />
+                    android:text="Find flashmobs by attributes (time, participants, etc.)" />
             </LinearLayout>
         </LinearLayout>
 

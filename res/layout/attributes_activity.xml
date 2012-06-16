@@ -1,86 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background"
-    android:orientation="vertical" >
+    android:fillViewport="true" >
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="1" >
+        android:background="@color/background"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingBottom="16dp" >
 
-        <TableRow style="@style/attributesRow" >
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-            <TextView
-                style="@style/attributesLabel"
-                android:text="Search" />
+            <TableRow style="@style/attributesRow" >
 
-            <EditText
-                android:id="@+id/search"
-                style="@style/attributesValue" />
-        </TableRow>
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="Search" />
 
-        <TableRow
-            android:id="@+id/start_date_row"
-            style="@style/attributesRow"
-            android:clickable="true"
-            android:focusable="true" >
+                <EditText
+                    android:id="@+id/search"
+                    style="@style/attributesValue"
+                    android:ellipsize="end"
+                    android:hint="Title, description, ..."
+                    android:nextFocusLeft="@id/search"
+                    android:nextFocusUp="@id/search"
+                    android:singleLine="true" />
+            </TableRow>
 
-            <TextView
-                style="@style/attributesLabel"
-                android:text="From" />
+            <TableRow
+                android:id="@+id/start_date_row"
+                style="@style/attributesRow"
+                android:clickable="true"
+                android:focusable="true" >
 
-            <TextView
-                android:id="@+id/start_date"
-                style="@style/attributesValue"
-                android:text="Aug 12, 2012" />
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="From" />
 
-            <ImageView android:src="@drawable/ic_expand" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/start_date"
+                    style="@style/attributesValue"
+                    android:text="Aug 12, 2012" />
 
-        <TableRow
-            android:id="@+id/end_date_row"
-            style="@style/attributesRow"
-            android:clickable="true"
-            android:focusable="true" >
+                <ImageView android:src="@drawable/ic_expand" />
+            </TableRow>
 
-            <TextView
-                style="@style/attributesLabel"
-                android:text="To" />
+            <TableRow
+                android:id="@+id/end_date_row"
+                style="@style/attributesRow"
+                android:clickable="true"
+                android:focusable="true" >
 
-            <TextView
-                android:id="@+id/end_date"
-                style="@style/attributesValue"
-                android:text="Aug 12, 2012" />
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="To" />
 
-            <ImageView android:src="@drawable/ic_expand" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/end_date"
+                    style="@style/attributesValue"
+                    android:text="Aug 12, 2012" />
 
-        <TableRow
-            android:id="@+id/show_private_row"
-            style="@style/attributesRow" >
+                <ImageView android:src="@drawable/ic_expand" />
+            </TableRow>
 
-            <TextView
-                style="@style/attributesLabel"
-                android:text="Show private" />
+            <TableRow style="@style/attributesRow" >
 
-            <CheckBox
-                android:id="@+id/show_private"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="Participants (min.)" />
 
-    <Button
-        android:id="@+id/submit"
-        style="@style/Button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="Submit" />
+                <EditText
+                    android:id="@+id/min_participants"
+                    style="@style/attributesValue"
+                    android:layout_marginRight="60dp"
+                    android:inputType="numberSigned" />
+            </TableRow>
 
-</LinearLayout>
+            <TableRow style="@style/attributesRow" >
+
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="Participants (max.)" />
+
+                <EditText
+                    android:id="@+id/max_participants"
+                    style="@style/attributesValue"
+                    android:layout_marginRight="60dp"
+                    android:inputType="numberSigned" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/show_private_row"
+                style="@style/attributesRow" >
+
+                <TextView
+                    style="@style/attributesLabel"
+                    android:text="Show private" />
+
+                <CheckBox
+                    android:id="@+id/show_private"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/submit"
+            style="@style/Button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Submit" />
+    </LinearLayout>
+
+</ScrollView>
