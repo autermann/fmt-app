@@ -52,9 +52,10 @@ public class StartActivity extends SherlockActivity
 	{
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		if (preferences.getInt("user_id", 0) == 0)
+		if (preferences.getString("user_id", null) == null)
 		{
-			startActivity(new Intent(this, LoginActivity.class));
+			startActivity(new Intent(this, LoginActivity.class).putExtra("startActivity",
+					LoginActivity.REDIRECT_TO_MY_FLASHMOBS_ACTIVITY));
 		}
 		else
 		{
@@ -97,7 +98,7 @@ public class StartActivity extends SherlockActivity
 		menu.add(0, MENU_WEBSITE, 0, "Website")
 				.setIcon(R.drawable.ic_action_website)
 				.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
-		if (preferences.getInt("user_id", 0) == 0)
+		if (preferences.getString("user_id", null) == null)
 		{
 			menu.add(0, MENU_LOGIN, 0, "Login")
 					.setIcon(R.drawable.ic_action_login)

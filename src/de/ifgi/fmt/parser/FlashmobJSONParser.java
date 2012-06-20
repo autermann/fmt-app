@@ -54,15 +54,15 @@ public class FlashmobJSONParser
 				{
 					addresses = geocoder.getFromLocation(f.getLocation().getLatitudeE6() / 1E6, f
 							.getLocation().getLongitudeE6() / 1E6, 1);
+					Address address = addresses.get(0);
+					f.setCity(address.getLocality());
+					f.setCountry(address.getCountryName());
+					f.setStreetAddress(address.getAddressLine(0));
 				}
 				catch (IOException e)
 				{
 					e.printStackTrace();
 				}
-				Address address = addresses.get(0);
-				f.setCity(address.getLocality());
-				f.setCountry(address.getCountryName());
-				f.setStreetAddress(address.getAddressLine(0));
 				flashmobList.add(f);
 			}
 		}
