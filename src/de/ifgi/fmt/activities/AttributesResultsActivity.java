@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -66,33 +67,42 @@ public class AttributesResultsActivity extends SherlockActivity {
 		@Override
 		protected String doInBackground(String... url) {
 			NetworkRequest request = new NetworkRequest(url[0]);
-			request.send();
-			return request.getResult();
+			int result = request.send();
+			if (result == NetworkRequest.NETWORK_PROBLEM) {
+				return null;
+			} else {
+				return request.getResult();
+			}
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			// parsing the result
-			final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
-					result, getApplicationContext());
-			// get access to the store and save the new flashmobs
-			((Store) getApplicationContext()).setFlashmobs(flashmobs);
+			if (result != null) {
+				// parsing the result
+				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
+						result, getApplicationContext());
+				// get access to the store and save the new flashmobs
+				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 
-			ListAdapter adapter = new FlashmobListAdapter(
-					getApplicationContext(), flashmobs, null);
-			ListView list = (ListView) findViewById(android.R.id.list);
-			list.setAdapter(adapter);
-			list.setOnItemClickListener(new OnItemClickListener() {
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					Intent intent = new Intent(getApplicationContext(),
-							FlashmobDetailsActivity.class);
-					intent.putExtra("id", flashmobs.get(arg2).getId());
-					startActivity(intent);
-				}
-			});
-
+				ListAdapter adapter = new FlashmobListAdapter(
+						getApplicationContext(), flashmobs, null);
+				ListView list = (ListView) findViewById(android.R.id.list);
+				list.setAdapter(adapter);
+				list.setOnItemClickListener(new OnItemClickListener() {
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						Intent intent = new Intent(getApplicationContext(),
+								FlashmobDetailsActivity.class);
+						intent.putExtra("id", flashmobs.get(arg2).getId());
+						startActivity(intent);
+					}
+				});
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
+			}
 			progressDialog.dismiss();
 		}
 
