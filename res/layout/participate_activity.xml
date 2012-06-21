@@ -1,79 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <TableRow
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="2dp" >
+        android:padding="8dp" >
 
         <TextView
-            android:id="@+id/roleSelectionLabel"
-            style="@style/fmDetailsLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Select a role: " />
-    </TableRow>
-    
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="2dp" >
-        
-        <Spinner 
+            android:paddingBottom="8dp"
+            android:text="Roles:"
+            android:textColor="@color/the_green"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/roles_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="8dp" >
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:text="Select role:"
+            android:textColor="@color/the_green"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Spinner
             android:id="@+id/roleSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        
-    </TableRow>
-    
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="2dp" >
-
-        <TextView
-            android:id="@+id/roleDescriptionLabel"
-            style="@style/fmDetailsLabel"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Role description: " />
-    </TableRow>
-            
-    <TableRow
-    	android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="2dp" >
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
 
-        <TextView
-            android:id="@+id/roleDescriptionTV"
-            style="@style/fmDetailsTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Here will be the role description." />
-    </TableRow>
-    
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="8dp" >
-            
-            <Button 
-                android:id="@+id/participateButton"
-	            style="@style/Button"
-                android:text="Participate"/>
-            
-    </TableRow>
+        <Button
+            android:id="@+id/participateButton"
+            style="@style/Button"
+            android:layout_marginBottom="16dp"
+            android:text="Participate" />
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
