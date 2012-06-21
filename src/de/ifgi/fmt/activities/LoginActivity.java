@@ -1,5 +1,8 @@
 package de.ifgi.fmt.activities;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +12,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Base64;
+import android.util.Log;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -21,10 +26,20 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpEntity;
+
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.network.NetworkRequest;
 
 public class LoginActivity extends SherlockActivity
 {
@@ -38,6 +53,7 @@ public class LoginActivity extends SherlockActivity
 	private EditText username, password;
 	private Button login;
 	private ProgressDialog progressDialog;
+	private String userpassEncoded;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -106,10 +122,44 @@ public class LoginActivity extends SherlockActivity
 					// Login request (server) goes here...
 					try
 					{
-						Thread.sleep(1000);
+						
+						userpassEncoded = Base64.encodeToString(
+								(username.getText() + ":" + password.getText()).getBytes("UTF-8"), Base64.NO_WRAP);
+//						
+//						NetworkRequest request = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt?authentication:basic " + userpassEncoded);
+//
+//						request.send();
+//						Log.d("FMT Login", userpassEncoded);
+//						Log.d("FMT Login", request.getUrl());		
+						
+						HttpClient client = new DefaultHttpClient();  
+			            String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
+			            HttpGet get = new HttpGet(getURL);
+			            get.setHeader("Authentication", "Basic "+ userpassEncoded);
+			            HttpResponse responseGet = client.execute(get);      
+			            HttpEntity resEntityGet = responseGet.getEntity();  
+			            if (resEntityGet != null) {  
+			                String response = EntityUtils.toString(resEntityGet);
+			                Log.i("GET RESPONSE",response);			                        
+			            }
+
+
+			            
+			            
+			            
+			             
+
+
+						
 					}
-					catch (InterruptedException e)
-					{
+					catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ClientProtocolException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					handler.sendEmptyMessage(0);
@@ -157,7 +207,7 @@ public class LoginActivity extends SherlockActivity
 			break;
 		}
 		startActivity(intent);
-		Toast.makeText(this, "Welcome", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "Welcome " + username.getText(), Toast.LENGTH_LONG).show();
 		finish();
 	}
 
