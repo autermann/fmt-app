@@ -39,7 +39,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
-import de.ifgi.fmt.network.NetworkRequest;
+
 
 public class LoginActivity extends SherlockActivity
 {
@@ -135,7 +135,7 @@ public class LoginActivity extends SherlockActivity
 						HttpClient client = new DefaultHttpClient();  
 			            String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
 			            HttpGet get = new HttpGet(getURL);
-			            get.setHeader("Authentication", "Basic "+ userpassEncoded);
+			            get.setHeader("Authorization", "Basic "+ userpassEncoded);
 			            HttpResponse responseGet = client.execute(get);      
 			            HttpEntity resEntityGet = responseGet.getEntity();  
 			            if (resEntityGet != null) {  
