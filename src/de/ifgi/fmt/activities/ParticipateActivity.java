@@ -32,8 +32,7 @@ import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
-public class ParticipateActivity extends SherlockActivity
-{
+public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
 	private SharedPreferences prefs;
 	private Flashmob flashmob;
@@ -43,8 +42,7 @@ public class ParticipateActivity extends SherlockActivity
 	private ArrayList<Role> roles;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participate_activity);
 
@@ -67,44 +65,41 @@ public class ParticipateActivity extends SherlockActivity
 
 		// Participate button
 		participateButton = (Button) findViewById(R.id.participateButton);
-		participateButton.setOnClickListener(new View.OnClickListener()
-		{
+		participateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
-				boolean isParticipating = prefs.getBoolean(PARTICIPATION_PREF_KEY, false);
+			public void onClick(View v) {
+				boolean isParticipating = prefs.getBoolean(
+						PARTICIPATION_PREF_KEY, false);
 
 				final SharedPreferences.Editor editor = prefs.edit();
 
 				// Change button text depending on participation
-				if (!isParticipating)
-				{
+				if (!isParticipating) {
 					editor.putBoolean(PARTICIPATION_PREF_KEY, true);
 					editor.commit();
 					participateButton.setText("Cancel Participation");
-					participateButton.setBackgroundResource(R.drawable.cancel_button_background);
+					participateButton
+							.setBackgroundResource(R.drawable.cancel_button_background);
 
 					// TODO: Participate-Funktion hinzufügen
-				}
-				else
-				{
+				} else {
 					editor.putBoolean(PARTICIPATION_PREF_KEY, false);
 					editor.commit();
 					participateButton.setText("Participate");
-					participateButton.setBackgroundResource(R.drawable.button_background);
+					participateButton
+							.setBackgroundResource(R.drawable.button_background);
 				}
 			}
 		});
 
-		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId + "/roles";
+		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId
+				+ "/roles";
 		new DownloadTask(this).execute(url);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
 			// Intent intent = new Intent(getApplicationContext(),
@@ -123,8 +118,7 @@ public class ParticipateActivity extends SherlockActivity
 	 * 
 	 * @return
 	 */
-	public String getFlashmobID()
-	{
+	public String getFlashmobID() {
 		// Identify the flashmob
 		Bundle extras = getIntent().getExtras();
 
@@ -134,70 +128,55 @@ public class ParticipateActivity extends SherlockActivity
 		return theID;
 	}
 
-	public void getFlashmobData()
-	{
+	public void getFlashmobData() {
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(fId);
 	}
 
-	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>>
-	{
+	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>> {
 		ProgressDialog progressDialog;
 
-		public DownloadTask(Context context)
-		{
+		public DownloadTask(Context context) {
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setMessage("Loading roles...");
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			super.onPreExecute();
 			progressDialog.show();
 		}
 
 		@Override
-		protected ArrayList<String> doInBackground(String... url)
-		{
+		protected ArrayList<String> doInBackground(String... url) {
 			NetworkRequest request;
 			request = new NetworkRequest(url[0]);
 			ArrayList<String> roleIds = new ArrayList<String>();
 			int result = request.send();
-			if (result == NetworkRequest.NETWORK_PROBLEM)
-			{
+			if (result == NetworkRequest.NETWORK_PROBLEM) {
 				return null;
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					JSONObject root = new JSONObject(request.getResult());
 					JSONArray roles = root.getJSONArray("roles");
-					for (int i = 0; i < roles.length(); i++)
-					{
+					for (int i = 0; i < roles.length(); i++) {
 						roleIds.add(roles.getJSONObject(i).getString("id"));
 					}
-				}
-				catch (JSONException e)
-				{
+				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
 
 			ArrayList<String> results = new ArrayList<String>();
 
-			for (String rId : roleIds)
-			{
-				request = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
-						+ fId + "/roles" + "/" + rId);
+			for (String rId : roleIds) {
+				request = new NetworkRequest(
+						"http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+								+ fId + "/roles" + "/" + rId);
 				result = request.send();
-				if (result == NetworkRequest.NETWORK_PROBLEM)
-				{
+				if (result == NetworkRequest.NETWORK_PROBLEM) {
 					return null;
-				}
-				else
-				{
+				} else {
 					results.add(request.getResult());
 				}
 			}
@@ -205,73 +184,67 @@ public class ParticipateActivity extends SherlockActivity
 		}
 
 		@Override
-		protected void onPostExecute(ArrayList<String> results)
-		{
+		protected void onPostExecute(ArrayList<String> results) {
 			super.onPostExecute(results);
-			if (results != null)
-			{
+			if (results != null) {
 				// parsing the results
 				roles = new ArrayList<Role>();
-				for (String result : results)
-				{
-					Role role = RoleJSONParser.parse(result, getApplicationContext());
+				for (String result : results) {
+					Role role = RoleJSONParser.parse(result,
+							getApplicationContext());
 					roles.add(role);
 				}
 				// adding the roles to the layout
 				LinearLayout rolesList = (LinearLayout) findViewById(R.id.roles_list);
 				TextView roleTitle;
 				TextView roleDescription;
-				for (Role r : roles)
-				{
+				for (Role r : roles) {
 					roleTitle = new TextView(getApplicationContext());
 					TypedValue tv = new TypedValue();
-					if (getTheme().resolveAttribute(android.R.attr.textColorPrimary, tv, true))
-					{
-						roleTitle.setTextColor(getApplicationContext().getResources().getColor(
-								tv.resourceId));
+					if (getTheme().resolveAttribute(
+							android.R.attr.textColorPrimary, tv, true)) {
+						roleTitle.setTextColor(getApplicationContext()
+								.getResources().getColor(tv.resourceId));
 					}
 					roleTitle.setTypeface(Typeface.DEFAULT_BOLD);
 					roleTitle.setTextSize(16);
 					roleTitle.setText(r.getTitle());
 					roleDescription = new TextView(getApplicationContext());
-					if (getTheme().resolveAttribute(android.R.attr.textColorSecondary, tv, true))
-					{
-						roleDescription.setTextColor(getApplicationContext().getResources()
-								.getColor(tv.resourceId));
+					if (getTheme().resolveAttribute(
+							android.R.attr.textColorSecondary, tv, true)) {
+						roleDescription.setTextColor(getApplicationContext()
+								.getResources().getColor(tv.resourceId));
 					}
 					roleDescription.setPadding(0, 0, 0, 16);
 					roleDescription.setText(r.getDescription());
 					rolesList.addView(roleTitle);
 					rolesList.addView(roleDescription);
-
-					// Role Spinner
-					roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
-					RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(getApplicationContext(),
-							roles);
-					roleSpinner.setAdapter(adapter);
-					roleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-					{
-						public void onItemSelected(AdapterView<?> parent, View view, int pos,
-								long id)
-						{
-							Role r = (Role) parent.getItemAtPosition(pos);
-							Toast.makeText(getApplicationContext(), "Role ID: " + r.getId(),
-									Toast.LENGTH_LONG).show();
-						}
-
-						@Override
-						public void onNothingSelected(AdapterView<?> arg0)
-						{
-						}
-					});
 				}
-				findViewById(R.id.participate_layout).setVisibility(View.VISIBLE);
-			}
-			else
-			{
+				// Role Spinner
+				roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
+				RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(
+						getApplicationContext(), roles);
+				roleSpinner.setAdapter(adapter);
+				roleSpinner
+						.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+							public void onItemSelected(AdapterView<?> parent,
+									View view, int pos, long id) {
+								Role r = (Role) parent.getItemAtPosition(pos);
+								Toast.makeText(getApplicationContext(),
+										"Role ID: " + r.getId(),
+										Toast.LENGTH_LONG).show();
+							}
+
+							@Override
+							public void onNothingSelected(AdapterView<?> arg0) {
+							}
+						});
+				findViewById(R.id.participate_layout).setVisibility(
+						View.VISIBLE);
+			} else {
 				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.", Toast.LENGTH_LONG)
-						.show();
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
 			}
 			progressDialog.dismiss();
 		}
