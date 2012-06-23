@@ -15,7 +15,7 @@ public class SettingsActivity extends SherlockPreferenceActivity
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-//		this.addPreferencesFromResource(R.xml.settings);
+		// this.addPreferencesFromResource(R.xml.settings);
 
 	}
 

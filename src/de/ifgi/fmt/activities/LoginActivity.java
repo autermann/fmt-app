@@ -34,12 +34,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.HttpEntity;
 
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
-
 
 public class LoginActivity extends SherlockActivity
 {
@@ -122,43 +120,44 @@ public class LoginActivity extends SherlockActivity
 					// Login request (server) goes here...
 					try
 					{
-						
+
 						userpassEncoded = Base64.encodeToString(
-								(username.getText() + ":" + password.getText()).getBytes("UTF-8"), Base64.NO_WRAP);
-//						
-//						NetworkRequest request = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt?authentication:basic " + userpassEncoded);
-//
-//						request.send();
-//						Log.d("FMT Login", userpassEncoded);
-//						Log.d("FMT Login", request.getUrl());		
-						
-						HttpClient client = new DefaultHttpClient();  
-			            String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
-			            HttpGet get = new HttpGet(getURL);
-			            get.setHeader("Authorization", "Basic "+ userpassEncoded);
-			            HttpResponse responseGet = client.execute(get);      
-			            HttpEntity resEntityGet = responseGet.getEntity();  
-			            if (resEntityGet != null) {  
-			                String response = EntityUtils.toString(resEntityGet);
-			                Log.i("GET RESPONSE",response);			                        
-			            }
+								(username.getText() + ":" + password.getText()).getBytes("UTF-8"),
+								Base64.NO_WRAP);
+						//
+						// NetworkRequest request = new
+						// NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt?authentication:basic "
+						// + userpassEncoded);
+						//
+						// request.send();
+						// Log.d("FMT Login", userpassEncoded);
+						// Log.d("FMT Login", request.getUrl());
 
+						HttpClient client = new DefaultHttpClient();
+						String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
+						HttpGet get = new HttpGet(getURL);
+						get.setHeader("Authorization", "Basic " + userpassEncoded);
+						HttpResponse responseGet = client.execute(get);
+						HttpEntity resEntityGet = responseGet.getEntity();
+						if (resEntityGet != null)
+						{
+							String response = EntityUtils.toString(resEntityGet);
+							Log.i("GET RESPONSE", response);
+						}
 
-			            
-			            
-			            
-			             
-
-
-						
 					}
-					catch (UnsupportedEncodingException e) {
+					catch (UnsupportedEncodingException e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (ClientProtocolException e) {
+					}
+					catch (ClientProtocolException e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (IOException e) {
+					}
+					catch (IOException e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

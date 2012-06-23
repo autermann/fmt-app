@@ -30,7 +30,7 @@ import de.ifgi.fmt.objects.Flashmob;
 public class FlashmobDetailsActivity extends SherlockMapActivity
 {
 	// TODO: Change button text depending on user's participation status
-	
+
 	// TextViews
 	private TextView fmTitleTV;
 	private TextView fmIsPublicTV;
@@ -45,7 +45,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 	// SharedPreferences
 	private SharedPreferences prefs;
-	
+
 	private String PARTICIPATION_PREF_KEY;
 
 	// Map stuff
@@ -73,13 +73,13 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 
 		// Initialize id
 		id = getFlashmobID();
-		
+
 		// This is a unique key string for saving the user's participation status
 		PARTICIPATION_PREF_KEY = id + "Pref";
-		
+
 		// Initialize SharedPreferences
 		prefs = SettingsActivity.getSettings(this);
-		
+
 		try
 		{
 			getFlashmobData();
@@ -89,7 +89,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		setTitle(flashmob.getTitle());
 
 		// Map stuff
@@ -207,13 +207,13 @@ public class FlashmobDetailsActivity extends SherlockMapActivity
 	{
 		// Identify the flashmob
 		Bundle extras = getIntent().getExtras();
-		
+
 		// Get the ID
 		String theID = extras.getString("id");
-		
+
 		return theID;
 	}
-	
+
 	private void startParticipateActivity(View v)
 	{
 		Intent intent = new Intent(this, ParticipateActivity.class);

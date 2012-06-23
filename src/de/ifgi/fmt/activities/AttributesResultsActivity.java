@@ -24,10 +24,12 @@ import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 
-public class AttributesResultsActivity extends SherlockActivity {
+public class AttributesResultsActivity extends SherlockActivity
+{
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flashmob_list_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -36,8 +38,10 @@ public class AttributesResultsActivity extends SherlockActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);
@@ -50,58 +54,70 @@ public class AttributesResultsActivity extends SherlockActivity {
 	}
 
 	// AsyncTask instead of a Thread, in order to download the online data
-	class DownloadTask extends AsyncTask<String, Void, String> {
+	class DownloadTask extends AsyncTask<String, Void, String>
+	{
 		ProgressDialog progressDialog;
 
-		public DownloadTask(Context context) {
+		public DownloadTask(Context context)
+		{
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setMessage("Loading flashmobs...");
 		}
 
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute()
+		{
 			super.onPreExecute();
 			progressDialog.show();
 		}
 
 		@Override
-		protected String doInBackground(String... url) {
+		protected String doInBackground(String... url)
+		{
 			NetworkRequest request = new NetworkRequest(url[0]);
 			int result = request.send();
-			if (result == NetworkRequest.NETWORK_PROBLEM) {
+			if (result == NetworkRequest.NETWORK_PROBLEM)
+			{
 				return null;
-			} else {
+			}
+			else
+			{
 				return request.getResult();
 			}
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(String result)
+		{
 			super.onPostExecute(result);
-			if (result != null) {
+			if (result != null)
+			{
 				// parsing the result
-				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
-						result, getApplicationContext());
+				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result,
+						getApplicationContext());
 				// get access to the store and save the new flashmobs
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 
-				ListAdapter adapter = new FlashmobListAdapter(
-						getApplicationContext(), flashmobs, null);
+				ListAdapter adapter = new FlashmobListAdapter(getApplicationContext(), flashmobs,
+						null);
 				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
-				list.setOnItemClickListener(new OnItemClickListener() {
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3) {
+				list.setOnItemClickListener(new OnItemClickListener()
+				{
+					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+					{
 						Intent intent = new Intent(getApplicationContext(),
 								FlashmobDetailsActivity.class);
 						intent.putExtra("id", flashmobs.get(arg2).getId());
 						startActivity(intent);
 					}
 				});
-			} else {
+			}
+			else
+			{
 				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.",
-						Toast.LENGTH_LONG).show();
+						"There is a problem with the Internet connection.", Toast.LENGTH_LONG)
+						.show();
 			}
 			progressDialog.dismiss();
 		}
