@@ -16,8 +16,7 @@ public class RoleJSONParser
 		{
 			JSONObject role = new JSONObject(json);
 			r.setId(role.getString("id"));
-			// r.setTitle(role.getString("title"));
-			r.setTitle("Role title");
+			r.setTitle(role.getString("title"));
 			r.setDescription(role.getString("description"));
 			r.setMinParticipants((role.getInt("minParticipants")));
 			r.setMaxParticipants((role.getInt("maxParticipants")));
