@@ -33,16 +33,9 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/login"
-            style="@style/Button"
-            android:text="Login" />
-        
-        <Button
             android:id="@+id/register"
             style="@style/Button"
-            android:text="Register new Account" 
-            android:layout_marginTop="8dp" />
-        
+            android:text="Register" />
     </LinearLayout>
 
 </LinearLayout>

@@ -49,7 +49,7 @@ public class LoginActivity extends SherlockActivity {
 	// ...
 
 	private EditText username, password;
-	private Button login;
+	private Button login, register;
 	private String userpassEncoded;
 
 	@Override
@@ -79,6 +79,16 @@ public class LoginActivity extends SherlockActivity {
 		login.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				authenticate();
+			}
+		});
+		
+		register = (Button) findViewById(R.id.register);
+		register.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				
+				Intent myIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+				LoginActivity.this.startActivity(myIntent);
+				
 			}
 		});
 	}
