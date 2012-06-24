@@ -32,7 +32,7 @@ public class StartActivity extends SherlockActivity {
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		Log.i("wichtig", "User ID: " + preferences.getString("user_id", ""));
+		Log.i("wichtig", "User name: " + preferences.getString("user_name", ""));
 		Log.i("wichtig", "Cookie: " + preferences.getString("fmt_oid", ""));
 	}
 
@@ -51,7 +51,7 @@ public class StartActivity extends SherlockActivity {
 	public void startMyFlashmobsActivity(View v) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		if (preferences.getString("user_id", null) == null) {
+		if (preferences.getString("user_name", null) == null) {
 			startActivity(new Intent(this, LoginActivity.class).putExtra(
 					"startActivity",
 					LoginActivity.REDIRECT_TO_MY_FLASHMOBS_ACTIVITY));
@@ -93,7 +93,7 @@ public class StartActivity extends SherlockActivity {
 				.setShowAsAction(
 						MenuItem.SHOW_AS_ACTION_WITH_TEXT
 								| MenuItem.SHOW_AS_ACTION_ALWAYS);
-		if (preferences.getString("user_id", null) == null) {
+		if (preferences.getString("user_name", null) == null) {
 			menu.add(0, MENU_LOGIN, 0, "Login")
 					.setIcon(R.drawable.ic_action_login)
 					.setShowAsAction(

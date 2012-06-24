@@ -142,7 +142,6 @@ public class LoginActivity extends SherlockActivity {
 						SharedPreferences preferences = PreferenceManager
 								.getDefaultSharedPreferences(getApplicationContext());
 						SharedPreferences.Editor editor = preferences.edit();
-						editor.putString("user_id", "4fe09086e4b0662f088a4fa5");
 						editor.putString("user_name", username.getText()
 								.toString());
 						for (int i = 0; i < cookies.size(); i++) {
