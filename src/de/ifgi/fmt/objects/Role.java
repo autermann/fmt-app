@@ -11,6 +11,18 @@ public class Role
 	private int maxParticipants;
 	private String[] items;
 
+	public String returnItemsAsString()
+	{
+		String itemsAsString = "";
+		
+		for(String item : items)
+		{
+			itemsAsString = itemsAsString + "- " + item + "\n";
+		}
+		
+		return itemsAsString;
+	}
+	
 	public String getTitle()
 	{
 		return title;
