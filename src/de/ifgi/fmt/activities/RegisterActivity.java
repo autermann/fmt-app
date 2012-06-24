@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import android.app.ProgressDialog;
@@ -42,9 +43,6 @@ public class RegisterActivity extends SherlockActivity {
 
 	public static final int INVALID_CREDENTIALS = 11;
 
-	public static final int REDIRECT_TO_START_ACTIVITY = 1;
-	public static final int REDIRECT_TO_MY_FLASHMOBS_ACTIVITY = 2;
-	// ...
 
 	private EditText username, password;
 	private Button register;
@@ -107,30 +105,27 @@ public class RegisterActivity extends SherlockActivity {
 		}
 
 		
-		@Override
-		protected Integer doInBackground(String... url) {
-		    // Create a new HttpClient and Post Header
-		    HttpClient httpclient = new DefaultHttpClient();
-		    HttpPost httppost = new HttpPost("http://giv-flashmob.uni-muenster.de/fmt/users");
-
-		    try {
-		        
-		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		        nameValuePairs.add(new BasicNameValuePair("username", "stefan"));
-		        nameValuePairs.add(new BasicNameValuePair("password", "wer"));
-		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-		        // Execute HTTP Post Request
-		        HttpResponse response = httpclient.execute(httppost);
-		        Log.d("register-log", response.toString());
-		        
-		    } catch (ClientProtocolException e) {
-		        // TODO Auto-generated catch block
-		    } catch (IOException e) {
-		        // TODO Auto-generated catch block
-		    }
-			return 0;
-		} 
+//		@Override
+//		protected Integer doInBackground(String... url) {
+//		    
+//		    NetworkRequest n = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt/users");
+//			
+//						n.setMethod(NetworkRequest.METHOD_POST);
+//						
+//						ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
+//						
+//						
+//						parameters.add(new BasicNameValuePair("username", "stefan"));
+//						parameters.add(new BasicNameValuePair("password", "asdfasdf"));
+//						
+//						n.setParameters(parameters);
+//						Log.d("heureka", n.getUrl()  );
+//						
+//						n.send();
+//						Log.d("heureka", n.getResult());
+//						n.getResult();
+//			return 0;
+//		} 
 		
 //		@Override
 //		protected Integer doInBackground(String... url) {
@@ -150,11 +145,41 @@ public class RegisterActivity extends SherlockActivity {
 //
 //			n.send();
 //			n.getResult();
-//		
-//			
+//
 //			return 0;
 //		}
 
+	@Override
+	protected Integer doInBackground(String... url) {
+				    
+		    HttpClient httpclient = new DefaultHttpClient();
+		    HttpPost httppost = new HttpPost("http://giv-flashmob.uni-muenster.de/fmt/users");
+		    httppost.setHeader("Content-Type", "application/json");
+					    
+		    try {
+				httppost.setEntity(new StringEntity("{'username': 'stefan','password': 'asdfasdf','email': 'arndt@uni-muenster.de'}"));
+				HttpResponse response = httpclient.execute(httppost);
+				Log.d("heureka", response.toString());
+			
+		    
+		    } catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return 0;
+	    }
+	  
+	        
+	    		
+		
+		
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
@@ -181,17 +206,11 @@ public class RegisterActivity extends SherlockActivity {
 
 	public void redirect() {
 		Intent intent = null;
-		switch (getIntent().getExtras().getInt("startActivity")) {
-		case REDIRECT_TO_START_ACTIVITY:
-			intent = new Intent(this, StartActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			break;
-		case REDIRECT_TO_MY_FLASHMOBS_ACTIVITY:
-			intent = new Intent(this, StartActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			break;
-		}
+		
+		intent = new Intent(this, StartActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
+		
 		Toast.makeText(this, "Thank you for registering " + username.getText(), Toast.LENGTH_LONG)
 				.show();
 		finish();
