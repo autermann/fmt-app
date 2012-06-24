@@ -156,22 +156,26 @@ public class RegisterActivity extends SherlockActivity {
 		    HttpPost httppost = new HttpPost("http://giv-flashmob.uni-muenster.de/fmt/users");
 		    httppost.setHeader("Content-Type", "application/json");
 					    
-		    try {
-				httppost.setEntity(new StringEntity("{'username': 'stefan','password': 'asdfasdf','email': 'arndt@uni-muenster.de'}"));
-				HttpResponse response = httpclient.execute(httppost);
-				Log.d("heureka", response.toString());
-			
-		    
-		    } catch (UnsupportedEncodingException e) {
+		
+				try {
+					httppost.setEntity(new StringEntity("{\"username\": \"stefan\",\"password\": \"asdfasdf\",\"email\": \"arndt@uni-muenster.de\"}"));
+					Log.d("reg", httppost.toString());
+				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				}
+				
+				try {
+					HttpResponse response = httpclient.execute(httppost);
+					Log.d("reg2", response.getStatusLine().toString());
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
+		  
 			
 			return 0;
 	    }
