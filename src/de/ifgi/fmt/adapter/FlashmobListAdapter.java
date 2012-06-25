@@ -13,14 +13,13 @@ import android.widget.TextView;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.objects.Flashmob;
 
-public class FlashmobListAdapter extends ArrayAdapter<Flashmob>
-{
+public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 	Context context;
 	ArrayList<Flashmob> flashmobs;
 	Location location;
 
-	public FlashmobListAdapter(Context context, ArrayList<Flashmob> flashmobs, Location location)
-	{
+	public FlashmobListAdapter(Context context, ArrayList<Flashmob> flashmobs,
+			Location location) {
 		super(context, 0, flashmobs);
 		this.context = context;
 		this.flashmobs = flashmobs;
@@ -28,27 +27,32 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob>
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
+	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
-		if (v == null)
-		{
+		if (v == null) {
 			LayoutInflater l = LayoutInflater.from(context);
 			v = l.inflate(R.layout.flashmob_list_item, null);
 		}
 		Flashmob f = flashmobs.get(position);
 		((TextView) v.findViewById(R.id.flashmob_title)).setText(f.getTitle());
-		if (location != null)
-		{
-			((TextView) v.findViewById(R.id.flashmob_distance)).setText(new DecimalFormat("0.#")
-					.format(f.getDistanceInKilometersTo(location)) + " km");
+		if (location != null) {
+			String distance = new DecimalFormat("0.#").format(f
+					.getDistanceInKilometersTo(location));
+			if (Double.parseDouble(distance) < 1) {
+				distance = String
+						.valueOf(((int) (Double.parseDouble(distance) * 1000)));
+				distance += " m";
+			} else {
+				distance += " km";
+			}
+			((TextView) v.findViewById(R.id.flashmob_distance))
+					.setText(distance);
+		} else {
+			((TextView) v.findViewById(R.id.flashmob_distance))
+					.setVisibility(View.GONE);
 		}
-		else
-		{
-			((TextView) v.findViewById(R.id.flashmob_distance)).setVisibility(View.GONE);
-		}
-		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f.getStreetAddress()
-				+ " \u00B7 " + f.getStartDate());
+		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f
+				.getStreetAddress() + " \u00B7 " + f.getStartDate());
 		return v;
 	}
 
