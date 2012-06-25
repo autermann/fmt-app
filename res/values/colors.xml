@@ -3,6 +3,7 @@
 
     <color name="background">#DDD</color>
     <!-- <color name="the_green">#A4C639</color> -->
+    <color name="tr_green">#CCF38630</color>
     <color name="the_green">#F38630</color>
     <color name="strong_green">#FA6900</color>
 
