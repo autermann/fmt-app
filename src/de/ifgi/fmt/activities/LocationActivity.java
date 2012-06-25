@@ -34,87 +34,91 @@ import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 
-public class LocationActivity extends SherlockActivity
-{
+public class LocationActivity extends SherlockActivity {
 	LocationManager locationManager;
 	LocationListener locationListener;
 	Location currentLocation;
+	double left, top, right, bottom;
 	TextView locationText;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Acquire a reference to the system Location Manager
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
-		locationListener = new LocationListener()
-		{
-			public void onLocationChanged(Location location)
-			{
+		locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
 				// Called when a new location is found by the network location
 				// provider.
 				currentLocation = location;
 				Geocoder geocoder = new Geocoder(getApplicationContext());
 				List<Address> addresses = null;
-				try
-				{
-					addresses = geocoder.getFromLocation(location.getLatitude(),
-							location.getLongitude(), 1);
+				try {
+					addresses = geocoder.getFromLocation(
+							location.getLatitude(), location.getLongitude(), 1);
 					Address address = addresses.get(0);
 					locationText = (TextView) findViewById(R.id.location_text);
 					locationText.setText(address.getAddressLine(0));
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 				// Remove the listener
 				locationManager.removeUpdates(locationListener);
-				loadFlashmobs();
+				new DownloadTask(LocationActivity.this).execute();
 			}
 
-			public void onStatusChanged(String provider, int status, Bundle extras)
-			{
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
 			}
 
-			public void onProviderEnabled(String provider)
-			{
+			public void onProviderEnabled(String provider) {
 			}
 
-			public void onProviderDisabled(String provider)
-			{
+			public void onProviderDisabled(String provider) {
 			}
 		};
 
 		// Register the listener with the Location Manager to receive location
 		// updates
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-				locationListener);
-
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 	}
 
-	private void loadFlashmobs()
-	{
-		new DownloadTask(this).execute("http://giv-flashmob.uni-muenster.de/fmt/flashmobs");
+	private Location getDestination(Location start, double dist, double brng) {
+		dist = dist / 6371.0;
+		brng = Math.toRadians(brng);
+
+		double lat1 = Math.toRadians(start.getLatitude());
+		double lon1 = Math.toRadians(start.getLongitude());
+
+		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist)
+				+ Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+		double a = Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1),
+				Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+		double lon2 = lon1 + a;
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+
+		Location loc = new Location(LOCATION_SERVICE);
+		loc.setLatitude(Math.toDegrees(lat2));
+		loc.setLongitude(Math.toDegrees(lon2));
+		return loc;
 	}
 
 	@Override
-	protected void onDestroy()
-	{
+	protected void onDestroy() {
 		super.onDestroy();
 		locationManager.removeUpdates(locationListener);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, StartActivity.class);
@@ -127,57 +131,62 @@ public class LocationActivity extends SherlockActivity
 	}
 
 	// AsyncTask instead of a Thread, in order to download the online data
-	class DownloadTask extends AsyncTask<String, Void, String>
-	{
+	class DownloadTask extends AsyncTask<Void, Void, String> {
 		ProgressDialog progressDialog;
 
-		public DownloadTask(Context context)
-		{
+		public DownloadTask(Context context) {
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setMessage("Loading flashmobs...");
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			super.onPreExecute();
 			progressDialog.show();
 		}
 
 		@Override
-		protected String doInBackground(String... url)
-		{
-			NetworkRequest request = new NetworkRequest(url[0]);
+		protected String doInBackground(Void... params) {
+			// building bounding box
+			double distance = 10; // (Kilometers)
+			Location t = getDestination(currentLocation, distance, 0); // Top
+			Location r = getDestination(currentLocation, distance, 90); // Right
+			Location b = getDestination(currentLocation, distance, 180); // Bottom
+			Location l = getDestination(currentLocation, distance, 270); // Left
+			left = l.getLongitude();
+			top = t.getLatitude();
+			right = r.getLongitude();
+			bottom = b.getLatitude();
+
+			// sending server request
+			String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
+			url += "?bbox=" + bottom + "," + left + "," + top + "," + right;
+			NetworkRequest request = new NetworkRequest(url);
 			int result = request.send();
-			if (result == NetworkRequest.NETWORK_PROBLEM)
-			{
+			if (result == NetworkRequest.NETWORK_PROBLEM) {
 				return null;
-			}
-			else
-			{
+			} else {
 				return request.getResult();
 			}
 		}
 
 		@Override
-		protected void onPostExecute(String result)
-		{
+		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			if (result != null)
-			{
+			if (result != null) {
 				// parsing the result
-				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result,
-						getApplicationContext());
+				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
+						result, getApplicationContext());
 				// get access to the store and save the new flashmobs
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 
 				// sort flashmobs by distance to current location
-				Collections.sort(flashmobs, new Comparator<Flashmob>()
-				{
-					public int compare(Flashmob x, Flashmob y)
-					{
-						double dist1 = x.getDistanceInKilometersTo(currentLocation);
-						double dist2 = y.getDistanceInKilometersTo(currentLocation);
+				Collections.sort(flashmobs, new Comparator<Flashmob>() {
+					public int compare(Flashmob x, Flashmob y) {
+						double dist1 = x
+								.getDistanceInKilometersTo(currentLocation);
+						double dist2 = y
+								.getDistanceInKilometersTo(currentLocation);
 						if (dist1 > dist2)
 							return 1;
 						else if (dist2 > dist1)
@@ -187,26 +196,23 @@ public class LocationActivity extends SherlockActivity
 					}
 				});
 
-				ListAdapter adapter = new FlashmobListAdapter(getApplicationContext(), flashmobs,
-						currentLocation);
+				ListAdapter adapter = new FlashmobListAdapter(
+						getApplicationContext(), flashmobs, currentLocation);
 				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
-				list.setOnItemClickListener(new OnItemClickListener()
-				{
-					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-					{
+				list.setOnItemClickListener(new OnItemClickListener() {
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
 						Intent intent = new Intent(getApplicationContext(),
 								FlashmobDetailsActivity.class);
 						intent.putExtra("id", flashmobs.get(arg2).getId());
 						startActivity(intent);
 					}
 				});
-			}
-			else
-			{
+			} else {
 				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.", Toast.LENGTH_LONG)
-						.show();
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
 			}
 			progressDialog.dismiss();
 		}
