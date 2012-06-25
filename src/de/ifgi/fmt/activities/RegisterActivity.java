@@ -2,18 +2,14 @@ package de.ifgi.fmt.activities;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +40,7 @@ public class RegisterActivity extends SherlockActivity {
 	public static final int INVALID_CREDENTIALS = 11;
 
 
-	private EditText username, password;
+	private EditText username, password, email;
 	private Button register;
 	
 
@@ -55,8 +51,8 @@ public class RegisterActivity extends SherlockActivity {
 		setTitle("Register");
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		username = (EditText) findViewById(R.id.username);
-
-		// already in XML, specially for HTC in Java
+		
+		// The input fields & buttons
 		username.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 		password = (EditText) findViewById(R.id.password);
 		password.setOnEditorActionListener(new OnEditorActionListener() {
@@ -70,7 +66,10 @@ public class RegisterActivity extends SherlockActivity {
 				return false;
 			}
 		});
-
+		
+		email = (EditText) findViewById(R.id.email);
+		email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+		
 		register = (Button) findViewById(R.id.register);
 		register.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -80,16 +79,19 @@ public class RegisterActivity extends SherlockActivity {
 	}
 
 	private void registering() {
+		// checking if the first two input fields are not empty, email is optional
 		if (username.getText().toString().equals("")
 				|| password.getText().toString().equals("")) {
 			Toast.makeText(getApplicationContext(),
 					"Please enter a valid user name and password.", Toast.LENGTH_LONG)
 					.show();
 		} else {
+			// if everything is okay, create new account
 			new RegisterTask(this).execute();
 		}
 	}
 
+	// AsyncTask for the creation of the Registering process
 	class RegisterTask extends AsyncTask<String, Void, Integer> {
 		ProgressDialog progressDialog;
 
@@ -104,61 +106,22 @@ public class RegisterActivity extends SherlockActivity {
 			progressDialog.show();
 		}
 
-		
-//		@Override
-//		protected Integer doInBackground(String... url) {
-//		    
-//		    NetworkRequest n = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt/users");
-//			
-//						n.setMethod(NetworkRequest.METHOD_POST);
-//						
-//						ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
-//						
-//						
-//						parameters.add(new BasicNameValuePair("username", "stefan"));
-//						parameters.add(new BasicNameValuePair("password", "asdfasdf"));
-//						
-//						n.setParameters(parameters);
-//						Log.d("heureka", n.getUrl()  );
-//						
-//						n.send();
-//						Log.d("heureka", n.getResult());
-//						n.getResult();
-//			return 0;
-//		} 
-		
-//		@Override
-//		protected Integer doInBackground(String... url) {
-//			
-//			NetworkRequest n = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt/users");
-//
-//			n.setMethod(NetworkRequest.METHOD_POST);
-//			ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
-//
-//			// normalerweise: username.getText().toString()   & password.getText ...
-//			parameters.add(new BasicNameValuePair("username", "stefan"));
-//			parameters.add(new BasicNameValuePair("password", "wer"));
-//			parameters.add(new BasicNameValuePair("email", "user@test.de"));
-//			
-//			
-//			n.setParameters(parameters);
-//
-//			n.send();
-//			n.getResult();
-//
-//			return 0;
-//		}
+
+
 
 	@Override
 	protected Integer doInBackground(String... url) {
-				    
+		// HTTP POST Request to Server to create new Account 
+		// URL and Content-Type have to be defined
 		    HttpClient httpclient = new DefaultHttpClient();
 		    HttpPost httppost = new HttpPost("http://giv-flashmob.uni-muenster.de/fmt/users");
 		    httppost.setHeader("Content-Type", "application/json");
 					    
 		
 				try {
-					httppost.setEntity(new StringEntity("{\"username\": \"stefan\",\"password\": \"asdfasdf\",\"email\": \"arndt@uni-muenster.de\"}"));
+					// JSON-Code for creating a new user
+					// Combination of predefined JSON + input fields
+					httppost.setEntity(new StringEntity("{\"username\":\"" + username.getText().toString() + "\",\"password\":\"" + password.getText().toString() + "\",\"email\":\"" + email.getText().toString() + "\"}"));
 					Log.d("reg", httppost.toString());
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
@@ -166,8 +129,10 @@ public class RegisterActivity extends SherlockActivity {
 				}
 				
 				try {
+					// Execute the Request
 					HttpResponse response = httpclient.execute(httppost);
 					Log.d("reg2", response.getStatusLine().toString());
+					Log.d("reg3", response.getEntity().getContent().toString());
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -185,6 +150,7 @@ public class RegisterActivity extends SherlockActivity {
 		
 		
 		@Override
+		// If something doesn't work... Catching the main problems
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			switch (result) {
@@ -207,7 +173,8 @@ public class RegisterActivity extends SherlockActivity {
 		}
 
 	}
-
+	
+	// After registering, the app redirects to the start screen and shows a Toast
 	public void redirect() {
 		Intent intent = null;
 		
