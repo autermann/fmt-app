@@ -196,7 +196,7 @@
             <Button 
                 android:id="@+id/openParticipateActivityButton"
 	            style="@style/Button"
-                android:text="Sign in/out for participation"/>
+                android:text="Participate"/>
             
         </TableRow>
             

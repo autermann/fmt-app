@@ -46,7 +46,7 @@ public class LoginActivity extends SherlockActivity {
 
 	public static final int REDIRECT_TO_START_ACTIVITY = 1;
 	public static final int REDIRECT_TO_MY_FLASHMOBS_ACTIVITY = 2;
-	// ...
+	public static final int REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY = 3;
 
 	private EditText username, password;
 	private Button login, register;
@@ -81,14 +81,15 @@ public class LoginActivity extends SherlockActivity {
 				authenticate();
 			}
 		});
-		
+
 		register = (Button) findViewById(R.id.register);
 		register.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				
-				Intent myIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+
+				Intent myIntent = new Intent(LoginActivity.this,
+						RegisterActivity.class);
 				LoginActivity.this.startActivity(myIntent);
-				
+
 			}
 		});
 	}
@@ -196,8 +197,12 @@ public class LoginActivity extends SherlockActivity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			break;
 		case REDIRECT_TO_MY_FLASHMOBS_ACTIVITY:
-			intent = new Intent(this, StartActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent = new Intent(this, MyFlashmobsActivity.class);
+			break;
+		case REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY:
+			intent = new Intent(this, FlashmobDetailsActivity.class);
+			intent.putExtra("id",
+					getIntent().getExtras().getString("flashmob_id"));
 			break;
 		}
 		startActivity(intent);
