@@ -41,10 +41,12 @@ public class ParticipateActivity extends SherlockActivity
 	private Flashmob flashmob;
 	private String fId;
 	private String PARTICIPATION_PREF_KEY;
+	private String ROLE_ID_PREF_KEY;
 	private Spinner roleSpinner;
 	private ArrayList<Role> roles;
 	private TextView roleDescriptionTv;
 	private TextView roleItemsTv;
+	private String selectedRoleId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -57,10 +59,12 @@ public class ParticipateActivity extends SherlockActivity
 		// Initialize id
 		fId = getFlashmobID();
 
-		// This is a unique key string for saving the user's participation
-		// status
-		PARTICIPATION_PREF_KEY = fId + "Pref";
+		// Key string for saving the user's participation status
+		PARTICIPATION_PREF_KEY = fId + "ParticipationPref";
 
+		// Key string for saving selected roleId
+		ROLE_ID_PREF_KEY = fId + "RoleIdPref";
+		
 		// Initialize SharedPreferences
 		prefs = SettingsActivity.getSettings(this);
 
@@ -88,7 +92,13 @@ public class ParticipateActivity extends SherlockActivity
 					participateButton.setText("Cancel Participation");
 					participateButton.setBackgroundResource(R.drawable.cancel_button_background);
 
-					// TODO: Participate-Funktion hinzufügen
+					// Save roleId in SharedPreferences
+					editor.putString(ROLE_ID_PREF_KEY, selectedRoleId);
+					editor.commit();
+					
+					// TODO: Add Participate-Funktion
+					// Send flashmobId, roleId & user data to server (URL ???)
+					// flashmobID & roleId already available 
 				}
 				else
 				{
@@ -96,6 +106,8 @@ public class ParticipateActivity extends SherlockActivity
 					editor.commit();
 					participateButton.setText("Participate");
 					participateButton.setBackgroundResource(R.drawable.button_background);
+					
+					// TODO: Add Cancel-Participate-Funktion
 				}
 			}
 		});
@@ -138,12 +150,40 @@ public class ParticipateActivity extends SherlockActivity
 		return theID;
 	}
 
+	/**
+	 * Initializes the flashmob with its data.
+	 */
 	public void getFlashmobData()
 	{
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(fId);
 	}
-
+	
+	/**
+	 * Returns an int to set the role spinner to the position of the saved selected role.
+	 * 
+	 * @return
+	 */
+	public int spinnerPos()
+	{
+		// If a role has been selected for this flashmob, get its Id
+		// Otherwise set it to the Id of the first Role in the list of roles
+		String tempRoleId = prefs.getString(ROLE_ID_PREF_KEY, roles.get(0).getId());
+		
+		int spinnerPos = 0;
+		
+		for(int i = 0; i < roles.size(); i++)
+		{
+			if(roles.get(i).getId().equals(tempRoleId))
+			{
+				spinnerPos = i;
+				break;
+			}
+		}
+		
+		return spinnerPos;
+	}
+	
 	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>>
 	{
 		// Is shown when the activity starts and while downloading the roles
@@ -236,11 +276,18 @@ public class ParticipateActivity extends SherlockActivity
 					roles.add(role);
 				}
 
+				// Set the TextViews with the attributes of the role the spinner is set on
+				roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
+				roleDescriptionTv.setText(roles.get(spinnerPos()).getDescription());
+				roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
+				roleItemsTv.setText(roles.get(spinnerPos()).returnItemsAsString());
+				
 				// Role Spinner
 				roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
 				RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(getApplicationContext(),
 						roles);
 				roleSpinner.setAdapter(adapter);
+				roleSpinner.setSelection(spinnerPos(), true);
 				roleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 				{
 					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -249,12 +296,12 @@ public class ParticipateActivity extends SherlockActivity
 						// Toast.makeText(getApplicationContext(), "Role ID: " + r.getId(),
 						// Toast.LENGTH_LONG).show();
 
-						roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
+						// Set the TextViews with the selected role's attributes
 						roleDescriptionTv.setText(r.getDescription());
-
-						roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
 						roleItemsTv.setText(r.returnItemsAsString());
 
+						// Save roleId to "remember" the selected role
+						selectedRoleId = r.getId();
 					}
 
 					@Override
@@ -263,7 +310,7 @@ public class ParticipateActivity extends SherlockActivity
 						// Do nothing
 					}
 				});
-
+				
 				findViewById(R.id.participate_layout).setVisibility(View.VISIBLE);
 			}
 			else
