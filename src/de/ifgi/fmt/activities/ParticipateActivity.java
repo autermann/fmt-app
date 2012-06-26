@@ -1,7 +1,18 @@
 package de.ifgi.fmt.activities;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,17 +20,13 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +71,7 @@ public class ParticipateActivity extends SherlockActivity
 
 		// Key string for saving selected roleId
 		ROLE_ID_PREF_KEY = fId + "RoleIdPref";
-		
+
 		// Initialize SharedPreferences
 		prefs = SettingsActivity.getSettings(this);
 
@@ -95,10 +102,12 @@ public class ParticipateActivity extends SherlockActivity
 					// Save roleId in SharedPreferences
 					editor.putString(ROLE_ID_PREF_KEY, selectedRoleId);
 					editor.commit();
-					
+
 					// TODO: Add Participate-Funktion
-					// Send flashmobId, roleId & user data to server (URL ???)
-					// flashmobID & roleId already available 
+					// Register a user for a role
+					String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId
+							+ "/role/" + selectedRoleId + "/users";
+					new UploadTask(getApplicationContext()).execute(url);
 				}
 				else
 				{
@@ -106,8 +115,10 @@ public class ParticipateActivity extends SherlockActivity
 					editor.commit();
 					participateButton.setText("Participate");
 					participateButton.setBackgroundResource(R.drawable.button_background);
-					
+
 					// TODO: Add Cancel-Participate-Funktion
+					// Unregister a user for a role
+					// Wichtig: Rolle canceln, die in SharedPrefs gespeichert ist
 				}
 			}
 		});
@@ -158,7 +169,7 @@ public class ParticipateActivity extends SherlockActivity
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(fId);
 	}
-	
+
 	/**
 	 * Returns an int to set the role spinner to the position of the saved selected role.
 	 * 
@@ -169,21 +180,21 @@ public class ParticipateActivity extends SherlockActivity
 		// If a role has been selected for this flashmob, get its Id
 		// Otherwise set it to the Id of the first Role in the list of roles
 		String tempRoleId = prefs.getString(ROLE_ID_PREF_KEY, roles.get(0).getId());
-		
+
 		int spinnerPos = 0;
-		
-		for(int i = 0; i < roles.size(); i++)
+
+		for (int i = 0; i < roles.size(); i++)
 		{
-			if(roles.get(i).getId().equals(tempRoleId))
+			if (roles.get(i).getId().equals(tempRoleId))
 			{
 				spinnerPos = i;
 				break;
 			}
 		}
-		
+
 		return spinnerPos;
 	}
-	
+
 	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>>
 	{
 		// Is shown when the activity starts and while downloading the roles
@@ -281,7 +292,7 @@ public class ParticipateActivity extends SherlockActivity
 				roleDescriptionTv.setText(roles.get(spinnerPos()).getDescription());
 				roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
 				roleItemsTv.setText(roles.get(spinnerPos()).returnItemsAsString());
-				
+
 				// Role Spinner
 				roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
 				RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(getApplicationContext(),
@@ -310,7 +321,7 @@ public class ParticipateActivity extends SherlockActivity
 						// Do nothing
 					}
 				});
-				
+
 				findViewById(R.id.participate_layout).setVisibility(View.VISIBLE);
 			}
 			else
@@ -323,4 +334,93 @@ public class ParticipateActivity extends SherlockActivity
 			progressDialog.dismiss();
 		}
 	}
+
+	class UploadTask extends AsyncTask<String, Void, Void>
+	{
+		// Is shown while the activity is uploading the participation data
+		ProgressDialog progressDialog;
+
+		public UploadTask(Context context)
+		{
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setMessage("Uploading participation status...");
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+			progressDialog.show();
+		}
+
+		@Override
+		protected Void doInBackground(String... url)
+		{
+			// Get saved roleId from SharedPrefs
+			String roleId = prefs.getString(ROLE_ID_PREF_KEY, selectedRoleId);
+
+			// Build JSON-String to send to the server
+			String jsonString = "{\"id\":\"" + roleId + "\"}";
+
+			// Local instance of cookie store
+			CookieStore cookieStore = new BasicCookieStore();
+
+			// Add cookie from SharedPrefs to the cookie store
+			/*
+			 * Kommentar von Sascha:
+			 * 
+			 * PROBLEM: Ich wei§ nicht wie ich aus dem String aus den SharedPrefs einen Cookie
+			 * machen kann. Au§erdem hab ich noch keinen Plan, was ich anschlie§end mit dem 
+			 * CookieStore machen muss. Kenne mich da leider Ÿberhaupt nicht aus.
+			 */
+			
+			// Cookie cookie = (Cookie) prefs.getString("fmt_oid", "");
+			// cookieStore.addCookie(cookie);
+
+			// HTTP POST Request to Server to register a user for a role
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(url[0]);
+			httppost.setHeader("Content-Type", "application/json");
+
+			// TODO: CookieStore adden???
+			
+			try
+			{
+				httppost.setEntity(new StringEntity(jsonString));
+				Log.d("participation1", httppost.toString());
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				HttpResponse response = httpclient.execute(httppost);
+				Log.d("participation2", response.getStatusLine().toString());
+				Log.d("participation3", response.getEntity().getContent().toString());
+			}
+			catch (ClientProtocolException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			// Ist return null wirklich richtig hier???
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			super.onPostExecute(result);
+
+			progressDialog.dismiss();
+		}
+
+	}
+
 }
