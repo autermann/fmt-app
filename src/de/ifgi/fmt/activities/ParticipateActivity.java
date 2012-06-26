@@ -17,6 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,8 +46,7 @@ import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
-public class ParticipateActivity extends SherlockActivity
-{
+public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
 	private SharedPreferences prefs;
 	private Flashmob flashmob;
@@ -60,8 +60,7 @@ public class ParticipateActivity extends SherlockActivity
 	private String selectedRoleId;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participate_activity);
 
@@ -86,22 +85,21 @@ public class ParticipateActivity extends SherlockActivity
 
 		// Participate button
 		participateButton = (Button) findViewById(R.id.participateButton);
-		participateButton.setOnClickListener(new View.OnClickListener()
-		{
+		participateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
-				boolean isParticipating = prefs.getBoolean(PARTICIPATION_PREF_KEY, false);
+			public void onClick(View v) {
+				boolean isParticipating = prefs.getBoolean(
+						PARTICIPATION_PREF_KEY, false);
 
 				final SharedPreferences.Editor editor = prefs.edit();
 
 				// Change button text depending on participation status
-				if (!isParticipating)
-				{
+				if (!isParticipating) {
 					editor.putBoolean(PARTICIPATION_PREF_KEY, true);
 					editor.commit();
 					participateButton.setText("Cancel Participation");
-					participateButton.setBackgroundResource(R.drawable.cancel_button_background);
+					participateButton
+							.setBackgroundResource(R.drawable.cancel_button_background);
 
 					// Save roleId in SharedPreferences
 					editor.putString(ROLE_ID_PREF_KEY, selectedRoleId);
@@ -109,16 +107,15 @@ public class ParticipateActivity extends SherlockActivity
 
 					// TODO: Add Participate-Funktion
 					// Register a user for a role
-					String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId
-							+ "/role/" + selectedRoleId + "/users";
-					new UploadTask(getApplicationContext()).execute(url);
-				}
-				else
-				{
+					String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+							+ fId + "/roles/" + selectedRoleId + "/users";
+					new UploadTask(ParticipateActivity.this).execute(url);
+				} else {
 					editor.putBoolean(PARTICIPATION_PREF_KEY, false);
 					editor.commit();
 					participateButton.setText("Participate");
-					participateButton.setBackgroundResource(R.drawable.button_background);
+					participateButton
+							.setBackgroundResource(R.drawable.button_background);
 
 					// TODO: Add Cancel-Participate-Funktion
 					// Unregister a user for a role
@@ -128,15 +125,14 @@ public class ParticipateActivity extends SherlockActivity
 			}
 		});
 
-		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId + "/roles";
+		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/" + fId
+				+ "/roles";
 		new DownloadTask(this).execute(url);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			onBackPressed();
 			// Intent intent = new Intent(getApplicationContext(),
@@ -155,8 +151,7 @@ public class ParticipateActivity extends SherlockActivity
 	 * 
 	 * @return
 	 */
-	public String getFlashmobID()
-	{
+	public String getFlashmobID() {
 		// Identify the flashmob
 		Bundle extras = getIntent().getExtras();
 
@@ -169,58 +164,52 @@ public class ParticipateActivity extends SherlockActivity
 	/**
 	 * Initializes the flashmob with its data.
 	 */
-	public void getFlashmobData()
-	{
+	public void getFlashmobData() {
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext()).getFlashmobById(fId);
 	}
 
 	/**
-	 * Returns an int to set the role spinner to the position of the saved selected role.
+	 * Returns an int to set the role spinner to the position of the saved
+	 * selected role.
 	 * 
 	 * @return
 	 */
-	public int spinnerPos()
-	{
+	public int spinnerPos() {
 		// If a role has been selected for this flashmob, get its Id
 		// Otherwise set it to the Id of the first Role in the list of roles
-		String tempRoleId = prefs.getString(ROLE_ID_PREF_KEY, roles.get(0).getId());
+		// String tempRoleId = prefs.getString(ROLE_ID_PREF_KEY, roles.get(0)
+		// .getId());
 
 		int spinnerPos = 0;
 
-		for (int i = 0; i < roles.size(); i++)
-		{
-			if (roles.get(i).getId().equals(tempRoleId))
-			{
-				spinnerPos = i;
-				break;
-			}
-		}
+		// for (int i = 0; i < roles.size(); i++) {
+		// if (roles.get(i).getId().equals(tempRoleId)) {
+		// spinnerPos = i;
+		// break;
+		// }
+		// }
 
 		return spinnerPos;
 	}
 
-	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>>
-	{
+	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>> {
 		// Is shown when the activity starts and while downloading the roles
 		ProgressDialog progressDialog;
 
-		public DownloadTask(Context context)
-		{
+		public DownloadTask(Context context) {
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setMessage("Loading roles...");
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			super.onPreExecute();
 			progressDialog.show();
 		}
 
 		@Override
-		protected ArrayList<String> doInBackground(String... url)
-		{
+		protected ArrayList<String> doInBackground(String... url) {
 			// Request for getting all roleIds
 			NetworkRequest request = new NetworkRequest(url[0]);
 
@@ -230,24 +219,17 @@ public class ParticipateActivity extends SherlockActivity
 			int result = request.send();
 
 			// Getting all roleIds
-			if (result == NetworkRequest.NETWORK_PROBLEM)
-			{
+			if (result == NetworkRequest.NETWORK_PROBLEM) {
 				return null;
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					JSONObject root = new JSONObject(request.getResult());
 					JSONArray roles = root.getJSONArray("roles");
 
-					for (int i = 0; i < roles.length(); i++)
-					{
+					for (int i = 0; i < roles.length(); i++) {
 						roleIds.add(roles.getJSONObject(i).getString("id"));
 					}
-				}
-				catch (JSONException e)
-				{
+				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
@@ -256,19 +238,16 @@ public class ParticipateActivity extends SherlockActivity
 			ArrayList<String> results = new ArrayList<String>();
 
 			// Getting all roles
-			for (String rId : roleIds)
-			{
+			for (String rId : roleIds) {
 				// Request for every single roleId
-				request = new NetworkRequest("http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
-						+ fId + "/roles" + "/" + rId);
+				request = new NetworkRequest(
+						"http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+								+ fId + "/roles" + "/" + rId);
 				result = request.send();
 
-				if (result == NetworkRequest.NETWORK_PROBLEM)
-				{
+				if (result == NetworkRequest.NETWORK_PROBLEM) {
 					return null;
-				}
-				else
-				{
+				} else {
 					results.add(request.getResult());
 				}
 			}
@@ -277,93 +256,96 @@ public class ParticipateActivity extends SherlockActivity
 		}
 
 		@Override
-		protected void onPostExecute(ArrayList<String> results)
-		{
+		protected void onPostExecute(ArrayList<String> results) {
 			super.onPostExecute(results);
 
-			if (results != null)
-			{
+			if (results != null) {
 				roles = new ArrayList<Role>();
 
 				// Parsing all roles
-				for (String result : results)
-				{
-					Role role = RoleJSONParser.parse(result, getApplicationContext());
+				for (String result : results) {
+					Role role = RoleJSONParser.parse(result,
+							getApplicationContext());
 					roles.add(role);
 				}
 
-				// Set the TextViews with the attributes of the role the spinner
-				// is set on
-				roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
-				roleDescriptionTv.setText(roles.get(spinnerPos()).getDescription());
-				roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
-				roleItemsTv.setText(roles.get(spinnerPos()).returnItemsAsString());
+				if (roles.size() > 0) {
+					// Set the TextViews with the attributes of the role the
+					// spinner
+					// is set on
+					roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
+					roleDescriptionTv.setText(roles.get(spinnerPos())
+							.getDescription());
+					roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
+					roleItemsTv.setText(roles.get(spinnerPos())
+							.returnItemsAsString());
 
-				// Role Spinner
-				roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
-				RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(getApplicationContext(),
-						roles);
-				roleSpinner.setAdapter(adapter);
-				roleSpinner.setSelection(spinnerPos(), true);
-				roleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-				{
-					public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-					{
-						Role r = (Role) parent.getItemAtPosition(pos);
-						// Toast.makeText(getApplicationContext(),
-						// "Role ID: " + r.getId(),
-						// Toast.LENGTH_LONG).show();
+					// Role Spinner
+					roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
+					RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(
+							getApplicationContext(), roles);
+					roleSpinner.setAdapter(adapter);
+					roleSpinner.setSelection(spinnerPos(), true);
+					roleSpinner
+							.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+								public void onItemSelected(
+										AdapterView<?> parent, View view,
+										int pos, long id) {
+									Role r = (Role) parent
+											.getItemAtPosition(pos);
+									// Toast.makeText(getApplicationContext(),
+									// "Role ID: " + r.getId(),
+									// Toast.LENGTH_LONG).show();
 
-						// Set the TextViews with the selected role's
-						// attributes
-						roleDescriptionTv.setText(r.getDescription());
-						roleItemsTv.setText(r.returnItemsAsString());
+									// Set the TextViews with the selected
+									// role's
+									// attributes
+									roleDescriptionTv.setText(r
+											.getDescription());
+									roleItemsTv.setText(r.returnItemsAsString());
 
-						// Save roleId to "remember" the selected role
-						selectedRoleId = r.getId();
-					}
+									// Save roleId to "remember" the selected
+									// role
+									selectedRoleId = r.getId();
+								}
 
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0)
-					{
-						// Do nothing
-					}
-				});
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// Do nothing
+								}
+							});
+				}
 
-				findViewById(R.id.participate_layout).setVisibility(View.VISIBLE);
-			}
-			else
-			{
+				findViewById(R.id.participate_layout).setVisibility(
+						View.VISIBLE);
+			} else {
 				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.", Toast.LENGTH_LONG)
-						.show();
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
 			}
 
 			progressDialog.dismiss();
 		}
 	}
 
-	class UploadTask extends AsyncTask<String, Void, Void>
-	{
+	class UploadTask extends AsyncTask<String, Void, Void> {
 		// Is shown while the activity is uploading the participation data
 		ProgressDialog progressDialog;
 
-		public UploadTask(Context context)
-		{
+		public UploadTask(Context context) {
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setMessage("Uploading participation status...");
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			super.onPreExecute();
 			progressDialog.show();
 		}
 
 		@Override
-		protected Void doInBackground(String... url)
-		{
+		protected Void doInBackground(String... url) {
 			// Get saved roleId from SharedPrefs
 			String roleId = prefs.getString(ROLE_ID_PREF_KEY, selectedRoleId);
 
@@ -372,56 +354,53 @@ public class ParticipateActivity extends SherlockActivity
 
 			// Create a local instance of cookie store
 			CookieStore cookieStore = new BasicCookieStore();
-			
+
 			// Create cookie from SharedPrefs and add it to the cookie store
 			String name = "fmt_oid";
 			String value = prefs.getString("fmt_oid", "");
 			Cookie cookie = new BasicClientCookie(name, value);
 			cookieStore.addCookie(cookie);
-			
+
 			// Create local HTTP context
-		    HttpContext localContext = new BasicHttpContext();
-			
+			HttpContext localContext = new BasicHttpContext();
+
 			// Bind cookie store to the local context
-		    localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 
 			// HTTP POST Request to Server to register a user for a role
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(url[0]);
 			httppost.setHeader("Content-Type", "application/json");
-
-			try
-			{
+			
+			Log.d("wichtig", "URL: "+ url[0]);
+			
+			try {
 				httppost.setEntity(new StringEntity(jsonString));
 				Log.d("participation1", httppost.toString());
-			}
-			catch (UnsupportedEncodingException e)
-			{
+			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 
-			try
-			{
-				HttpResponse response = httpclient.execute(httppost, localContext);
-				Log.d("participation2", response.getStatusLine().toString());
-				Log.d("participation3", response.getEntity().getContent().toString());
-			}
-			catch (ClientProtocolException e)
-			{
+			try {
+				HttpResponse response = httpclient.execute(httppost,
+						localContext);
+				Log.i("wichtig", "Status: "+ response.getStatusLine());
+				Log.i("wichtig", "Response: "+ EntityUtils.toString(response.getEntity()));
+				
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			
+			
 
 			// Ist return null wirklich richtig hier???
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Void result)
-		{
+		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 
 			progressDialog.dismiss();
