@@ -1,7 +1,6 @@
 package de.ifgi.fmt.activities;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -97,9 +96,6 @@ public class ParticipateActivity extends SherlockActivity {
 				if (!isParticipating) {
 					editor.putBoolean(PARTICIPATION_PREF_KEY, true);
 					editor.commit();
-					participateButton.setText("Cancel Participation");
-					participateButton
-							.setBackgroundResource(R.drawable.cancel_button_background);
 
 					// Save roleId in SharedPreferences
 					editor.putString(ROLE_ID_PREF_KEY, selectedRoleId);
@@ -107,10 +103,15 @@ public class ParticipateActivity extends SherlockActivity {
 
 					// TODO: Add Participate-Funktion
 					// Register a user for a role
+
+					String selectedItem = ((RolesSpinnerAdapter) roleSpinner
+							.getAdapter()).getItem(
+							roleSpinner.getSelectedItemPosition()).getId();
 					String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
-							+ fId + "/roles/" + selectedRoleId + "/users";
+							+ fId + "/roles/" + selectedItem + "/users";
 					new UploadTask(ParticipateActivity.this).execute(url);
 				} else {
+
 					editor.putBoolean(PARTICIPATION_PREF_KEY, false);
 					editor.commit();
 					participateButton.setText("Participate");
@@ -329,7 +330,8 @@ public class ParticipateActivity extends SherlockActivity {
 		}
 	}
 
-	class UploadTask extends AsyncTask<String, Void, Void> {
+	class UploadTask extends AsyncTask<String, Void, Integer> {
+
 		// Is shown while the activity is uploading the participation data
 		ProgressDialog progressDialog;
 
@@ -345,12 +347,11 @@ public class ParticipateActivity extends SherlockActivity {
 		}
 
 		@Override
-		protected Void doInBackground(String... url) {
-			// Get saved roleId from SharedPrefs
-			String roleId = prefs.getString(ROLE_ID_PREF_KEY, selectedRoleId);
+		protected Integer doInBackground(String... url) {
 
 			// Build JSON-String to send to the server
-			String jsonString = "{\"id\":\"" + roleId + "\"}";
+			String jsonString = "{\"username\":\""
+					+ prefs.getString("user_name", "") + "\"}";
 
 			// Create a local instance of cookie store
 			CookieStore cookieStore = new BasicCookieStore();
@@ -371,37 +372,47 @@ public class ParticipateActivity extends SherlockActivity {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(url[0]);
 			httppost.setHeader("Content-Type", "application/json");
-			
-			Log.d("wichtig", "URL: "+ url[0]);
-			
-			try {
-				httppost.setEntity(new StringEntity(jsonString));
-				Log.d("participation1", httppost.toString());
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+
+			Log.d("wichtig", "URL: " + url[0]);
 
 			try {
+
+				httppost.setEntity(new StringEntity(jsonString));
+
 				HttpResponse response = httpclient.execute(httppost,
 						localContext);
-				Log.i("wichtig", "Status: "+ response.getStatusLine());
-				Log.i("wichtig", "Response: "+ EntityUtils.toString(response.getEntity()));
-				
+				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("wichtig",
+						"Response: "
+								+ EntityUtils.toString(response.getEntity()));
+				return response.getStatusLine().getStatusCode();
 			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			
 
-			// Ist return null wirklich richtig hier???
-			return null;
+				e.printStackTrace();
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
+
+				return 0;
+			}
+			return 0;
+
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Integer result) {
+
 			super.onPostExecute(result);
+			if (result == 201) {
+				participateButton.setText("Cancel Participation");
+				participateButton
+						.setBackgroundResource(R.drawable.cancel_button_background);
+			} else if (result == 0) {
+				Toast.makeText(getApplicationContext(),
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
+			}
 
 			progressDialog.dismiss();
 		}

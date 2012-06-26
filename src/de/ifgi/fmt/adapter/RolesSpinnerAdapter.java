@@ -30,7 +30,7 @@ public class RolesSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 	}
 
 	@Override
-	public Object getItem(int position)
+	public Role getItem(int position)
 	{
 		return roles.get(position);
 	}
