@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
@@ -506,9 +507,6 @@ public class ParticipateActivity extends SherlockActivity
 		@Override
 		protected Integer doInBackground(String... url)
 		{
-			// Build JSON-String to send to the server
-			String jsonString = "{\"username\":\"" + prefs.getString("user_name", "") + "\"}";
-
 			// Create a local instance of cookie store
 			CookieStore cookieStore = new BasicCookieStore();
 
@@ -526,17 +524,14 @@ public class ParticipateActivity extends SherlockActivity
 
 			// HTTP POST Request to Server to register a user for a role
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(url[0]);
-			httppost.setHeader("Content-Type", "application/json");
+			HttpDelete httpdelete = new HttpDelete(url[0]);
+			httpdelete.setHeader("Content-Type", "application/json");
 
 			Log.d("wichtig", "URL: " + url[0]);
 
 			try
 			{
-
-				httppost.setEntity(new StringEntity(jsonString));
-
-				HttpResponse response = httpclient.execute(httppost, localContext);
+				HttpResponse response = httpclient.execute(httpdelete, localContext);
 				Log.i("wichtig", "Status: " + response.getStatusLine());
 				Log.i("wichtig", "Response: " + EntityUtils.toString(response.getEntity()));
 				return response.getStatusLine().getStatusCode();
