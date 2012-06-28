@@ -36,17 +36,20 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 		Flashmob f = flashmobs.get(position);
 		((TextView) v.findViewById(R.id.flashmob_title)).setText(f.getTitle());
 		if (location != null) {
-			String distance = new DecimalFormat("0.#").format(f
-					.getDistanceInKilometersTo(location));
-			if (Double.parseDouble(distance) < 1) {
-				distance = String
-						.valueOf(((int) (Double.parseDouble(distance) * 1000)));
-				distance += " m";
+			double distance = f.getDistanceInKilometersTo(location);
+			String distanceText;
+			if (distance < 1) {
+				distance *= 10;
+				distance = Math.round(distance);
+				distance *= 100;
+				distanceText = new DecimalFormat("0.#").format(distance);
+				distanceText += " m";
 			} else {
-				distance += " km";
+				distanceText = new DecimalFormat("0.#").format(distance);
+				distanceText += " km";
 			}
 			((TextView) v.findViewById(R.id.flashmob_distance))
-					.setText(distance);
+					.setText(distanceText);
 		} else {
 			((TextView) v.findViewById(R.id.flashmob_distance))
 					.setVisibility(View.GONE);
