@@ -58,22 +58,26 @@
             android:label="Login"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
-         <activity
+        <activity
             android:name=".activities.RegisterActivity"
             android:label="Register"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.AttributesResultsActivity"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
-            android:label="Results">
+            android:label="Results"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
-        <activity 
+        <activity
             android:name=".activities.ParticipateActivity"
             android:label="Participation"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
-        
+        <activity
+            android:name=".activities.ContentActivity"
+            android:label="Participation"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        </activity>
     </application>
 
 </manifest>

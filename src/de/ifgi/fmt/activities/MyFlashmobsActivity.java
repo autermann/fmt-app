@@ -97,7 +97,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 
 				ListAdapter adapter = new FlashmobListAdapter(
-						getApplicationContext(), flashmobs, null);
+						getApplicationContext(), flashmobs, null, false, true);
 				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
 				list.setOnItemClickListener(new OnItemClickListener() {

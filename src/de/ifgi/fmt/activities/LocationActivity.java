@@ -202,7 +202,8 @@ public class LocationActivity extends SherlockActivity {
 				});
 
 				ListAdapter adapter = new FlashmobListAdapter(
-						getApplicationContext(), flashmobs, currentLocation);
+						getApplicationContext(), flashmobs, currentLocation,
+						true, false);
 				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
 				list.setOnItemClickListener(new OnItemClickListener() {

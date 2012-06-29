@@ -2,24 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="@drawable/list_item_background" >
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/ic_start_flashmob" />
+    android:background="@drawable/list_item_background"
+    android:baselineAligned="false"
+    android:orientation="horizontal" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:padding="8dp" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_start_flashmob" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -29,9 +33,10 @@
 
                 <TextView
                     android:id="@+id/flashmob_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:text="Flashmob title"
                     android:textColor="?android:attr/textColorPrimaryInverse"
                     android:textSize="18sp" />
@@ -42,8 +47,8 @@
                     android:layout_height="wrap_content"
                     android:text="123 km"
                     android:textColor="?android:attr/textColorPrimaryInverse"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
@@ -55,5 +60,19 @@
                 android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:id="@+id/start_flashmob_button"
+        android:background="@drawable/list_item_background" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_start_play" />
+    </FrameLayout>
 
 </LinearLayout>

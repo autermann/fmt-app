@@ -98,8 +98,7 @@ public class AttributesResultsActivity extends SherlockActivity
 				// get access to the store and save the new flashmobs
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 
-				ListAdapter adapter = new FlashmobListAdapter(getApplicationContext(), flashmobs,
-						null);
+				ListAdapter adapter = new FlashmobListAdapter(getApplicationContext(), flashmobs);
 				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
 				list.setOnItemClickListener(new OnItemClickListener()
