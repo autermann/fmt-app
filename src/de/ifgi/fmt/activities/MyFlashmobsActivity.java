@@ -94,7 +94,15 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
 				// get access to the store and save the new flashmobs
-				((Store) getApplicationContext()).setFlashmobs(flashmobs);
+				Store store = (Store) getApplicationContext();
+				for (Flashmob f : flashmobs) {
+					if (store.hasFlashmob(f)) {
+						Log.i("wichtig", "Flashmob not added to the store.");
+					} else {
+						store.addFlashmob(f);
+						Log.i("wichtig", "Flashmob added to the store.");
+					}
+				}
 
 				ListAdapter adapter = new FlashmobListAdapter(
 						getApplicationContext(), flashmobs, null, false, true);

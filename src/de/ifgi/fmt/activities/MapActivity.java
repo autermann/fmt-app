@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
@@ -288,7 +289,15 @@ public class MapActivity extends SherlockMapActivity
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result,
 						getApplicationContext());
 				// get access to the store and save the new flashmobs
-				((Store) getApplicationContext()).setFlashmobs(flashmobs);
+				Store store = (Store) getApplicationContext();
+				for (Flashmob f : flashmobs) {
+					if (store.hasFlashmob(f)) {
+						Log.i("wichtig", "Flashmob not added to the store.");
+					} else {
+						store.addFlashmob(f);
+						Log.i("wichtig", "Flashmob added to the store.");
+					}
+				}
 
 				// create new overlay
 				itemizedOverlay = new FlashmobsOverlay(marker, mapView);

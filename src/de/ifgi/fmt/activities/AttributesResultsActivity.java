@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -96,7 +97,15 @@ public class AttributesResultsActivity extends SherlockActivity
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(result,
 						getApplicationContext());
 				// get access to the store and save the new flashmobs
-				((Store) getApplicationContext()).setFlashmobs(flashmobs);
+				Store store = (Store) getApplicationContext();
+				for (Flashmob f : flashmobs) {
+					if (store.hasFlashmob(f)) {
+						Log.i("wichtig", "Flashmob not added to the store.");
+					} else {
+						store.addFlashmob(f);
+						Log.i("wichtig", "Flashmob added to the store.");
+					}
+				}
 
 				ListAdapter adapter = new FlashmobListAdapter(getApplicationContext(), flashmobs);
 				ListView list = (ListView) findViewById(android.R.id.list);

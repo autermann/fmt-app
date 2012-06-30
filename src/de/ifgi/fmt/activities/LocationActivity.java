@@ -16,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -183,8 +184,15 @@ public class LocationActivity extends SherlockActivity {
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
 				// get access to the store and save the new flashmobs
-				((Store) getApplicationContext()).setFlashmobs(flashmobs);
-
+				Store store = (Store) getApplicationContext();
+				for (Flashmob f : flashmobs) {
+					if (store.hasFlashmob(f)) {
+						Log.i("wichtig", "Flashmob not added to the store.");
+					} else {
+						store.addFlashmob(f);
+						Log.i("wichtig", "Flashmob added to the store.");
+					}
+				}
 				// sort flashmobs by distance to current location
 				Collections.sort(flashmobs, new Comparator<Flashmob>() {
 					public int compare(Flashmob x, Flashmob y) {
