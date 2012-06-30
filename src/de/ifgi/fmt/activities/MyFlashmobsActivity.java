@@ -8,10 +8,9 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,6 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.FlashmobListAdapter;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
@@ -103,40 +103,31 @@ public class MyFlashmobsActivity extends SherlockActivity {
 					if (store.hasFlashmob(f)) {
 						Log.i("wichtig", "Flashmob not added to the store.");
 					} else {
-						SharedPreferences preferences = PreferenceManager
-								.getDefaultSharedPreferences(getApplicationContext());
-						String myFlashmobs = preferences.getString(
-								"my_flashmobs", null);
-						if (myFlashmobs != null) {
-							JSONArray array = new JSONArray(myFlashmobs);
-							for (int i = 0; i < array.length(); i++) {
-								if (array.getString(i).equals(f.getId())) {
-									request = new HttpGet(
-											"http://giv-flashmob.uni-muenster.de/fmt/users/"
-													+ preferences.getString(
-															"user_name", "")
-													+ "/flashmobs/" + f.getId()
-													+ "/role");
-									request.setHeader(
-											"Cookie",
-											"fmt_oid="
-													+ preferences.getString(
-															"fmt_oid", ""));
-									response = client.execute(request);
-									result = EntityUtils.toString(response
-											.getEntity());
+						// get selected Role
+						if (PersistentStore.isMyFlashmob(
+								getApplicationContext(), f)) {
+							request = new HttpGet(
+									"http://giv-flashmob.uni-muenster.de/fmt/users/"
+											+ PersistentStore
+													.getUserName(getApplicationContext())
+											+ "/flashmobs/" + f.getId()
+											+ "/role");
+							Cookie cookie = PersistentStore
+									.getCookie(getApplicationContext());
+							request.setHeader("Cookie", cookie.getName() + "="
+									+ cookie.getValue());
+							response = client.execute(request);
+							result = EntityUtils.toString(response.getEntity());
 
-									Log.i("wichtig", "URL: " + request.getURI());
-									Log.i("wichtig",
-											"Status: "
-													+ response.getStatusLine());
-									Log.i("wichtig", "Response: " + result);
-									Role role = RoleJSONParser.parse(result,
-											getApplicationContext());
-									f.setSelectedRole(role);
-								}
-							}
+							Log.i("wichtig", "URL: " + request.getURI());
+							Log.i("wichtig",
+									"Status: " + response.getStatusLine());
+							Log.i("wichtig", "Response: " + result);
+							Role role = RoleJSONParser.parse(result,
+									getApplicationContext());
+							f.setSelectedRole(role);
 						}
+						// add to the temporal store
 						store.addFlashmob(f);
 						Log.i("wichtig", "Flashmob added to the store.");
 					}
@@ -147,8 +138,6 @@ public class MyFlashmobsActivity extends SherlockActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			return null;

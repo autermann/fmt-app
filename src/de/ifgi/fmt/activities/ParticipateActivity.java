@@ -10,6 +10,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -20,7 +21,6 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +36,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.RolesSpinnerAdapter;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
@@ -43,7 +44,6 @@ import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
-	private SharedPreferences prefs;
 	private Flashmob flashmob;
 	private Spinner roleSpinner;
 	private ArrayList<Role> roles;
@@ -64,9 +64,6 @@ public class ParticipateActivity extends SherlockActivity {
 		flashmob = store.getFlashmobById(getIntent().getExtras()
 				.getString("id"));
 		setTitle(flashmob.getTitle());
-
-		// Initialize SharedPreferences
-		prefs = SettingsActivity.getSettings(this);
 
 		// Get participation status
 		if (flashmob.getSelectedRole() != null)
@@ -102,7 +99,9 @@ public class ParticipateActivity extends SherlockActivity {
 							+ flashmob.getId()
 							+ "/roles/"
 							+ selectedRoleId
-							+ "/users/" + prefs.getString("user_name", "");
+							+ "/users/"
+							+ PersistentStore
+									.getUserName(getApplicationContext());
 					new CancelTask(ParticipateActivity.this).execute(url);
 				}
 			}
@@ -326,7 +325,8 @@ public class ParticipateActivity extends SherlockActivity {
 
 			// Build JSON-String to send to the server
 			String jsonString = "{\"username\":\""
-					+ prefs.getString("user_name", "") + "\"}";
+					+ PersistentStore.getUserName(getApplicationContext())
+					+ "\"}";
 
 			// HTTP POST Request to Server to register a user for a role
 			HttpClient httpclient = new DefaultHttpClient();
@@ -334,8 +334,9 @@ public class ParticipateActivity extends SherlockActivity {
 			httppost.setHeader("Content-Type", "application/json");
 
 			// Get cookie from SharedPrefs and add it to the header
-			String name = "fmt_oid";
-			String value = prefs.getString("fmt_oid", "");
+			Cookie cookie = PersistentStore.getCookie(getApplicationContext());
+			String name = cookie.getName();
+			String value = cookie.getValue();
 			httppost.setHeader("Cookie", name + "=" + value);
 
 			Log.i("wichtig", "URL: " + httppost.getURI());
@@ -362,6 +363,11 @@ public class ParticipateActivity extends SherlockActivity {
 			super.onPostExecute(result);
 			if (result == HttpStatus.SC_CREATED) {
 				isParticipating = true;
+				Role role = ((RolesSpinnerAdapter) roleSpinner.getAdapter())
+						.getItem(roleSpinner.getSelectedItemPosition());
+				flashmob.setSelectedRole(role);
+				PersistentStore
+						.addMyFlashmob(getApplicationContext(), flashmob);
 				// Change layout of the Participate/Cancel-Button
 				participateButton.setText("Cancel Participation");
 				participateButton
@@ -396,10 +402,11 @@ public class ParticipateActivity extends SherlockActivity {
 				DefaultHttpClient httpclient = new DefaultHttpClient();
 				HttpDelete httpdelete = new HttpDelete(url[0]);
 
-				// Create cookie from SharedPrefs and add it to the request's
-				// header
-				String name = "fmt_oid";
-				String value = prefs.getString("fmt_oid", "");
+				// Get cookie from SharedPrefs and add it to the header
+				Cookie cookie = PersistentStore
+						.getCookie(getApplicationContext());
+				String name = cookie.getName();
+				String value = cookie.getValue();
 				httpdelete.setHeader("Cookie", name + "=" + value);
 
 				HttpResponse response = httpclient.execute(httpdelete);
@@ -422,6 +429,9 @@ public class ParticipateActivity extends SherlockActivity {
 			super.onPostExecute(result);
 			if (result == HttpStatus.SC_NO_CONTENT) {
 				isParticipating = false;
+				flashmob.setSelectedRole(null);
+				PersistentStore.removeMyFlashmob(getApplicationContext(),
+						flashmob);
 				// Change layout of the Participate/Cancel-Button
 				participateButton.setText("Participate");
 				participateButton

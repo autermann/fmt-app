@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.PersistentStore;
 
 public class StartActivity extends SherlockActivity {
 	private static final int MENU_WEBSITE = 1;
@@ -30,12 +31,11 @@ public class StartActivity extends SherlockActivity {
 		super.onResume();
 		invalidateOptionsMenu();
 
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		Log.i("wichtig", "User name: " + preferences.getString("user_name", ""));
-		Log.i("wichtig", "Cookie: " + preferences.getString("fmt_oid", ""));
+		Log.i("wichtig", "User name: " + PersistentStore.getUserName(this));
+		Log.i("wichtig", "Cookie: "
+				+ PersistentStore.getCookie(this).getValue());
 		Log.i("wichtig",
-				"My Flashmobs: " + preferences.getString("my_flashmobs", ""));
+				"My Flashmobs: " + PersistentStore.getMyFlashmobs(this));
 	}
 
 	public void startMapActivity(View v) {

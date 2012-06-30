@@ -6,6 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,10 +39,12 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.FlashmobListAdapter;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
+import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class LocationActivity extends SherlockActivity {
 	LocationManager locationManager;
@@ -137,7 +148,7 @@ public class LocationActivity extends SherlockActivity {
 	}
 
 	// AsyncTask instead of a Thread, in order to download the online data
-	class DownloadTask extends AsyncTask<Void, Void, String> {
+	class DownloadTask extends AsyncTask<Void, Void, ArrayList<Flashmob>> {
 		ProgressDialog progressDialog;
 
 		public DownloadTask(Context context) {
@@ -152,7 +163,7 @@ public class LocationActivity extends SherlockActivity {
 		}
 
 		@Override
-		protected String doInBackground(Void... params) {
+		protected ArrayList<Flashmob> doInBackground(Void... params) {
 			// building bounding box
 			double distance = 10; // (Kilometers)
 			Location t = getDestination(currentLocation, distance, 0); // Top
@@ -167,19 +178,12 @@ public class LocationActivity extends SherlockActivity {
 			// sending server request
 			String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
 			url += "?bbox=" + bottom + "," + left + "," + top + "," + right;
-			NetworkRequest request = new NetworkRequest(url);
-			int result = request.send();
-			if (result == NetworkRequest.NETWORK_PROBLEM) {
-				return null;
-			} else {
-				return request.getResult();
-			}
-		}
 
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (result != null) {
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(url);
+				HttpResponse response = client.execute(request);
+				String result = EntityUtils.toString(response.getEntity());
 				// parsing the result
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
@@ -189,10 +193,50 @@ public class LocationActivity extends SherlockActivity {
 					if (store.hasFlashmob(f)) {
 						Log.i("wichtig", "Flashmob not added to the store.");
 					} else {
+						// get selected Role
+						if (PersistentStore.isMyFlashmob(
+								getApplicationContext(), f)) {
+							request = new HttpGet(
+									"http://giv-flashmob.uni-muenster.de/fmt/users/"
+											+ PersistentStore
+													.getUserName(getApplicationContext())
+											+ "/flashmobs/" + f.getId()
+											+ "/role");
+							Cookie cookie = PersistentStore
+									.getCookie(getApplicationContext());
+							request.setHeader("Cookie", cookie.getName() + "="
+									+ cookie.getValue());
+							response = client.execute(request);
+							result = EntityUtils.toString(response.getEntity());
+
+							Log.i("wichtig", "URL: " + request.getURI());
+							Log.i("wichtig",
+									"Status: " + response.getStatusLine());
+							Log.i("wichtig", "Response: " + result);
+							Role role = RoleJSONParser.parse(result,
+									getApplicationContext());
+							f.setSelectedRole(role);
+						}
+						// add to the temporal store
 						store.addFlashmob(f);
 						Log.i("wichtig", "Flashmob added to the store.");
 					}
 				}
+				return flashmobs;
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(final ArrayList<Flashmob> flashmobs) {
+			super.onPostExecute(flashmobs);
+			if (flashmobs != null) {
 				// sort flashmobs by distance to current location
 				Collections.sort(flashmobs, new Comparator<Flashmob>() {
 					public int compare(Flashmob x, Flashmob y) {
@@ -208,7 +252,6 @@ public class LocationActivity extends SherlockActivity {
 							return 0;
 					}
 				});
-
 				ListAdapter adapter = new FlashmobListAdapter(
 						getApplicationContext(), flashmobs, currentLocation,
 						true, false);
