@@ -20,6 +20,8 @@ public class Flashmob {
 	private String description;
 	private Date startTime;
 	private Date endTime;
+	private String href;
+	private Role selectedRole;
 
 	// Constructors
 	public Flashmob() {
@@ -138,6 +140,22 @@ public class Flashmob {
 
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	public Role getSelectedRole() {
+		return selectedRole;
+	}
+
+	public void setSelectedRole(Role selectedRole) {
+		this.selectedRole = selectedRole;
 	}
 
 }

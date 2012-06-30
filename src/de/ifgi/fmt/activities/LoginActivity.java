@@ -2,15 +2,19 @@ package de.ifgi.fmt.activities;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,7 +40,12 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.network.NetworkRequest;
+import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.parser.FlashmobJSONParser;
+import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class LoginActivity extends SherlockActivity {
 	public static final int STATUS_NOT_VALID = 12;
@@ -51,6 +60,7 @@ public class LoginActivity extends SherlockActivity {
 	private EditText username, password;
 	private Button login, register;
 	private String userpassEncoded;
+	private SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +68,9 @@ public class LoginActivity extends SherlockActivity {
 		setContentView(R.layout.login_activity);
 		setTitle("Login");
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		preferences = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
 		username = (EditText) findViewById(R.id.username);
 
 		// already in XML, specially for HTC in Java
@@ -92,6 +105,9 @@ public class LoginActivity extends SherlockActivity {
 
 			}
 		});
+
+		username.setText("matthias");
+		password.setText("matthias");
 	}
 
 	private void authenticate() {
@@ -129,31 +145,54 @@ public class LoginActivity extends SherlockActivity {
 				String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
 				HttpGet get = new HttpGet(getURL);
 				get.setHeader("Authorization", "Basic " + userpassEncoded);
-				HttpResponse responseGet = client.execute(get);
-				HttpEntity resEntityGet = responseGet.getEntity();
-				Log.i("wichtig", "Status: " + responseGet.getStatusLine());
-				if (responseGet.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+				HttpResponse response = client.execute(get);
+				HttpEntity resEntityGet = response.getEntity();
+				Log.i("wichtig", "Status: " + response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 					return INVALID_CREDENTIALS;
 				}
-				if (resEntityGet != null) {
-					resEntityGet.consumeContent();
-					Log.i("wichtig", "Initial set of cookies:");
-					List<Cookie> cookies = client.getCookieStore().getCookies();
-					if (!cookies.isEmpty()) {
-						SharedPreferences preferences = PreferenceManager
-								.getDefaultSharedPreferences(getApplicationContext());
-						SharedPreferences.Editor editor = preferences.edit();
-						editor.putString("user_name", username.getText()
-								.toString());
-						for (int i = 0; i < cookies.size(); i++) {
-							editor.putString(cookies.get(i).getName(), cookies
-									.get(i).getValue());
-							Log.i("wichtig", "- " + cookies.get(i).toString());
-						}
-						editor.commit();
+
+				resEntityGet.consumeContent();
+				Log.i("wichtig", "Initial set of cookies:");
+				List<Cookie> cookies = client.getCookieStore().getCookies();
+				if (!cookies.isEmpty()) {
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putString("user_name", username.getText().toString());
+					for (int i = 0; i < cookies.size(); i++) {
+						editor.putString(cookies.get(i).getName(),
+								cookies.get(i).getValue());
+						Log.i("wichtig", "- " + cookies.get(i).toString());
 					}
-					return 1;
+					editor.commit();
 				}
+				// My Flashmobs
+				get = new HttpGet(
+						"http://giv-flashmob.uni-muenster.de/fmt/users/"
+								+ preferences.getString("user_name", "")
+								+ "/flashmobs");
+				get.setHeader("Cookie",
+						"fmt_oid=" + preferences.getString("fmt_oid", ""));
+				response = client.execute(get);
+				String result = EntityUtils.toString(response.getEntity());
+				Log.i("wichtig", result);
+				ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
+						result, getApplicationContext());
+				// Selected Roles
+				for (Flashmob f : flashmobs) {
+					get = new HttpGet(
+							"http://giv-flashmob.uni-muenster.de/fmt/users/"
+									+ preferences.getString("user_name", "")
+									+ "/flashmobs/" + f.getId() + "/role");
+					response = client.execute(get);
+					result = EntityUtils.toString(response.getEntity());
+					Log.i("wichtig", result);
+					Role role = RoleJSONParser.parse(result,
+							getApplicationContext());
+					f.setSelectedRole(role);
+				}
+				// get access to the store and save the new flashmobs
+				((Store) getApplicationContext()).setFlashmobs(flashmobs);
+				return 1;
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {
