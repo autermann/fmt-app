@@ -1,6 +1,17 @@
 package de.ifgi.fmt.activities;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,9 +34,10 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.FlashmobListAdapter;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
+import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class MyFlashmobsActivity extends SherlockActivity {
 
@@ -61,7 +73,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 	}
 
 	// AsyncTask instead of a Thread, in order to download the online data
-	class DownloadTask extends AsyncTask<String, Void, String> {
+	class DownloadTask extends AsyncTask<String, Void, ArrayList<Flashmob>> {
 		ProgressDialog progressDialog;
 
 		public DownloadTask(Context context) {
@@ -76,20 +88,12 @@ public class MyFlashmobsActivity extends SherlockActivity {
 		}
 
 		@Override
-		protected String doInBackground(String... url) {
-			NetworkRequest request = new NetworkRequest(url[0]);
-			int result = request.send();
-			if (result == NetworkRequest.NETWORK_PROBLEM) {
-				return null;
-			} else {
-				return request.getResult();
-			}
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (result != null) {
+		protected ArrayList<Flashmob> doInBackground(String... url) {
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(url[0]);
+				HttpResponse response = client.execute(request);
+				String result = EntityUtils.toString(response.getEntity());
 				// parsing the result
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
@@ -99,11 +103,61 @@ public class MyFlashmobsActivity extends SherlockActivity {
 					if (store.hasFlashmob(f)) {
 						Log.i("wichtig", "Flashmob not added to the store.");
 					} else {
+						SharedPreferences preferences = PreferenceManager
+								.getDefaultSharedPreferences(getApplicationContext());
+						String myFlashmobs = preferences.getString(
+								"my_flashmobs", null);
+						if (myFlashmobs != null) {
+							JSONArray array = new JSONArray(myFlashmobs);
+							for (int i = 0; i < array.length(); i++) {
+								if (array.getString(i).equals(f.getId())) {
+									request = new HttpGet(
+											"http://giv-flashmob.uni-muenster.de/fmt/users/"
+													+ preferences.getString(
+															"user_name", "")
+													+ "/flashmobs/" + f.getId()
+													+ "/role");
+									request.setHeader(
+											"Cookie",
+											"fmt_oid="
+													+ preferences.getString(
+															"fmt_oid", ""));
+									response = client.execute(request);
+									result = EntityUtils.toString(response
+											.getEntity());
+
+									Log.i("wichtig", "URL: " + request.getURI());
+									Log.i("wichtig",
+											"Status: "
+													+ response.getStatusLine());
+									Log.i("wichtig", "Response: " + result);
+									Role role = RoleJSONParser.parse(result,
+											getApplicationContext());
+									f.setSelectedRole(role);
+								}
+							}
+						}
 						store.addFlashmob(f);
 						Log.i("wichtig", "Flashmob added to the store.");
 					}
 				}
+				return flashmobs;
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 
+		@Override
+		protected void onPostExecute(final ArrayList<Flashmob> flashmobs) {
+			super.onPostExecute(flashmobs);
+			if (flashmobs != null) {
 				ListAdapter adapter = new FlashmobListAdapter(
 						getApplicationContext(), flashmobs, null, false, true);
 				ListView list = (ListView) findViewById(android.R.id.list);

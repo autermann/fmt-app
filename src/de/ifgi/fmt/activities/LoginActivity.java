@@ -13,11 +13,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -175,8 +177,10 @@ public class LoginActivity extends SherlockActivity {
 				Log.i("wichtig", result);
 				ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
-				// Selected Roles
+				JSONArray array = new JSONArray();
 				for (Flashmob f : flashmobs) {
+					array.put(f.getId());
+					// Selected Roles
 					get = new HttpGet(
 							"http://giv-flashmob.uni-muenster.de/fmt/users/"
 									+ preferences.getString("user_name", "")
@@ -188,6 +192,10 @@ public class LoginActivity extends SherlockActivity {
 							getApplicationContext());
 					f.setSelectedRole(role);
 				}
+				// Save Flashmob IDs in SharedPreferences
+				Editor editor = preferences.edit();
+				editor.putString("my_flashmobs", array.toString());
+				editor.commit();
 				// get access to the store and replace the existing flashmobs
 				// with the user's flashmobs
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);

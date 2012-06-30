@@ -34,6 +34,8 @@ public class StartActivity extends SherlockActivity {
 				.getDefaultSharedPreferences(getApplicationContext());
 		Log.i("wichtig", "User name: " + preferences.getString("user_name", ""));
 		Log.i("wichtig", "Cookie: " + preferences.getString("fmt_oid", ""));
+		Log.i("wichtig",
+				"My Flashmobs: " + preferences.getString("my_flashmobs", ""));
 	}
 
 	public void startMapActivity(View v) {
