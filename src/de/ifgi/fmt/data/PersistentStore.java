@@ -13,16 +13,23 @@ import de.ifgi.fmt.objects.Flashmob;
 
 public class PersistentStore {
 	public static String KEY_USER_NAME = "user_name";
-	public static String KEY_COOKIE = "cookie";
+	public static String KEY_COOKIE = "fmt_oid";
 	public static String KEY_MY_FLASHMOBS = "my_flashmobs";
 
 	public static Cookie getCookie(Context context) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		String name = "fmt_oid";
-		String value = preferences.getString("fmt_oid", null);
-		Cookie cookie = new BasicClientCookie(name, value);
+		String value = preferences.getString(KEY_COOKIE, null);
+		Cookie cookie = new BasicClientCookie(KEY_COOKIE, value);
 		return cookie;
+	}
+
+	public static void setCookie(Context context, String value) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = preferences.edit();
+		editor.putString(KEY_COOKIE, value);
+		editor.commit();
 	}
 
 	public static String getUserName(Context context) {
@@ -95,5 +102,13 @@ public class PersistentStore {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public static void clear(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.clear();
+		editor.commit();
 	}
 }

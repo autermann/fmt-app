@@ -74,11 +74,7 @@ public class StartActivity extends SherlockActivity {
 					"startActivity", LoginActivity.REDIRECT_TO_START_ACTIVITY));
 			break;
 		case MENU_LOGOUT:
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(getApplicationContext());
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.clear();
-			editor.commit();
+			PersistentStore.clear(getApplicationContext());
 			invalidateOptionsMenu();
 		default:
 			break;

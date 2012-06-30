@@ -18,11 +18,8 @@ import org.json.JSONArray;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
@@ -40,6 +37,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
@@ -60,7 +58,6 @@ public class LoginActivity extends SherlockActivity {
 	private EditText username, password;
 	private Button login, register;
 	private String userpassEncoded;
-	private SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +66,6 @@ public class LoginActivity extends SherlockActivity {
 		setTitle("Login");
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
 		username = (EditText) findViewById(R.id.username);
 
 		// already in XML, specially for HTC in Java
@@ -156,22 +151,27 @@ public class LoginActivity extends SherlockActivity {
 				Log.i("wichtig", "Initial set of cookies:");
 				List<Cookie> cookies = client.getCookieStore().getCookies();
 				if (!cookies.isEmpty()) {
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putString("user_name", username.getText().toString());
+					PersistentStore.setUserName(getApplicationContext(),
+							username.getText().toString());
 					for (int i = 0; i < cookies.size(); i++) {
-						editor.putString(cookies.get(i).getName(),
-								cookies.get(i).getValue());
+						if (cookies.get(i).getName()
+								.equals(PersistentStore.KEY_COOKIE)) {
+							PersistentStore.setCookie(getApplicationContext(),
+									cookies.get(i).getValue());
+						}
 						Log.i("wichtig", "- " + cookies.get(i).toString());
 					}
-					editor.commit();
 				}
 				// My Flashmobs
 				get = new HttpGet(
 						"http://giv-flashmob.uni-muenster.de/fmt/users/"
-								+ preferences.getString("user_name", "")
+								+ PersistentStore
+										.getUserName(getApplicationContext())
 								+ "/flashmobs");
+				Cookie cookie = PersistentStore
+						.getCookie(getApplicationContext());
 				get.setHeader("Cookie",
-						"fmt_oid=" + preferences.getString("fmt_oid", ""));
+						cookie.getName() + "=" + cookie.getValue());
 				response = client.execute(get);
 				String result = EntityUtils.toString(response.getEntity());
 				Log.i("wichtig", result);
@@ -183,7 +183,8 @@ public class LoginActivity extends SherlockActivity {
 					// Selected Roles
 					get = new HttpGet(
 							"http://giv-flashmob.uni-muenster.de/fmt/users/"
-									+ preferences.getString("user_name", "")
+									+ PersistentStore
+											.getUserName(getApplicationContext())
 									+ "/flashmobs/" + f.getId() + "/role");
 					response = client.execute(get);
 					result = EntityUtils.toString(response.getEntity());
@@ -193,9 +194,7 @@ public class LoginActivity extends SherlockActivity {
 					f.setSelectedRole(role);
 				}
 				// Save Flashmob IDs in SharedPreferences
-				Editor editor = preferences.edit();
-				editor.putString("my_flashmobs", array.toString());
-				editor.commit();
+				PersistentStore.setMyFlashmobs(getApplicationContext(), array);
 				// get access to the store and replace the existing flashmobs
 				// with the user's flashmobs
 				((Store) getApplicationContext()).setFlashmobs(flashmobs);
