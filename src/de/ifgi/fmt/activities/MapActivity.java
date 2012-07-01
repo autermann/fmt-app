@@ -57,7 +57,7 @@ public class MapActivity extends SherlockMapActivity {
 
 	private TapControlledMapView mapView = null;
 	private MapController mc;
-	private GeoPoint p;
+	private GeoPoint p, q;
 	private MyLocationOverlay me = null;
 	private MyLocationOverlay myLocationOverlay;
 	private Drawable marker;
@@ -91,11 +91,17 @@ public class MapActivity extends SherlockMapActivity {
 
 		// start position when loading the map
 		mc = mapView.getController();
-		double coordinates[] = { 51.962956, 7.629592 };
-		double lat = coordinates[0];
-		double lng = coordinates[1];
-		p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-		mc.setCenter(p);
+		
+			double coordinates[] = { 51.962956, 7.629592 };
+			double lat = coordinates[0];
+			double lng = coordinates[1];
+			p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));		
+			mc.setCenter(p);			
+			zoomToMyLocation();
+			
+	
+			
+		
 		mc.setZoom(15);
 		mapView.invalidate();
 

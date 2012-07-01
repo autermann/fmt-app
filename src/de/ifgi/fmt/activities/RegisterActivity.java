@@ -40,7 +40,7 @@ public class RegisterActivity extends SherlockActivity {
 	public static final int INVALID_CREDENTIALS = 11;
 
 
-	private EditText username, password, email;
+	private EditText username, password, password_rep, email;
 	private Button register;
 	
 
@@ -66,6 +66,19 @@ public class RegisterActivity extends SherlockActivity {
 				return false;
 			}
 		});
+		password_rep = (EditText) findViewById(R.id.password_rep);
+		password_rep.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if (actionId == 0) {
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(password_rep.getWindowToken(), 0);
+					register.performClick();
+				}
+				return false;
+			}
+		});
+		
 		
 		email = (EditText) findViewById(R.id.email);
 		email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -81,13 +94,26 @@ public class RegisterActivity extends SherlockActivity {
 	private void registering() {
 		// checking if the first two input fields are not empty, email is optional
 		if (username.getText().toString().equals("")
-				|| password.getText().toString().equals("")) {
+				|| password.getText().toString().equals("") 
+				|| password_rep.getText().toString().equals("") ) {
 			Toast.makeText(getApplicationContext(),
 					"Please enter a valid user name and password.", Toast.LENGTH_LONG)
 					.show();
+						
+				
+				
 		} else {
+			
+			if (!password.getText().toString().equals(password_rep.getText().toString())
+					|| password.getText().toString().length() < 8){
+				Toast.makeText(getApplicationContext(),
+						"The passwords do not match or they're too short", Toast.LENGTH_LONG)
+						.show();
+			}
+			else {
 			// if everything is okay, create new account
 			new RegisterTask(this).execute();
+			}
 		}
 	}
 

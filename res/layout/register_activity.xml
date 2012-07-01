@@ -17,7 +17,7 @@
             android:id="@+id/username"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="7dp"
+            android:layout_marginBottom="15dp"
             android:hint="User name"
             android:inputType="textNoSuggestions"
             android:singleLine="true"
@@ -27,7 +27,16 @@
             android:id="@+id/password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="7dp"
+            android:hint="Password"
+            android:imeOptions="actionGo"
+            android:inputType="textPassword" />
+        
+        <EditText
+            android:id="@+id/password_rep"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:hint="Password"
             android:imeOptions="actionGo"
             android:inputType="textPassword" />
