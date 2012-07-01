@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +24,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
 
@@ -43,11 +43,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	// Button
 	private Button openParticipateActivityButton;
 
-	// SharedPreferences
-	private SharedPreferences prefs;
-
-	private String PARTICIPATION_PREF_KEY;
-
 	// Map stuff
 	private MapView mapView = null;
 	private MapController mapController;
@@ -55,7 +50,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 	// Flashmob and it's attributes
 	private Flashmob flashmob;
-	private String id;
 	private double latitudeE6;
 	private double longitudeE6;
 	private String isPublicString;
@@ -69,16 +63,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		setContentView(R.layout.flashmob_details_activity);
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-
-		// Initialize id
-		id = getFlashmobID();
-
-		// This is a unique key string for saving the user's participation
-		// status
-		PARTICIPATION_PREF_KEY = id + "Pref";
-
-		// Initialize SharedPreferences
-		prefs = SettingsActivity.getSettings(this);
 
 		try {
 			getFlashmobData();
@@ -112,17 +96,19 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 					@Override
 					public void onClick(View v) {
 						Intent intent;
-						SharedPreferences preferences = PreferenceManager
-								.getDefaultSharedPreferences(getApplicationContext());
-						if (preferences.getString("user_name", null) == null) {
-							intent = new Intent(getApplicationContext(), LoginActivity.class);
+						if (PersistentStore
+								.getUserName(getApplicationContext()) == null) {
+							intent = new Intent(getApplicationContext(),
+									LoginActivity.class);
 							intent.putExtra(
 									"startActivity",
 									LoginActivity.REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY);
-							intent.putExtra("flashmob_id", id);
+							intent.putExtra("flashmob_id", flashmob.getId());
+							Log.i("wichtig", "Flashmob ID: "+ flashmob.getId());
 						} else {
-							intent = new Intent(getApplicationContext(), ParticipateActivity.class);
-							intent.putExtra("id", id);
+							intent = new Intent(getApplicationContext(),
+									ParticipateActivity.class);
+							intent.putExtra("id", flashmob.getId());
 						}
 						startActivity(intent);
 					}
@@ -161,7 +147,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 	private void getFlashmobData() throws IOException {
 		// Get the flashmob
-		flashmob = ((Store) getApplicationContext()).getFlashmobById(id);
+		flashmob = ((Store) getApplicationContext())
+				.getFlashmobById(getIntent().getExtras().getString("id"));
 
 		// Get the flashmob data
 		latitudeE6 = flashmob.getLocation().getLatitudeE6();
@@ -201,20 +188,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		return false;
 	}
 
-	/**
-	 * Gets the flashmob's id from the intent that is starting this Activity.
-	 * 
-	 * @return
-	 */
-	public String getFlashmobID() {
-		// Identify the flashmob
-		Bundle extras = getIntent().getExtras();
-
-		// Get the ID
-		String theID = extras.getString("id");
-
-		return theID;
-	}
 }
 
 class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem> {

@@ -192,12 +192,10 @@ public class LoginActivity extends SherlockActivity {
 					Role role = RoleJSONParser.parse(result,
 							getApplicationContext());
 					f.setSelectedRole(role);
+					((Store) getApplicationContext()).replaceFlashmob(f);
 				}
 				// Save Flashmob IDs in SharedPreferences
 				PersistentStore.setMyFlashmobs(getApplicationContext(), array);
-				// get access to the store and replace the existing flashmobs
-				// with the user's flashmobs
-				((Store) getApplicationContext()).setFlashmobs(flashmobs);
 				return 1;
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();

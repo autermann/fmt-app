@@ -51,9 +51,7 @@ public class StartActivity extends SherlockActivity {
 	}
 
 	public void startMyFlashmobsActivity(View v) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		if (preferences.getString("user_name", null) == null) {
+		if (PersistentStore.getUserName(this) == null) {
 			startActivity(new Intent(this, LoginActivity.class).putExtra(
 					"startActivity",
 					LoginActivity.REDIRECT_TO_MY_FLASHMOBS_ACTIVITY));

@@ -15,10 +15,8 @@ import org.apache.http.util.EntityUtils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,9 +45,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 		setContentView(R.layout.flashmob_list_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		String userName = preferences.getString("user_name", null);
+		String userName = PersistentStore.getUserName(this);
 		if (userName != null) {
 			String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/?participant="
 					+ userName;
@@ -137,6 +133,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return null;
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

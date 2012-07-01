@@ -35,6 +35,17 @@ public class Store extends Application {
 		return false;
 	}
 
+	public void replaceFlashmob(Flashmob flashmob) {
+		for (int i = 0; i < flashmobs.size(); i++) {
+			if (flashmobs.get(i).getId().equals(flashmob.getId())) {
+				flashmobs.remove(i);
+				flashmobs.add(i, flashmob);
+				return;
+			}
+		}
+		flashmobs.add(flashmob);
+	}
+
 	public void addFlashmob(Flashmob flashmob) {
 		this.flashmobs.add(flashmob);
 	}
