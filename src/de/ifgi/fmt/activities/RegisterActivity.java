@@ -147,8 +147,14 @@ public class RegisterActivity extends SherlockActivity {
 				try {
 					// JSON-Code for creating a new user
 					// Combination of predefined JSON + input fields
-					httppost.setEntity(new StringEntity("{\"username\":\"" + username.getText().toString() + "\",\"password\":\"" + password.getText().toString() + "\",\"email\":\"" + email.getText().toString() + "\"}"));
-					Log.d("reg", httppost.toString());
+					if (email.getText().toString().equals("")){
+						httppost.setEntity(new StringEntity("{\"username\":\"" + username.getText().toString() + "\",\"password\":\"" + password.getText().toString() + "\"}"));
+					}
+					else {
+						httppost.setEntity(new StringEntity("{\"username\":\"" + username.getText().toString() + "\",\"password\":\"" + password.getText().toString() + "\",\"email\":\"" + email.getText().toString() + "\"}"));	
+					}
+				
+					
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
