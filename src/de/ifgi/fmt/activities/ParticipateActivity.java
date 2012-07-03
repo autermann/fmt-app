@@ -117,7 +117,7 @@ public class ParticipateActivity extends SherlockActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			Intent intent = new Intent(getApplicationContext(),
-					FlashmobDetailsActivity.class);
+					StartActivity.class);
 			startActivity(intent);
 			return true;
 
