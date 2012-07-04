@@ -35,14 +35,15 @@
         <Button
             android:id="@+id/login"
             style="@style/Button"
+            android:layout_width="fill_parent"
             android:text="Login" />
-        
+
         <Button
             android:id="@+id/register"
             style="@style/Button"
-            android:text="Register new Account" 
-            android:layout_marginTop="8dp" />
-        
+            android:layout_width="fill_parent"
+            android:layout_marginTop="8dp"
+            android:text="Register new Account" />
     </LinearLayout>
 
 </LinearLayout>

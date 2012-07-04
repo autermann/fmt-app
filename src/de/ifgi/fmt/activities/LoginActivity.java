@@ -100,9 +100,6 @@ public class LoginActivity extends SherlockActivity {
 
 			}
 		});
-
-		username.setText("matthias");
-		password.setText("matthias");
 	}
 
 	private void authenticate() {

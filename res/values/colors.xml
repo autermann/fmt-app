@@ -6,6 +6,7 @@
     <color name="tr_green">#CCF38630</color>
     <color name="the_green">#F38630</color>
     <color name="strong_green">#FA6900</color>
+    <color name="action_bar_background">#292429</color>
 
     <!-- Android 4.0 colors -->
     <color name="icsBlueLight">#33B5E5</color>

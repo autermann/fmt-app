@@ -1,205 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
-        <TableRow
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmTitleLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Title: " />
-
-            <TextView
-                android:id="@+id/fmTitleTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmParticipantsLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Participants: " />
-
-            <TextView
-                android:id="@+id/fmParticipantsTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmIsPublicLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Is public: " />
-
-            <TextView
-                android:id="@+id/fmIsPublicTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmLatitudeLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Latitude: " />
-
-            <TextView
-                android:id="@+id/fmLatitudeTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmLongitudeLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Longitude: " />
-
-            <TextView
-                android:id="@+id/fmLongitudeTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmAddressLineLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Address: " />
-
-            <TextView
-                android:id="@+id/fmAddressLineTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp" >
-
-            <TextView
-                android:id="@+id/fmDescriptionLabel"
-                style="@style/fmDetailsLabel"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Description: " />
-
-            <TextView
-                android:id="@+id/fmDescriptionTV"
-                style="@style/fmDetailsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="" />
-        </TableRow>
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/darker_gray"
-            android:padding="2dp" >
+            android:orientation="vertical" >
 
             <com.google.android.maps.MapView
                 android:id="@+id/miniMapView"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="144dp"
                 android:apiKey="08JlLseVZKSCDKH5r9vqDzchXreLQQ3JhDYFe-Q"
                 android:clickable="false" />
-        </FrameLayout>
-        
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="8dp" >
-            
-            <Button 
-                android:id="@+id/openParticipateActivityButton"
-	            style="@style/Button"
-                android:text="Participate"/>
-            
-        </TableRow>
-            
-    </LinearLayout>
 
-</ScrollView>
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:shrinkColumns="1" >
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmTitleLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Title: " />
+
+                    <TextView
+                        android:id="@+id/fmTitleTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmParticipantsLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Participants: " />
+
+                    <TextView
+                        android:id="@+id/fmParticipantsTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmIsPublicLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Is public: " />
+
+                    <TextView
+                        android:id="@+id/fmIsPublicTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmLatitudeLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Latitude: " />
+
+                    <TextView
+                        android:id="@+id/fmLatitudeTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmLongitudeLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Longitude: " />
+
+                    <TextView
+                        android:id="@+id/fmLongitudeTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmAddressLineLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Address: " />
+
+                    <TextView
+                        android:id="@+id/fmAddressLineTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        android:id="@+id/fmDescriptionLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Description: " />
+
+                    <TextView
+                        android:id="@+id/fmDescriptionTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/action_bar_background"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
+
+        <Button
+            android:id="@+id/openParticipateActivityButton"
+            style="@style/Button"
+            android:text="Participate" />
+    </FrameLayout>
+
+</LinearLayout>
