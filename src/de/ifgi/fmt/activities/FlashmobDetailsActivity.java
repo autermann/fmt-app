@@ -77,7 +77,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		mapView = (MapView) findViewById(R.id.miniMapView);
 		mapController = mapView.getController();
 		fmLocation = new GeoPoint((int) latitudeE6, (int) longitudeE6);
-		mapController.animateTo(fmLocation);
+		mapController.setCenter(fmLocation);
 		mapController.setZoom(17);
 		mapView.invalidate();
 		List<Overlay> mapOverlays = mapView.getOverlays();
