@@ -1,72 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/participate_layout"
+    <ScrollView
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:id="@+id/participate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="invisible" >
+
+            <TextView
+                style="@style/roleLabel"
+                android:text="Select a role:"
+                android:textColor="@color/the_green" />
+
+            <Spinner
+                android:id="@+id/roleSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
+
+            <TextView
+                style="@style/roleLabel"
+                android:text="Description of the selected role:" />
+
+            <TextView
+                android:id="@+id/roleDescriptionTv"
+                style="@style/roleValue"
+                android:text="Role description." />
+
+            <TextView
+                style="@style/roleLabel"
+                android:text="Required items for the selected role:" />
+
+            <TextView
+                android:id="@+id/roleItemsTv"
+                style="@style/roleValue"
+                android:text="List of items."
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp" 
-        android:visibility="invisible">
+        android:background="@color/action_bar_background"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select a role:"
-            android:textColor="@color/the_green"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/roleSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
-        
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Role description:"
-            android:textColor="@color/the_green"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        
-        <TextView 
-            android:id="@+id/roleDescriptionTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Hier erscheint die Rollenbeschreibung für die ausgewählte Rolle."
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-        
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Necessary items for the selected role:"
-            android:textColor="@color/the_green"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        
-        <TextView 
-            android:id="@+id/roleItemsTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Hier erscheint eine Liste von benötigten Items für die ausgewähte Rolle."
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-        
         <Button
             android:id="@+id/participateButton"
             style="@style/Button"
-            android:layout_marginBottom="16dp"
-            android:text="Participate" />
-    </LinearLayout>
+            android:layout_height="52dp"
+            android:text="Participate"
+            android:textSize="20sp" />
+    </FrameLayout>
 
-</ScrollView>
+</LinearLayout>
