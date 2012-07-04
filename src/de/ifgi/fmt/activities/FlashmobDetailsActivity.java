@@ -104,7 +104,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 									"startActivity",
 									LoginActivity.REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY);
 							intent.putExtra("flashmob_id", flashmob.getId());
-							Log.i("wichtig", "Flashmob ID: "+ flashmob.getId());
+							Log.i("wichtig", "Flashmob ID: " + flashmob.getId());
 						} else {
 							intent = new Intent(getApplicationContext(),
 									ParticipateActivity.class);
@@ -126,7 +126,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		try {
 			fillTextViews();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -176,7 +175,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	public void fillTextViews() throws IOException {
 		fmTitleTV.setText(flashmob.getTitle());
 		fmIsPublicTV.setText(isPublicString);
-		// fmParticipantsTV.setText("");
+		fmParticipantsTV.setText(String.valueOf(flashmob.getParticipants()));
 		fmDescriptionTV.setText(flashmob.getDescription());
 		fmAddressLineTv.setText(addressLine + ", " + locality + ", " + country);
 		fmLatitudeTv.setText("" + latitudeE6 / 1E6);

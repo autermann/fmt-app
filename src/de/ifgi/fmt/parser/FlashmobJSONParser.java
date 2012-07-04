@@ -29,6 +29,7 @@ public class FlashmobJSONParser {
 				Flashmob f = new Flashmob();
 				f.setId(flashmob.getString("id"));
 				f.setTitle(flashmob.getString("title"));
+				f.setParticipants(flashmob.getInt("users"));
 				f.setPublic(flashmob.getBoolean("public"));
 				f.setHref(flashmob.getString("href"));
 				SimpleDateFormat df = new SimpleDateFormat(
