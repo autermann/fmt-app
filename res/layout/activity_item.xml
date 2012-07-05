@@ -2,17 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@drawable/activity_item_background"
     android:orientation="vertical"
-    android:padding="16dp" >
+    android:paddingBottom="8dp" >
 
     <TextView
         android:id="@+id/activity_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="#aaa"
         android:lineSpacingMultiplier="1.1"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
         android:text="Activity title"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?android:attr/textColorPrimaryInverse"
         android:textSize="18sp" />
 
     <TextView
@@ -21,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:lineSpacingMultiplier="1.1"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:text="Activity description"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="16sp" />
@@ -29,7 +36,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
 
         <TextView
             android:layout_width="wrap_content"
