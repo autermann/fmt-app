@@ -4,6 +4,7 @@ public class Activity {
 	private String id;
 	private String title;
 	private String description;
+	private Task task;
 
 	public String getId() {
 		return id;
@@ -27,6 +28,14 @@ public class Activity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 }

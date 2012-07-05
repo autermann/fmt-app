@@ -18,6 +18,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -28,7 +33,9 @@ import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Activity;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.objects.Task;
 import de.ifgi.fmt.parser.ActivityJSONParser;
+import de.ifgi.fmt.parser.TaskJSONParser;
 
 public class ContentActivity extends SherlockActivity {
 	Flashmob f;
@@ -78,7 +85,7 @@ public class ContentActivity extends SherlockActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progress = new ProgressDialog(ContentActivity.this);
-			progress.setMessage("Loading activities...");
+			progress.setMessage("Loading activities");
 			progress.show();
 		}
 
@@ -87,8 +94,8 @@ public class ContentActivity extends SherlockActivity {
 			activities = new ArrayList<Activity>();
 			try {
 				HttpClient client = new DefaultHttpClient();
-				HttpGet get = new HttpGet(url[0]);
-				HttpResponse response = client.execute(get);
+				HttpGet request = new HttpGet(url[0]);
+				HttpResponse response = client.execute(request);
 				String result = EntityUtils.toString(response.getEntity());
 
 				Log.i("wichtig", "URL: " + url[0]);
@@ -104,15 +111,28 @@ public class ContentActivity extends SherlockActivity {
 							.replace("/activities/activities", "/activities");
 					Log.i("wichtig", "href: " + href);
 
-					get = new HttpGet(href);
-					response = client.execute(get);
+					request = new HttpGet(href);
+					response = client.execute(request);
 					result = EntityUtils.toString(response.getEntity());
 
-					Log.i("wichtig", "URL: " + url[0]);
+					Log.i("wichtig", "URL: " + request.getURI());
 					Log.i("wichtig", "Status: " + response.getStatusLine());
 
 					Activity a = ActivityJSONParser.parse(result,
 							getApplicationContext());
+
+					href += "/task";
+					request = new HttpGet(href);
+					response = client.execute(request);
+					result = EntityUtils.toString(response.getEntity());
+
+					Log.i("wichtig", "URL: " + request.getURI());
+					Log.i("wichtig", "Status: " + response.getStatusLine());
+
+					Task t = TaskJSONParser.parse(result,
+							getApplicationContext());
+					a.setTask(t);
+
 					activities.add(a);
 				}
 				return 1;
@@ -120,22 +140,55 @@ public class ContentActivity extends SherlockActivity {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return 0;
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return 0;
+			return 404;
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			if (result == 1) {
+				LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+
+				int counter = 1;
 				for (Activity a : activities) {
+					LayoutInflater l = getLayoutInflater();
+					LinearLayout ll = (LinearLayout) l.inflate(
+							R.layout.activity_item, null);
+
+					LinearLayout.LayoutParams lp = new LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT);
+					// Converts 8 dip into its equivalent px
+					float marginBottom = TypedValue.applyDimension(
+							TypedValue.COMPLEX_UNIT_DIP, 16, getResources()
+									.getDisplayMetrics());
+					lp.setMargins(0, 0, 0, Math.round(marginBottom));
+
+					TextView activityTitle = (TextView) ll
+							.findViewById(R.id.activity_title);
+					activityTitle.setText("Activity #" + counter++ + ": "
+							+ a.getTitle());
+
+					TextView activityDescription = (TextView) ll
+							.findViewById(R.id.activity_description);
+					activityDescription.setText(a.getDescription());
+
+					TextView taskDescription = (TextView) ll
+							.findViewById(R.id.task_description);
+					taskDescription.setText(a.getTask().getDescription());
+
 					Log.i("wichtig", "Title: " + a.getTitle());
 					Log.i("wichtig", "Description: " + a.getDescription());
+					Log.i("wichtig", "Task: " + a.getTask().getDescription());
+
+					layout.addView(ll, lp);
 				}
-			} else {
+
+			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
 						Toast.LENGTH_LONG).show();
