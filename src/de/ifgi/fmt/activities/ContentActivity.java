@@ -78,7 +78,7 @@ public class ContentActivity extends SherlockActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progress = new ProgressDialog(ContentActivity.this);
-			progress.setMessage("Loading activities");
+			progress.setMessage("Loading activities...");
 			progress.show();
 		}
 
