@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -100,11 +99,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 								.getUserName(getApplicationContext()) == null) {
 							intent = new Intent(getApplicationContext(),
 									LoginActivity.class);
-							intent.putExtra(
-									"startActivity",
-									LoginActivity.REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY);
-							intent.putExtra("flashmob_id", flashmob.getId());
-							Log.i("wichtig", "Flashmob ID: " + flashmob.getId());
 						} else {
 							intent = new Intent(getApplicationContext(),
 									ParticipateActivity.class);

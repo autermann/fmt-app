@@ -53,8 +53,7 @@ public class StartActivity extends SherlockActivity {
 	public void startMyFlashmobsActivity(View v) {
 		if (PersistentStore.getUserName(this) == null) {
 			startActivity(new Intent(this, LoginActivity.class).putExtra(
-					"startActivity",
-					LoginActivity.REDIRECT_TO_MY_FLASHMOBS_ACTIVITY));
+					"redirectTo", "de.ifgi.fmt.activities.MyFlashmobsActivity"));
 		} else {
 			startActivity(new Intent(this, MyFlashmobsActivity.class));
 		}
@@ -68,8 +67,7 @@ public class StartActivity extends SherlockActivity {
 					Uri.parse("http://www.google.com")));
 			break;
 		case MENU_LOGIN:
-			startActivity(new Intent(this, LoginActivity.class).putExtra(
-					"startActivity", LoginActivity.REDIRECT_TO_START_ACTIVITY));
+			startActivity(new Intent(this, LoginActivity.class));
 			break;
 		case MENU_LOGOUT:
 			PersistentStore.clear(getApplicationContext());

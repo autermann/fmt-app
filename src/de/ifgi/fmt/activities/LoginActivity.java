@@ -51,10 +51,6 @@ public class LoginActivity extends SherlockActivity {
 
 	public static final int INVALID_CREDENTIALS = 11;
 
-	public static final int REDIRECT_TO_START_ACTIVITY = 1;
-	public static final int REDIRECT_TO_MY_FLASHMOBS_ACTIVITY = 2;
-	public static final int REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY = 3;
-
 	private EditText username, password;
 	private Button login, register;
 	private String userpassEncoded;
@@ -82,6 +78,9 @@ public class LoginActivity extends SherlockActivity {
 				return false;
 			}
 		});
+
+		username.setText("matthias");
+		password.setText("matthias");
 
 		login = (Button) findViewById(R.id.login);
 		login.setOnClickListener(new OnClickListener() {
@@ -221,34 +220,24 @@ public class LoginActivity extends SherlockActivity {
 				password.setText("");
 				break;
 			default:
-				redirect();
+				if (getIntent().hasExtra("redirectTo")) {
+					String redirectTo = getIntent().getExtras().getString(
+							"redirectTo");
+					Log.i("wichtig", redirectTo);
+					try {
+						Intent intent = new Intent(getApplicationContext(),
+								getClassLoader().loadClass(redirectTo));
+						startActivity(intent);
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+				finish();
 				break;
 			}
 			progressDialog.dismiss();
 		}
 
-	}
-
-	public void redirect() {
-		Intent intent = null;
-		switch (getIntent().getExtras().getInt("startActivity")) {
-		case REDIRECT_TO_START_ACTIVITY:
-			intent = new Intent(this, StartActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			break;
-		case REDIRECT_TO_MY_FLASHMOBS_ACTIVITY:
-			intent = new Intent(this, MyFlashmobsActivity.class);
-			break;
-		case REDIRECT_TO_FLASHMOB_DETAILS_ACTIVITY:
-			intent = new Intent(this, FlashmobDetailsActivity.class);
-			intent.putExtra("id",
-					getIntent().getExtras().getString("flashmob_id"));
-			break;
-		}
-		startActivity(intent);
-		Toast.makeText(this, "Welcome " + username.getText(), Toast.LENGTH_LONG)
-				.show();
-		finish();
 	}
 
 	@Override
