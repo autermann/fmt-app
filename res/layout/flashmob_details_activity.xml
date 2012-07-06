@@ -57,7 +57,7 @@
 
                     <TextView
                         style="@style/fmDetailsLabel"
-                        android:text="Is public: " />
+                        android:text="Public: " />
 
                     <TextView
                         android:id="@+id/fmIsPublicTV"

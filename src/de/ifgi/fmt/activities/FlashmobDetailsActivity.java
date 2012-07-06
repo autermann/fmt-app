@@ -65,7 +65,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	private Flashmob flashmob;
 	private double latitudeE6;
 	private double longitudeE6;
-	private String isPublicString;
 	private String addressLine;
 	private String locality;
 	private String country;
@@ -193,10 +192,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		// Get the flashmob data
 		latitudeE6 = flashmob.getLocation().getLatitudeE6();
 		longitudeE6 = flashmob.getLocation().getLongitudeE6();
-		isPublicString = "Yes";
-		if (!flashmob.isPublic()) {
-			isPublicString = "No";
-		}
 
 		// Convert coordinates into an address
 		try {
@@ -220,7 +215,11 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	 */
 	public void fillTextViews() throws IOException {
 		fmTitleTV.setText(flashmob.getTitle());
-		fmIsPublicTV.setText(isPublicString);
+		if (flashmob.isPublic()) {
+			fmIsPublicTV.setText("\u2714");
+		} else {
+			fmIsPublicTV.setText("\u2718");
+		}
 		fmParticipantsTV.setText(String.valueOf(flashmob.getParticipants()));
 		fmDescriptionTV.setText(flashmob.getDescription());
 		fmAddressLineTv.setText(addressLine + ", " + locality + ", " + country);
