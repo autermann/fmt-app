@@ -50,6 +50,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	private TextView fmAddressLineTv;
 	private TextView fmLatitudeTv;
 	private TextView fmLongitudeTv;
+	private TextView fmDateTv;
+	private TextView fmTimeTv;
 
 	// Button
 	private Button participateButton;
@@ -103,6 +105,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		fmAddressLineTv = (TextView) findViewById(R.id.fmAddressLineTV);
 		fmLatitudeTv = (TextView) findViewById(R.id.fmLatitudeTV);
 		fmLongitudeTv = (TextView) findViewById(R.id.fmLongitudeTV);
+		fmDateTv = (TextView) findViewById(R.id.fmDateTV);
+		fmTimeTv = (TextView) findViewById(R.id.fmTimeTV);
 
 		participateButton = (Button) findViewById(R.id.openParticipateActivityButton);
 
@@ -222,6 +226,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		fmAddressLineTv.setText(addressLine + ", " + locality + ", " + country);
 		fmLatitudeTv.setText("" + latitudeE6 / 1E6);
 		fmLongitudeTv.setText("" + longitudeE6 / 1E6);
+		fmDateTv.setText(flashmob.getDate());
+		fmTimeTv.setText(flashmob.getTime());
 	}
 
 	@Override

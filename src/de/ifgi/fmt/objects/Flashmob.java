@@ -55,8 +55,13 @@ public class Flashmob {
 		this.endTime = endTime;
 	}
 
-	public String getStartDate() {
+	public String getDate() {
 		DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+		return dateFormat.format(startTime);
+	}
+
+	public String getTime() {
+		DateFormat dateFormat = new SimpleDateFormat("hh:mm aa", Locale.US);
 		return dateFormat.format(startTime);
 	}
 

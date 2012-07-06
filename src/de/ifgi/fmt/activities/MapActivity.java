@@ -335,8 +335,7 @@ public class MapActivity extends SherlockMapActivity {
 					OverlayItem o = new OverlayItem(getPoint(f.getLocation()
 							.getLatitudeE6() / 1e6, f.getLocation()
 							.getLongitudeE6() / 1e6), f.getTitle(),
-							f.getStreetAddress() + " \u00B7 "
-									+ f.getStartDate());
+							f.getStreetAddress() + " \u00B7 " + f.getDate());
 					itemizedOverlay.addOverlay(o, f);
 				}
 				mapView.getOverlays().add(itemizedOverlay);

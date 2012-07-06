@@ -69,7 +69,7 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 					.setVisibility(View.GONE);
 		}
 		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f
-				.getStreetAddress() + " \u00B7 " + f.getStartDate());
+				.getStreetAddress() + " \u00B7 " + f.getDate());
 		FrameLayout startButton = (FrameLayout) v
 				.findViewById(R.id.start_flashmob_button);
 		if (showPlayButton) {

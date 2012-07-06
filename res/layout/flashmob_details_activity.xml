@@ -34,7 +34,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmTitleLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Title: " />
 
@@ -46,7 +45,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmParticipantsLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Participants: " />
 
@@ -58,7 +56,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmIsPublicLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Is public: " />
 
@@ -70,7 +67,28 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmLatitudeLabel"
+                        style="@style/fmDetailsLabel"
+                        android:text="Date: " />
+
+                    <TextView
+                        android:id="@+id/fmDateTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
+                        style="@style/fmDetailsLabel"
+                        android:text="Start time: " />
+
+                    <TextView
+                        android:id="@+id/fmTimeTV"
+                        style="@style/fmDetailsTextView" />
+                </TableRow>
+
+                <TableRow style="@style/fmDetailsRow" >
+
+                    <TextView
                         style="@style/fmDetailsLabel"
                         android:text="Latitude: " />
 
@@ -82,7 +100,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmLongitudeLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Longitude: " />
 
@@ -94,7 +111,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmAddressLineLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Address: " />
 
@@ -106,7 +122,6 @@
                 <TableRow style="@style/fmDetailsRow" >
 
                     <TextView
-                        android:id="@+id/fmDescriptionLabel"
                         style="@style/fmDetailsLabel"
                         android:text="Description: " />
 
