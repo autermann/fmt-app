@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -107,15 +108,21 @@ public class AttributesResultsActivity extends SherlockActivity {
 							request.setHeader("Cookie", cookie.getName() + "="
 									+ cookie.getValue());
 							response = client.execute(request);
-							result = EntityUtils.toString(response.getEntity());
-
 							Log.i("wichtig", "URL: " + request.getURI());
 							Log.i("wichtig",
 									"Status: " + response.getStatusLine());
-							Log.i("wichtig", "Response: " + result);
-							Role role = RoleJSONParser.parse(result,
-									getApplicationContext());
-							f.setSelectedRole(role);
+							if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+								PersistentStore.removeMyFlashmob(
+										getApplicationContext(), f);
+								Log.i("wichtig",
+										"Participation status outdated.");
+							} else {
+								result = EntityUtils.toString(response
+										.getEntity());
+								Role role = RoleJSONParser.parse(result,
+										getApplicationContext());
+								f.setSelectedRole(role);
+							}
 						}
 						// add to the temporal store
 						store.addFlashmob(f);

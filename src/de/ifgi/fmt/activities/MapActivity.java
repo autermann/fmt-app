@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -57,7 +58,7 @@ public class MapActivity extends SherlockMapActivity {
 
 	private TapControlledMapView mapView = null;
 	private MapController mc;
-	private GeoPoint p, q;
+	private GeoPoint p;
 	private MyLocationOverlay me = null;
 	private MyLocationOverlay myLocationOverlay;
 	private Drawable marker;
@@ -91,17 +92,14 @@ public class MapActivity extends SherlockMapActivity {
 
 		// start position when loading the map
 		mc = mapView.getController();
-		
-			double coordinates[] = { 51.962956, 7.629592 };
-			double lat = coordinates[0];
-			double lng = coordinates[1];
-			p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));		
-			mc.setCenter(p);			
-			zoomToMyLocation();
-			
-	
-			
-		
+
+		double coordinates[] = { 51.962956, 7.629592 };
+		double lat = coordinates[0];
+		double lng = coordinates[1];
+		p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+		mc.setCenter(p);
+		zoomToMyLocation();
+
 		mc.setZoom(15);
 		mapView.invalidate();
 
@@ -285,15 +283,21 @@ public class MapActivity extends SherlockMapActivity {
 							request.setHeader("Cookie", cookie.getName() + "="
 									+ cookie.getValue());
 							response = client.execute(request);
-							result = EntityUtils.toString(response.getEntity());
-
 							Log.i("wichtig", "URL: " + request.getURI());
 							Log.i("wichtig",
 									"Status: " + response.getStatusLine());
-							Log.i("wichtig", "Response: " + result);
-							Role role = RoleJSONParser.parse(result,
-									getApplicationContext());
-							f.setSelectedRole(role);
+							if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+								PersistentStore.removeMyFlashmob(
+										getApplicationContext(), f);
+								Log.i("wichtig",
+										"Participation status outdated.");
+							} else {
+								result = EntityUtils.toString(response
+										.getEntity());
+								Role role = RoleJSONParser.parse(result,
+										getApplicationContext());
+								f.setSelectedRole(role);
+							}
 						}
 						// add to the temporal store
 						store.addFlashmob(f);
