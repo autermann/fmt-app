@@ -272,6 +272,7 @@ public class ParticipateActivity extends SherlockActivity {
 										AdapterView<?> arg0) {
 								}
 							});
+					setSpinnerStatus();
 				}
 
 				findViewById(R.id.participate_layout).setVisibility(
@@ -348,6 +349,7 @@ public class ParticipateActivity extends SherlockActivity {
 				PersistentStore
 						.addMyFlashmob(getApplicationContext(), flashmob);
 				setParticipateButtonLayout();
+				setSpinnerStatus();
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
@@ -408,12 +410,22 @@ public class ParticipateActivity extends SherlockActivity {
 				PersistentStore.removeMyFlashmob(getApplicationContext(),
 						flashmob);
 				setParticipateButtonLayout();
+				setSpinnerStatus();
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
 						Toast.LENGTH_LONG).show();
 			}
 			progressDialog.dismiss();
+		}
+
+	}
+
+	public void setSpinnerStatus() {
+		if (flashmob.getSelectedRole() == null) {
+			roleSpinner.setEnabled(true);
+		} else {
+			roleSpinner.setEnabled(false);
 		}
 
 	}
