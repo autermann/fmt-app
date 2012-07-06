@@ -2,9 +2,8 @@ package de.ifgi.fmt.data;
 
 import java.util.ArrayList;
 
-import de.ifgi.fmt.objects.Flashmob;
-
 import android.app.Application;
+import de.ifgi.fmt.objects.Flashmob;
 
 public class Store extends Application {
 	private ArrayList<Flashmob> flashmobs = new ArrayList<Flashmob>();
@@ -47,6 +46,10 @@ public class Store extends Application {
 	}
 
 	public void addFlashmob(Flashmob flashmob) {
-		this.flashmobs.add(flashmob);
+		flashmobs.add(flashmob);
+	}
+
+	public void clear() {
+		flashmobs = new ArrayList<Flashmob>();
 	}
 }

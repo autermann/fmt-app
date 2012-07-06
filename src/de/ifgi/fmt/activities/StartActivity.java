@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
+import de.ifgi.fmt.data.Store;
 
 public class StartActivity extends SherlockActivity {
 	private static final int MENU_WEBSITE = 1;
@@ -70,6 +71,8 @@ public class StartActivity extends SherlockActivity {
 			startActivity(new Intent(this, LoginActivity.class));
 			break;
 		case MENU_LOGOUT:
+			// remove everything from temporal and persistent storage
+			((Store) getApplicationContext()).clear();
 			PersistentStore.clear(getApplicationContext());
 			invalidateOptionsMenu();
 		default:

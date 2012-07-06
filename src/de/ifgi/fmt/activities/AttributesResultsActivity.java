@@ -8,6 +8,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -101,6 +102,10 @@ public class AttributesResultsActivity extends SherlockActivity {
 													.getUserName(getApplicationContext())
 											+ "/flashmobs/" + f.getId()
 											+ "/role");
+							Cookie cookie = PersistentStore
+									.getCookie(getApplicationContext());
+							request.setHeader("Cookie", cookie.getName() + "="
+									+ cookie.getValue());
 							response = client.execute(request);
 							result = EntityUtils.toString(response.getEntity());
 
