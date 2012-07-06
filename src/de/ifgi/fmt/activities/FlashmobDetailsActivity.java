@@ -4,14 +4,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -114,19 +126,27 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				if (PersistentStore.getUserName(getApplicationContext()) == null) {
 					intent = new Intent(getApplicationContext(),
 							LoginActivity.class);
+					startActivity(intent);
 				} else {
-					// is participating: open ParticipateActivity
-					if (flashmob.getSelectedRole() != null) {
+					// is not participating: open ParticipateActivity
+					if (flashmob.getSelectedRole() == null) {
 						intent = new Intent(getApplicationContext(),
 								ParticipateActivity.class);
 						intent.putExtra("id", flashmob.getId());
-					} else { // is not participating: send cancel request
-						intent = new Intent(getApplicationContext(),
-								ParticipateActivity.class);
-						intent.putExtra("id", flashmob.getId());
+						startActivity(intent);
+					} else { // is participating: send cancel request
+						// Unregister a user for a role
+						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+								+ flashmob.getId()
+								+ "/roles/"
+								+ flashmob.getSelectedRole().getId()
+								+ "/users/"
+								+ PersistentStore
+										.getUserName(getApplicationContext());
+						new CancelTask(FlashmobDetailsActivity.this)
+								.execute(url);
 					}
 				}
-				startActivity(intent);
 			}
 		});
 	}
@@ -207,6 +227,66 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
+	}
+
+	class CancelTask extends AsyncTask<String, Void, Integer> {
+		ProgressDialog progressDialog;
+
+		public CancelTask(Context context) {
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setMessage("Cancelling participation...");
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			progressDialog.show();
+		}
+
+		@Override
+		protected Integer doInBackground(String... url) {
+			try {
+				DefaultHttpClient httpclient = new DefaultHttpClient();
+				HttpDelete httpdelete = new HttpDelete(url[0]);
+
+				// Get cookie from SharedPrefs and add it to the header
+				Cookie cookie = PersistentStore
+						.getCookie(getApplicationContext());
+				String name = cookie.getName();
+				String value = cookie.getValue();
+				httpdelete.setHeader("Cookie", name + "=" + value);
+
+				HttpResponse response = httpclient.execute(httpdelete);
+
+				Log.i("wichtig", "URL: " + httpdelete.getURI());
+				Log.i("wichtig", "Status: " + response.getStatusLine());
+
+				return response.getStatusLine().getStatusCode();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return 0;
+			}
+			return 0;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if (result == HttpStatus.SC_NO_CONTENT) {
+				flashmob.setSelectedRole(null);
+				PersistentStore.removeMyFlashmob(getApplicationContext(),
+						flashmob);
+				setParticipateButtonLayout();
+			} else if (result == 0) {
+				Toast.makeText(getApplicationContext(),
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
+			}
+			progressDialog.dismiss();
+		}
+
 	}
 
 }
