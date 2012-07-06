@@ -49,8 +49,6 @@ public class ParticipateActivity extends SherlockActivity {
 	private ArrayList<Role> roles;
 	private TextView roleDescriptionTv;
 	private TextView roleItemsTv;
-	private String selectedRoleId;
-	private boolean isParticipating;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,24 +63,13 @@ public class ParticipateActivity extends SherlockActivity {
 				.getString("id"));
 		setTitle(flashmob.getTitle());
 
-		// Get participation status
-		if (flashmob.getSelectedRole() != null)
-			isParticipating = true;
-		else
-			isParticipating = false;
-
-		// Setting selectedRoleId to the roleId that the user registered for.
-		// Else set it as null (important!).
-		if (isParticipating)
-			selectedRoleId = flashmob.getSelectedRole().getId();
-
 		// Participate button
 		participateButton = (Button) findViewById(R.id.participateButton);
 		setParticipateButtonLayout();
 		participateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!isParticipating) {
+				if (flashmob.getSelectedRole() == null) {
 					// Register a user for a role
 					String selectedItem = ((RolesSpinnerAdapter) roleSpinner
 							.getAdapter()).getItem(
@@ -98,7 +85,7 @@ public class ParticipateActivity extends SherlockActivity {
 					String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 							+ flashmob.getId()
 							+ "/roles/"
-							+ selectedRoleId
+							+ flashmob.getSelectedRole().getId()
 							+ "/users/"
 							+ PersistentStore
 									.getUserName(getApplicationContext());
@@ -137,9 +124,10 @@ public class ParticipateActivity extends SherlockActivity {
 		// Otherwise set it to the Id of the first Role in the list of roles
 		int spinnerPos = 0;
 
-		if (isParticipating && selectedRoleId != null) {
+		if (flashmob.getSelectedRole() != null) {
 			for (int i = 0; i < roles.size(); i++) {
-				if (roles.get(i).getId().equals(selectedRoleId)) {
+				if (roles.get(i).getId()
+						.equals(flashmob.getSelectedRole().getId())) {
 					spinnerPos = i;
 					break;
 				}
@@ -153,7 +141,7 @@ public class ParticipateActivity extends SherlockActivity {
 	 * participation status.
 	 */
 	public void setParticipateButtonLayout() {
-		if (isParticipating) {
+		if (flashmob.getSelectedRole() != null) {
 			participateButton.setText("Cancel Participation");
 			participateButton
 					.setBackgroundResource(R.drawable.cancel_button_background);
@@ -257,14 +245,6 @@ public class ParticipateActivity extends SherlockActivity {
 					roleItemsTv.setText(roles.get(spinnerPos())
 							.returnItemsAsString());
 
-					// In case the user did not use the spinner.
-					// Otherwise it is set to the roleId that the use registered
-					// for
-					// in onCreate()
-					if (selectedRoleId == null) {
-						selectedRoleId = roles.get(0).getId();
-					}
-
 					// Role Spinner
 					roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
 					RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(
@@ -362,16 +342,12 @@ public class ParticipateActivity extends SherlockActivity {
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			if (result == HttpStatus.SC_CREATED) {
-				isParticipating = true;
 				Role role = ((RolesSpinnerAdapter) roleSpinner.getAdapter())
 						.getItem(roleSpinner.getSelectedItemPosition());
 				flashmob.setSelectedRole(role);
 				PersistentStore
 						.addMyFlashmob(getApplicationContext(), flashmob);
-				// Change layout of the Participate/Cancel-Button
-				participateButton.setText("Cancel Participation");
-				participateButton
-						.setBackgroundResource(R.drawable.cancel_button_background);
+				setParticipateButtonLayout();
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
@@ -428,14 +404,10 @@ public class ParticipateActivity extends SherlockActivity {
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			if (result == HttpStatus.SC_NO_CONTENT) {
-				isParticipating = false;
 				flashmob.setSelectedRole(null);
 				PersistentStore.removeMyFlashmob(getApplicationContext(),
 						flashmob);
-				// Change layout of the Participate/Cancel-Button
-				participateButton.setText("Participate");
-				participateButton
-						.setBackgroundResource(R.drawable.button_background);
+				setParticipateButtonLayout();
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",

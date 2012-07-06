@@ -112,6 +112,8 @@ public class MyFlashmobsActivity extends SherlockActivity {
 									.getCookie(getApplicationContext());
 							request.setHeader("Cookie", cookie.getName() + "="
 									+ cookie.getValue());
+							Log.i("wichtig", "Cookie: " + cookie.getName()
+									+ "=" + cookie.getValue());
 							response = client.execute(request);
 							result = EntityUtils.toString(response.getEntity());
 

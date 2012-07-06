@@ -40,7 +40,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	private TextView fmLongitudeTv;
 
 	// Button
-	private Button openParticipateActivityButton;
+	private Button participateButton;
 
 	// Map stuff
 	private MapView mapView = null;
@@ -63,12 +63,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		try {
-			getFlashmobData();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		getFlashmobData();
 
 		setTitle(flashmob.getTitle());
 
@@ -88,26 +83,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		fmOverlay.addOverlay(overlayItem);
 		mapOverlays.add(fmOverlay);
 
-		// Button
-		openParticipateActivityButton = (Button) findViewById(R.id.openParticipateActivityButton);
-		openParticipateActivityButton
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent;
-						if (PersistentStore
-								.getUserName(getApplicationContext()) == null) {
-							intent = new Intent(getApplicationContext(),
-									LoginActivity.class);
-						} else {
-							intent = new Intent(getApplicationContext(),
-									ParticipateActivity.class);
-							intent.putExtra("id", flashmob.getId());
-						}
-						startActivity(intent);
-					}
-				});
-
 		// TextViews
 		fmTitleTV = (TextView) findViewById(R.id.fmTitleTV);
 		fmIsPublicTV = (TextView) findViewById(R.id.fmIsPublicTV);
@@ -117,11 +92,43 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		fmLatitudeTv = (TextView) findViewById(R.id.fmLatitudeTV);
 		fmLongitudeTv = (TextView) findViewById(R.id.fmLongitudeTV);
 
+		participateButton = (Button) findViewById(R.id.openParticipateActivityButton);
+
 		try {
 			fillTextViews();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Button
+		setParticipateButtonLayout();
+		participateButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent;
+				// if not logged in
+				if (PersistentStore.getUserName(getApplicationContext()) == null) {
+					intent = new Intent(getApplicationContext(),
+							LoginActivity.class);
+				} else {
+					// is participating: open ParticipateActivity
+					if (flashmob.getSelectedRole() != null) {
+						intent = new Intent(getApplicationContext(),
+								ParticipateActivity.class);
+						intent.putExtra("id", flashmob.getId());
+					} else { // is not participating: send cancel request
+						intent = new Intent(getApplicationContext(),
+								ParticipateActivity.class);
+						intent.putExtra("id", flashmob.getId());
+					}
+				}
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -138,7 +145,23 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		}
 	}
 
-	private void getFlashmobData() throws IOException {
+	/**
+	 * Set the layout of the Participate button depending on the user's
+	 * participation status.
+	 */
+	public void setParticipateButtonLayout() {
+		if (flashmob.getSelectedRole() != null) {
+			participateButton.setText("Cancel Participation");
+			participateButton
+					.setBackgroundResource(R.drawable.cancel_button_background);
+		} else {
+			participateButton.setText("Participate");
+			participateButton
+					.setBackgroundResource(R.drawable.button_background);
+		}
+	}
+
+	private void getFlashmobData() {
 		// Get the flashmob
 		flashmob = ((Store) getApplicationContext())
 				.getFlashmobById(getIntent().getExtras().getString("id"));
@@ -152,13 +175,18 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		}
 
 		// Convert coordinates into an address
-		Geocoder geocoder = new Geocoder(getApplicationContext());
-		List<Address> list = geocoder.getFromLocation(latitudeE6 / 1E6,
-				longitudeE6 / 1E6, 1);
-		Address address = list.get(0);
-		locality = address.getLocality();
-		country = address.getCountryName();
-		addressLine = address.getAddressLine(0);
+		try {
+			Geocoder geocoder = new Geocoder(getApplicationContext());
+			List<Address> list;
+			list = geocoder.getFromLocation(latitudeE6 / 1E6,
+					longitudeE6 / 1E6, 1);
+			Address address = list.get(0);
+			locality = address.getLocality();
+			country = address.getCountryName();
+			addressLine = address.getAddressLine(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
