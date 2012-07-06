@@ -1,7 +1,9 @@
 package de.ifgi.fmt.objects;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.location.Location;
 
@@ -54,7 +56,7 @@ public class Flashmob {
 	}
 
 	public String getStartDate() {
-		DateFormat dateFormat = DateFormat.getDateInstance();
+		DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
 		return dateFormat.format(startTime);
 	}
 
