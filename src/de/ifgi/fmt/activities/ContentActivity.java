@@ -57,6 +57,7 @@ public class ContentActivity extends SherlockActivity {
 		setTitle(f.getTitle());
 
 		r = f.getSelectedRole();
+		getSupportActionBar().setSubtitle(r.getTitle());
 
 		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 				+ f.getId() + "/roles/" + r.getId() + "/activities";
