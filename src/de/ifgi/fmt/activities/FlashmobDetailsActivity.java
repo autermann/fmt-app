@@ -97,8 +97,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		mapController.setZoom(17);
 		mapView.invalidate();
 		List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources()
-				.getDrawable(R.drawable.location);
+		Drawable drawable = this.getResources().getDrawable(
+				R.drawable.marker_blue);
 		FlashmobItemizedOverlay fmOverlay = new FlashmobItemizedOverlay(
 				drawable);
 		OverlayItem overlayItem = new OverlayItem(fmLocation, "", "");

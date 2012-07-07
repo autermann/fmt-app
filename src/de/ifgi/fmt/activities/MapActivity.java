@@ -103,7 +103,7 @@ public class MapActivity extends SherlockMapActivity {
 		mc.setZoom(15);
 		mapView.invalidate();
 
-		marker = getResources().getDrawable(R.drawable.location);
+		marker = getResources().getDrawable(R.drawable.marker_blue);
 		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
 				marker.getIntrinsicHeight());
 		new DownloadTask(this)
