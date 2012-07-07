@@ -7,9 +7,15 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +44,8 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity {
 	// TODO: Change button text depending on user's participation status
@@ -133,10 +141,10 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				} else {
 					// is not participating: open ParticipateActivity
 					if (flashmob.getSelectedRole() == null) {
-						intent = new Intent(getApplicationContext(),
-								ParticipateActivity.class);
-						intent.putExtra("id", flashmob.getId());
-						startActivity(intent);
+						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+								+ flashmob.getId() + "/roles";
+						new DownloadTask(FlashmobDetailsActivity.this)
+								.execute(url);
 					} else { // is participating: send cancel request
 						// Unregister a user for a role
 						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
@@ -232,6 +240,108 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
+	}
+
+	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>> {
+		ProgressDialog progressDialog;
+
+		public DownloadTask(Context context) {
+			progressDialog = new ProgressDialog(context);
+			progressDialog.setMessage("Loading roles...");
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			progressDialog.show();
+		}
+
+		@Override
+		protected ArrayList<String> doInBackground(String... url) {
+			try {
+				// Request for getting all roleIds
+				HttpClient client = new DefaultHttpClient();
+				HttpGet request = new HttpGet(url[0]);
+				HttpResponse response;
+
+				response = client.execute(request);
+				String result = EntityUtils.toString(response.getEntity());
+
+				Log.i("wichtig", "URL: " + request.getURI());
+				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("wichtig", "Result: " + result);
+
+				// roleIds
+				ArrayList<String> roleIds = new ArrayList<String>();
+
+				// Getting all roleIds
+
+				try {
+					JSONObject root = new JSONObject(result);
+					JSONArray roles = root.getJSONArray("roles");
+
+					for (int i = 0; i < roles.length(); i++) {
+						roleIds.add(roles.getJSONObject(i).getString("id"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				// Roles
+				ArrayList<String> results = new ArrayList<String>();
+
+				// Getting all roles
+				for (String rId : roleIds) {
+					// Request for every single roleId
+					request = new HttpGet(
+							"http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
+									+ flashmob.getId() + "/roles" + "/" + rId);
+					response = client.execute(request);
+					result = EntityUtils.toString(response.getEntity());
+					results.add(result);
+				}
+				return results;
+			} catch (ClientProtocolException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<String> results) {
+			super.onPostExecute(results);
+			if (results != null) {
+				ArrayList<Role> roles = new ArrayList<Role>();
+
+				// Parsing all roles
+				for (String result : results) {
+					Role role = RoleJSONParser.parse(result,
+							getApplicationContext());
+					roles.add(role);
+				}
+
+				if (roles.size() > 0) {
+					flashmob.setRoles(roles);
+					Intent intent = new Intent(getApplicationContext(),
+							ParticipateActivity.class);
+					intent.putExtra("id", flashmob.getId());
+					startActivity(intent);
+				} else {
+					Toast.makeText(getApplicationContext(),
+							"No roles available for this flashmob, yet.",
+							Toast.LENGTH_LONG).show();
+				}
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
+			}
+
+			progressDialog.dismiss();
+		}
 	}
 
 	class CancelTask extends AsyncTask<String, Void, Integer> {

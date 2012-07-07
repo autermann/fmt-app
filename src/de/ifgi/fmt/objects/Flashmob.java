@@ -2,6 +2,7 @@ package de.ifgi.fmt.objects;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -23,6 +24,7 @@ public class Flashmob {
 	private Date startTime;
 	private Date endTime;
 	private String href;
+	private ArrayList<Role> roles;
 	private Role selectedRole;
 
 	// Constructors
@@ -163,6 +165,14 @@ public class Flashmob {
 
 	public void setSelectedRole(Role selectedRole) {
 		this.selectedRole = selectedRole;
+	}
+
+	public ArrayList<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(ArrayList<Role> roles) {
+		this.roles = roles;
 	}
 
 }

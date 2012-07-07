@@ -8,15 +8,11 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -40,7 +36,6 @@ import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
-import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
@@ -62,6 +57,40 @@ public class ParticipateActivity extends SherlockActivity {
 		flashmob = store.getFlashmobById(getIntent().getExtras()
 				.getString("id"));
 		setTitle(flashmob.getTitle());
+		roles = flashmob.getRoles();
+
+		// Role Spinner
+		roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
+		RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(
+				getApplicationContext(), roles);
+		roleSpinner.setAdapter(adapter);
+		roleSpinner.setSelection(spinnerPos(), true);
+		roleSpinner
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int pos, long id) {
+						Role r = (Role) parent.getItemAtPosition(pos);
+
+						// Set the TextViews with the selected
+						// role's
+						// attributes
+						roleDescriptionTv.setText(r.getDescription());
+						roleItemsTv.setText(r.returnItemsAsString());
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+					}
+				});
+		setSpinnerStatus();
+
+		// Set the TextViews with the attributes of the role the
+		// spinner
+		// is set on
+		roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
+		roleDescriptionTv.setText(roles.get(spinnerPos()).getDescription());
+		roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
+		roleItemsTv.setText(roles.get(spinnerPos()).returnItemsAsString());
 
 		// Participate button
 		participateButton = (Button) findViewById(R.id.participateButton);
@@ -94,9 +123,6 @@ public class ParticipateActivity extends SherlockActivity {
 			}
 		});
 
-		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
-				+ flashmob.getId() + "/roles";
-		new DownloadTask(this).execute(url);
 	}
 
 	@Override
@@ -149,141 +175,6 @@ public class ParticipateActivity extends SherlockActivity {
 			participateButton.setText("Participate");
 			participateButton
 					.setBackgroundResource(R.drawable.button_background);
-		}
-	}
-
-	class DownloadTask extends AsyncTask<String, Void, ArrayList<String>> {
-		ProgressDialog progressDialog;
-
-		public DownloadTask(Context context) {
-			progressDialog = new ProgressDialog(context);
-			progressDialog.setMessage("Loading roles...");
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			progressDialog.show();
-		}
-
-		@Override
-		protected ArrayList<String> doInBackground(String... url) {
-			try {
-				// Request for getting all roleIds
-				HttpClient client = new DefaultHttpClient();
-				HttpGet request = new HttpGet(url[0]);
-				HttpResponse response;
-
-				response = client.execute(request);
-				String result = EntityUtils.toString(response.getEntity());
-
-				Log.i("wichtig", "URL: " + request.getURI());
-				Log.i("wichtig", "Status: " + response.getStatusLine());
-				Log.i("wichtig", "Result: " + result);
-
-				// roleIds
-				ArrayList<String> roleIds = new ArrayList<String>();
-
-				// Getting all roleIds
-
-				try {
-					JSONObject root = new JSONObject(result);
-					JSONArray roles = root.getJSONArray("roles");
-
-					for (int i = 0; i < roles.length(); i++) {
-						roleIds.add(roles.getJSONObject(i).getString("id"));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-
-				// Roles
-				ArrayList<String> results = new ArrayList<String>();
-
-				// Getting all roles
-				for (String rId : roleIds) {
-					// Request for every single roleId
-					request = new HttpGet(
-							"http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
-									+ flashmob.getId() + "/roles" + "/" + rId);
-					response = client.execute(request);
-					result = EntityUtils.toString(response.getEntity());
-					results.add(result);
-				}
-				return results;
-			} catch (ClientProtocolException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				return null;
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<String> results) {
-			super.onPostExecute(results);
-
-			if (results != null) {
-				roles = new ArrayList<Role>();
-
-				// Parsing all roles
-				for (String result : results) {
-					Role role = RoleJSONParser.parse(result,
-							getApplicationContext());
-					roles.add(role);
-				}
-
-				if (roles.size() > 0) {
-					// Set the TextViews with the attributes of the role the
-					// spinner
-					// is set on
-					roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
-					roleDescriptionTv.setText(roles.get(spinnerPos())
-							.getDescription());
-					roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
-					roleItemsTv.setText(roles.get(spinnerPos())
-							.returnItemsAsString());
-
-					// Role Spinner
-					roleSpinner = (Spinner) findViewById(R.id.roleSpinner);
-					RolesSpinnerAdapter adapter = new RolesSpinnerAdapter(
-							getApplicationContext(), roles);
-					roleSpinner.setAdapter(adapter);
-					roleSpinner.setSelection(spinnerPos(), true);
-					roleSpinner
-							.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-								public void onItemSelected(
-										AdapterView<?> parent, View view,
-										int pos, long id) {
-									Role r = (Role) parent
-											.getItemAtPosition(pos);
-
-									// Set the TextViews with the selected
-									// role's
-									// attributes
-									roleDescriptionTv.setText(r
-											.getDescription());
-									roleItemsTv.setText(r.returnItemsAsString());
-								}
-
-								@Override
-								public void onNothingSelected(
-										AdapterView<?> arg0) {
-								}
-							});
-					setSpinnerStatus();
-				}
-
-				findViewById(R.id.participate_layout).setVisibility(
-						View.VISIBLE);
-			} else {
-				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.",
-						Toast.LENGTH_LONG).show();
-			}
-
-			progressDialog.dismiss();
 		}
 	}
 
