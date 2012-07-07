@@ -5,6 +5,7 @@ public class Activity {
 	private String title;
 	private String description;
 	private Task task;
+	private Trigger trigger;
 
 	public String getId() {
 		return id;
@@ -36,6 +37,14 @@ public class Activity {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	public Trigger getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
 	}
 
 }

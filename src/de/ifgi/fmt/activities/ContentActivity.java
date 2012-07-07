@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -34,8 +36,10 @@ import de.ifgi.fmt.objects.Activity;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.objects.Task;
+import de.ifgi.fmt.objects.Trigger;
 import de.ifgi.fmt.parser.ActivityJSONParser;
 import de.ifgi.fmt.parser.TaskJSONParser;
+import de.ifgi.fmt.parser.TriggerJSONParser;
 
 public class ContentActivity extends SherlockActivity {
 	Flashmob f;
@@ -114,20 +118,32 @@ public class ContentActivity extends SherlockActivity {
 					Log.i("wichtig", "URL: " + request.getURI());
 					Log.i("wichtig", "Status: " + response.getStatusLine());
 
-					Activity a = ActivityJSONParser.parse(result,
-							getApplicationContext());
+					Activity a = ActivityJSONParser.parse(result);
 
-					href += "/task";
-					request = new HttpGet(href);
+					// Task
+					String taskHref = href + "/task";
+					request = new HttpGet(taskHref);
 					response = client.execute(request);
-					result = EntityUtils.toString(response.getEntity());
-
 					Log.i("wichtig", "URL: " + request.getURI());
 					Log.i("wichtig", "Status: " + response.getStatusLine());
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						result = EntityUtils.toString(response.getEntity());
+						Task ta = TaskJSONParser.parse(result);
+						a.setTask(ta);
+					}
 
-					Task t = TaskJSONParser.parse(result,
-							getApplicationContext());
-					a.setTask(t);
+					// Trigger
+					String triggerHref = href
+							.replace("/roles/" + r.getId(), "") + "/trigger";
+					request = new HttpGet(triggerHref);
+					response = client.execute(request);
+					Log.i("wichtig", "URL: " + request.getURI());
+					Log.i("wichtig", "Status: " + response.getStatusLine());
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						result = EntityUtils.toString(response.getEntity());
+						Trigger tr = TriggerJSONParser.parse(result);
+						a.setTrigger(tr);
+					}
 
 					activities.add(a);
 				}
@@ -173,13 +189,45 @@ public class ContentActivity extends SherlockActivity {
 							.findViewById(R.id.activity_description);
 					activityDescription.setText(a.getDescription());
 
-					TextView taskDescription = (TextView) ll
-							.findViewById(R.id.task_description);
-					taskDescription.setText(a.getTask().getDescription());
+					// Task
+					LinearLayout taskRow = (LinearLayout) ll
+							.findViewById(R.id.task_row);
+					if (a.getTask() != null) {
+						TextView taskDescription = (TextView) ll
+								.findViewById(R.id.task_description);
+						taskDescription.setText(a.getTask().getDescription());
+						taskRow.setVisibility(View.VISIBLE);
+					} else {
+						taskRow.setVisibility(View.GONE);
+					}
 
-					Log.i("wichtig", "Title: " + a.getTitle());
-					Log.i("wichtig", "Description: " + a.getDescription());
-					Log.i("wichtig", "Task: " + a.getTask().getDescription());
+					// Trigger
+					LinearLayout triggerRow = (LinearLayout) ll
+							.findViewById(R.id.trigger_row);
+					if (a.getTrigger() != null) {
+						Trigger trigger = a.getTrigger();
+						TextView triggerText = (TextView) ll
+								.findViewById(R.id.trigger);
+						String text = "";
+						if (trigger.getTime() != null) {
+							text += trigger.getTimeAsString();
+						}
+						if (trigger.getLocation() != null) {
+							text += trigger.getLocation().getLatitude() + ", "
+									+ trigger.getLocation().getLongitude();
+						}
+						if (trigger.getDescription() != null) {
+							if (trigger.getTime() == null
+									&& trigger.getLocation() == null) {
+								text += " (" + trigger.getDescription() + ")";
+							} else {
+								text += trigger.getDescription();
+							}
+						}
+						triggerText.setText(text);
+					} else {
+						triggerRow.setVisibility(View.GONE);
+					}
 
 					layout.addView(ll, lp);
 				}

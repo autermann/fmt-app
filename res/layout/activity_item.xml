@@ -10,20 +10,25 @@
         android:id="@+id/activity_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#aaa"
         android:lineSpacingMultiplier="1.1"
         android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:text="Activity title"
-        android:textColor="?android:attr/textColorPrimaryInverse"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/the_green" />
 
     <TextView
         android:id="@+id/activity_description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:lineSpacingMultiplier="1.1"
         android:paddingLeft="16dp"
@@ -33,9 +38,9 @@
         android:textSize="16sp" />
 
     <LinearLayout
+        android:id="@+id/task_row"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp" >
@@ -55,6 +60,34 @@
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.1"
             android:text="Task description"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/trigger_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:text="Trigger:"
+            android:textColor="@color/the_green"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/trigger"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.1"
+            android:text="Trigger"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
             android:textStyle="bold" />
