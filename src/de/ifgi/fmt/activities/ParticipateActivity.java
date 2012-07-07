@@ -241,6 +241,7 @@ public class ParticipateActivity extends SherlockActivity {
 						.addMyFlashmob(getApplicationContext(), flashmob);
 				setParticipateButtonLayout();
 				setSpinnerStatus();
+				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
@@ -302,6 +303,7 @@ public class ParticipateActivity extends SherlockActivity {
 						flashmob);
 				setParticipateButtonLayout();
 				setSpinnerStatus();
+				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",

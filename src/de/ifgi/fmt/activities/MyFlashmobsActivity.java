@@ -39,19 +39,30 @@ import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class MyFlashmobsActivity extends SherlockActivity {
+	public static boolean outdated;
+	private ListView list;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flashmob_list_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
+		list = (ListView) findViewById(android.R.id.list);
+		outdated = true;
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
 		String userName = PersistentStore.getUserName(this);
-		if (userName != null) {
-			String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/?participant="
-					+ userName;
-			Log.i("wichtig", url);
-			new DownloadTask(this).execute(url);
+		if (outdated) {
+			list.setAdapter(null);
+			if (userName != null) {
+				String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/?participant="
+						+ userName;
+				Log.i("wichtig", url);
+				new DownloadTask(this).execute(url);
+			}
 		}
 	}
 
@@ -155,7 +166,6 @@ public class MyFlashmobsActivity extends SherlockActivity {
 			if (flashmobs != null) {
 				ListAdapter adapter = new FlashmobListAdapter(
 						getApplicationContext(), flashmobs, null, false, true);
-				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
 				list.setOnItemClickListener(new OnItemClickListener() {
 					public void onItemClick(AdapterView<?> arg0, View arg1,
@@ -166,6 +176,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 						startActivity(intent);
 					}
 				});
+				outdated = false;
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",

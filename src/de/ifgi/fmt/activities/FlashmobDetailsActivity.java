@@ -434,6 +434,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				PersistentStore.removeMyFlashmob(getApplicationContext(),
 						flashmob);
 				setParticipateButtonLayout();
+				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
