@@ -27,7 +27,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +68,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	private Button participateButton;
 
 	// Map stuff
-	private MapView mapView = null;
+	private MapView mapView;
 	private MapController mapController;
 	private GeoPoint fmLocation;
 
@@ -89,22 +91,6 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 		setTitle(flashmob.getTitle());
 
-		// Map stuff
-		mapView = (MapView) findViewById(R.id.miniMapView);
-		mapController = mapView.getController();
-		fmLocation = new GeoPoint((int) latitudeE6, (int) longitudeE6);
-		mapController.setCenter(fmLocation);
-		mapController.setZoom(17);
-		mapView.invalidate();
-		List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(
-				R.drawable.marker_blue);
-		FlashmobItemizedOverlay fmOverlay = new FlashmobItemizedOverlay(
-				drawable);
-		OverlayItem overlayItem = new OverlayItem(fmLocation, "", "");
-		fmOverlay.addOverlay(overlayItem);
-		mapOverlays.add(fmOverlay);
-
 		// TextViews
 		fmTitleTV = (TextView) findViewById(R.id.fmTitleTV);
 		fmIsPublicTV = (TextView) findViewById(R.id.fmIsPublicTV);
@@ -115,8 +101,12 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		fmLongitudeTv = (TextView) findViewById(R.id.fmLongitudeTV);
 		fmDateTv = (TextView) findViewById(R.id.fmDateTV);
 		fmTimeTv = (TextView) findViewById(R.id.fmTimeTV);
+		fmLocation = new GeoPoint((int) latitudeE6, (int) longitudeE6);
 
 		participateButton = (Button) findViewById(R.id.openParticipateActivityButton);
+
+		mapView = (MapView) findViewById(R.id.miniMapView);
+		mapController = mapView.getController();
 
 		try {
 			fillTextViews();
@@ -128,6 +118,29 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// Map
+		mapController.setCenter(fmLocation);
+		mapController.setZoom(17);
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		Drawable drawable = this.getResources().getDrawable(
+				R.drawable.marker_blue);
+		FlashmobItemizedOverlay fmOverlay = new FlashmobItemizedOverlay(
+				drawable);
+		OverlayItem overlayItem = new OverlayItem(fmLocation, "", "");
+		fmOverlay.addOverlay(overlayItem);
+		mapOverlays.add(fmOverlay);
+
+		((FrameLayout) findViewById(R.id.map_container))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(getApplicationContext(),
+								MapActivity.class);
+						startActivity(intent);
+					}
+				});
+
 		// Button
 		setParticipateButtonLayout();
 		participateButton.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +175,14 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 			}
 		});
 		invalidateOptionsMenu();
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		// reset MapView width and height
+		mapView.getController().zoomIn();
+		mapView.getController().zoomOut();
 	}
 
 	@Override
@@ -422,27 +443,27 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 	}
 
-}
+	class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+		private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
 
-class FlashmobItemizedOverlay extends ItemizedOverlay<OverlayItem> {
-	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
+		public FlashmobItemizedOverlay(Drawable defaultMarker) {
+			super(boundCenterBottom(defaultMarker));
+		}
 
-	public FlashmobItemizedOverlay(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+		public void addOverlay(OverlayItem overlay) {
+			overlays.add(overlay);
+			populate();
+		}
+
+		@Override
+		protected OverlayItem createItem(int i) {
+			return overlays.get(i);
+		}
+
+		@Override
+		public int size() {
+			return overlays.size();
+		}
 	}
 
-	public void addOverlay(OverlayItem overlay) {
-		overlays.add(overlay);
-		populate();
-	}
-
-	@Override
-	protected OverlayItem createItem(int i) {
-		return overlays.get(i);
-	}
-
-	@Override
-	public int size() {
-		return overlays.size();
-	}
 }

@@ -119,6 +119,14 @@ public class MapActivity extends SherlockMapActivity {
 	}
 
 	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		// reset MapView width and height
+		mapView.getController().zoomIn();
+		mapView.getController().zoomOut();
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 		// when our activity pauses, we want to remove listening for location
