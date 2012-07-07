@@ -137,6 +137,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 					public void onClick(View v) {
 						Intent intent = new Intent(getApplicationContext(),
 								MapActivity.class);
+						intent.putExtra("id", flashmob.getId());
 						startActivity(intent);
 					}
 				});

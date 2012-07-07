@@ -63,6 +63,7 @@ public class MapActivity extends SherlockMapActivity {
 	private MyLocationOverlay myLocationOverlay;
 	private Drawable marker;
 	private FlashmobsOverlay itemizedOverlay;
+	private int zoomLevel = 15;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class MapActivity extends SherlockMapActivity {
 				return true;
 			}
 		});
+
 		mapView.setBuiltInZoomControls(true);
 
 		me = new MyLocationOverlay(this, mapView);
@@ -100,7 +102,6 @@ public class MapActivity extends SherlockMapActivity {
 		mc.setCenter(p);
 		zoomToMyLocation();
 
-		mc.setZoom(15);
 		mapView.invalidate();
 
 		marker = getResources().getDrawable(R.drawable.marker_blue);
@@ -116,6 +117,7 @@ public class MapActivity extends SherlockMapActivity {
 		super.onResume();
 		// when our activity resumes, we want to register for location updates
 		myLocationOverlay.enableMyLocation();
+		mc.setZoom(zoomLevel);
 	}
 
 	@Override
@@ -132,6 +134,7 @@ public class MapActivity extends SherlockMapActivity {
 		// when our activity pauses, we want to remove listening for location
 		// updates
 		myLocationOverlay.disableMyLocation();
+		zoomLevel = mapView.getZoomLevel();
 	}
 
 	/**
@@ -347,6 +350,12 @@ public class MapActivity extends SherlockMapActivity {
 					itemizedOverlay.addOverlay(o, f);
 				}
 				mapView.getOverlays().add(itemizedOverlay);
+				if (getIntent().hasExtra("id")) {
+					Flashmob f = ((Store) getApplicationContext())
+							.getFlashmobById(getIntent().getStringExtra("id"));
+					mapView.getController().setCenter(f.getLocation());
+					mapView.getController().setZoom(17);
+				}
 				mapView.invalidate();
 			} else {
 				Toast.makeText(getApplicationContext(),
@@ -387,4 +396,5 @@ public class MapActivity extends SherlockMapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+
 }
