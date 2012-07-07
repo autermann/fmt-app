@@ -29,19 +29,17 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="7dp"
             android:hint="Password"
-            android:imeOptions="actionGo"
             android:inputType="textPassword" />
-        
+
         <EditText
             android:id="@+id/password_rep"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:hint="Password"
-            android:imeOptions="actionGo"
             android:inputType="textPassword" />
-		
-		<EditText
+
+        <EditText
             android:id="@+id/email"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -50,7 +48,7 @@
             android:inputType="textEmailAddress"
             android:singleLine="true"
             android:typeface="monospace" />
-		
+
         <Button
             android:id="@+id/register"
             style="@style/Button"
