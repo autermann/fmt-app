@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -48,7 +49,7 @@ import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity {
-	// TODO: Change button text depending on user's participation status
+	private static final int MENU_PLAY = 1;
 
 	// TextViews
 	private TextView fmTitleTV;
@@ -160,20 +161,37 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				}
 			}
 		});
+		invalidateOptionsMenu();
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, StartActivity.class);
+			intent = new Intent(this, StartActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
+		case MENU_PLAY:
+			intent = new Intent(this, ContentActivity.class);
+			intent.putExtra("id", flashmob.getId());
+			startActivity(intent);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_PLAY, 0, "Start")
+				.setIcon(R.drawable.ic_action_play)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_ALWAYS
+								| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
