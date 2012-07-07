@@ -48,15 +48,11 @@ public class ContentActivity extends SherlockActivity {
 
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		Log.i("wichtig",
-				"F (Intent): " + getIntent().getExtras().getString("id"));
-
-		Flashmob f = ((Store) getApplicationContext())
-				.getFlashmobById(getIntent().getExtras().getString("id"));
-		Role r = new Role();
-		r.setId("4fe8de12e4b002f266de750e");
-
+		f = ((Store) getApplicationContext()).getFlashmobById(getIntent()
+				.getExtras().getString("id"));
 		setTitle(f.getTitle());
+
+		r = f.getSelectedRole();
 
 		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 				+ f.getId() + "/roles/" + r.getId() + "/activities";
