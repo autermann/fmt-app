@@ -207,12 +207,13 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, MENU_PLAY, 0, "Start")
-				.setIcon(R.drawable.ic_action_play)
-				.setShowAsAction(
-						MenuItem.SHOW_AS_ACTION_ALWAYS
-								| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		;
+		if (flashmob.getSelectedRole() != null) {
+			menu.add(0, MENU_PLAY, 0, "Start")
+					.setIcon(R.drawable.ic_action_play)
+					.setShowAsAction(
+							MenuItem.SHOW_AS_ACTION_ALWAYS
+									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
