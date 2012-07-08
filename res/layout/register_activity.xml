@@ -36,7 +36,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:hint="Password"
+            android:hint="Password repetition"
             android:inputType="textPassword" />
 
         <EditText
@@ -44,7 +44,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="7dp"
-            android:hint="E-mail"
+            android:hint="E-mail (optional)"
             android:inputType="textEmailAddress"
             android:singleLine="true"
             android:typeface="monospace" />
