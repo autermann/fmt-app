@@ -222,7 +222,7 @@ public class ContentActivity extends SherlockActivity {
 									&& trigger.getLocation() == null) {
 								text += " (" + trigger.getDescription() + ")";
 							} else {
-								text += trigger.getDescription();
+								text += " " + trigger.getDescription();
 							}
 						}
 						triggerText.setText(text);
