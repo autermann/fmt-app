@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
@@ -124,16 +125,33 @@ public class ParticipateActivity extends SherlockActivity {
 		});
 
 	}
-
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (flashmob.getSelectedRole() != null) {
+			menu.add(0, FlashmobDetailsActivity.MENU_PLAY, 0, "Start")
+					.setIcon(R.drawable.ic_action_play)
+					.setShowAsAction(
+							MenuItem.SHOW_AS_ACTION_ALWAYS
+									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent intent = new Intent(getApplicationContext(),
-					StartActivity.class);
+			// app icon in action bar clicked; go home
+			intent = new Intent(this, StartActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
-
+		case FlashmobDetailsActivity.MENU_PLAY:
+			intent = new Intent(this, ContentActivity.class);
+			intent.putExtra("id", flashmob.getId());
+			startActivity(intent);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -241,6 +259,7 @@ public class ParticipateActivity extends SherlockActivity {
 						.addMyFlashmob(getApplicationContext(), flashmob);
 				setParticipateButtonLayout();
 				setSpinnerStatus();
+				invalidateOptionsMenu();
 				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
@@ -303,6 +322,7 @@ public class ParticipateActivity extends SherlockActivity {
 						flashmob);
 				setParticipateButtonLayout();
 				setSpinnerStatus();
+				invalidateOptionsMenu();
 				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),

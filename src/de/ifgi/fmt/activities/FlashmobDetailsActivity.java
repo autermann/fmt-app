@@ -51,7 +51,7 @@ import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity {
-	private static final int MENU_PLAY = 1;
+	public static final int MENU_PLAY = 1;
 
 	// TextViews
 	private TextView fmTitleTV;
