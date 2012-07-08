@@ -68,28 +68,38 @@ public class RegisterActivity extends SherlockActivity {
 		if (username.getText().toString().equals("")
 				|| password.getText().toString().equals("")
 				|| password_rep.getText().toString().equals("")) {
-			Toast.makeText(getApplicationContext(),
+			Toast.makeText(
+					getApplicationContext(),
 					"Please enter a valid user name and password. One mandatory field is empty.",
 					Toast.LENGTH_LONG).show();
 
 		} else {
 
 			if (!password.getText().toString()
-					.equals(password_rep.getText().toString())
-					) {
+					.equals(password_rep.getText().toString())) {
 				Toast.makeText(getApplicationContext(),
 						"The passwords do not match, please try again",
 						Toast.LENGTH_LONG).show();
 			} else {
-				
-				if (password.getText().toString().length() < 8){
-					Toast.makeText(getApplicationContext(),
+
+				if (password.getText().toString().length() < 8) {
+					Toast.makeText(
+							getApplicationContext(),
 							"The password is too short. It has to contain at least 8 characters.",
 							Toast.LENGTH_LONG).show();
 				} else {
-	
-				// if everything is okay, create new account
-				new RegisterTask(this).execute();
+					
+					if(username.getText().toString().length() < 4){
+						Toast.makeText(
+								getApplicationContext(),
+								"The username is too short. It has to contain at least 4 characters.",
+								Toast.LENGTH_LONG).show();
+					} else {
+						
+						// if everything is okay, create new account
+						new RegisterTask(this).execute();
+					}
+
 				}
 			}
 		}
