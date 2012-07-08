@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -34,6 +35,7 @@ public class RegisterActivity extends SherlockActivity {
 	public static final int STATUS_OK = 11;
 
 	public static final int INVALID_CREDENTIALS = 11;
+	public static final int NO_INTERNET_CONNECTION = 99;
 
 	private EditText username, password, password_rep, email;
 	private Button register;
@@ -146,8 +148,7 @@ public class RegisterActivity extends SherlockActivity {
 				}
 
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return HttpStatus.SC_PROCESSING;
 			}
 
 			try {
@@ -155,12 +156,12 @@ public class RegisterActivity extends SherlockActivity {
 				HttpResponse response = httpclient.execute(httppost);
 				Log.d("reg2", response.getStatusLine().toString());
 				Log.d("reg3", response.getEntity().getContent().toString());
+				return response.getStatusLine().getStatusCode();
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return NO_INTERNET_CONNECTION;
 			}
 
 			return 0;
@@ -182,6 +183,21 @@ public class RegisterActivity extends SherlockActivity {
 						.show();
 				password.setText("");
 				break;
+			case NO_INTERNET_CONNECTION:
+				Toast.makeText(getApplicationContext(),
+						"There is a problem with the Internet connection.",
+						Toast.LENGTH_LONG).show();
+				break;
+			case HttpStatus.SC_PROCESSING:
+				Toast.makeText(getApplicationContext(),
+						"An encoding problem occurs. Please try again or ask the supprt.",
+						Toast.LENGTH_LONG).show();
+			case HttpStatus.SC_BAD_REQUEST:
+				Toast.makeText(getApplicationContext(),
+						"Error! Please try again or ask the supprt.",
+						Toast.LENGTH_LONG).show();
+				break;
+			
 			default:
 				redirect();
 				break;
