@@ -35,6 +35,7 @@ import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Activity;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.objects.SoundSignal;
 import de.ifgi.fmt.objects.Task;
 import de.ifgi.fmt.objects.TextSignal;
 import de.ifgi.fmt.objects.Trigger;
@@ -276,9 +277,10 @@ public class ContentActivity extends SherlockActivity {
 						continue;
 					}
 					String signal = a.getSignal();
+					// String signal = "Sound";
 					String message = a.getTask().getDescription();
 					if (signal.equals("Sound")) {
-						new TextSignal(ContentActivity.this, message);
+						new SoundSignal(ContentActivity.this, message);
 					} else if (signal.equals("Text")) {
 						new TextSignal(ContentActivity.this, message);
 					} else if (signal.equals("Vibration")) {
