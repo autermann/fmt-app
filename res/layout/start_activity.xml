@@ -1,111 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="16dp" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/background"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="16dp" >
+        style="@style/startActivityButton"
+        android:onClick="startMapActivity" >
+
+        <ImageView
+            style="@style/startActivityButtonImage"
+            android:src="@drawable/ic_start_map" />
 
         <LinearLayout
-            style="@style/startActivityButton"
-            android:onClick="startMapActivity" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-            <ImageView
-                style="@style/startActivityButtonImage"
-                android:src="@drawable/ic_start_map" />
+            <TextView
+                style="@style/startActivityButtonTitle"
+                android:text="Map" />
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    style="@style/startActivityButtonTitle"
-                    android:text="Map" />
-
-                <TextView
-                    style="@style/startActivityButtonDescription"
-                    android:text="Find flashmobs on a map anywhere in the world" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/startActivityButton"
-            android:onClick="startLocationActivity" >
-
-            <ImageView
-                style="@style/startActivityButtonImage"
-                android:src="@drawable/ic_start_nearby" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    style="@style/startActivityButtonTitle"
-                    android:text="Nearby" />
-
-                <TextView
-                    style="@style/startActivityButtonDescription"
-                    android:text="Find flashmobs close to your current location" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/startActivityButton"
-            android:onClick="startAttributesActivity" >
-
-            <ImageView
-                style="@style/startActivityButtonImage"
-                android:src="@drawable/ic_start_attributes" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    style="@style/startActivityButtonTitle"
-                    android:text="Attributes" />
-
-                <TextView
-                    style="@style/startActivityButtonDescription"
-                    android:text="Find flashmobs by attributes (time, participants, etc.)" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/startActivityButton"
-            android:onClick="startMyFlashmobsActivity" >
-
-            <ImageView
-                style="@style/startActivityButtonImage"
-                android:src="@drawable/ic_start_flashmob" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    style="@style/startActivityButtonTitle"
-                    android:text="My Flashmobs" />
-
-                <TextView
-                    style="@style/startActivityButtonDescription"
-                    android:text="All flashmobs you are going to attend or attended in the past" />
-            </LinearLayout>
+            <TextView
+                style="@style/startActivityButtonDescription"
+                android:text="Find flashmobs on a map anywhere in the world" />
         </LinearLayout>
     </LinearLayout>
 
-</ScrollView>
+    <LinearLayout
+        style="@style/startActivityButton"
+        android:onClick="startLocationActivity" >
+
+        <ImageView
+            style="@style/startActivityButtonImage"
+            android:src="@drawable/ic_start_nearby" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/startActivityButtonTitle"
+                android:text="Nearby" />
+
+            <TextView
+                style="@style/startActivityButtonDescription"
+                android:text="Find flashmobs close to your current location" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/startActivityButton"
+        android:onClick="startAttributesActivity" >
+
+        <ImageView
+            style="@style/startActivityButtonImage"
+            android:src="@drawable/ic_start_attributes" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/startActivityButtonTitle"
+                android:text="Attributes" />
+
+            <TextView
+                style="@style/startActivityButtonDescription"
+                android:text="Find flashmobs by attributes (time, participants, etc.)" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/startActivityButton"
+        android:onClick="startMyFlashmobsActivity" >
+
+        <ImageView
+            style="@style/startActivityButtonImage"
+            android:src="@drawable/ic_start_flashmob" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/startActivityButtonTitle"
+                android:text="My Flashmobs" />
+
+            <TextView
+                style="@style/startActivityButtonDescription"
+                android:text="All flashmobs you are going to attend or did in the past" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
