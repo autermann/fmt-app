@@ -135,13 +135,13 @@ public class LoginActivity extends SherlockActivity {
 				get.setHeader("Authorization", "Basic " + userpassEncoded);
 				HttpResponse response = client.execute(get);
 				HttpEntity resEntityGet = response.getEntity();
-				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("Status", "" + response.getStatusLine());
 				if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 					return INVALID_CREDENTIALS;
 				}
 
 				resEntityGet.consumeContent();
-				Log.i("wichtig", "Initial set of cookies:");
+				Log.i("Cookies", "Server cookies:");
 				List<Cookie> cookies = client.getCookieStore().getCookies();
 				if (!cookies.isEmpty()) {
 					PersistentStore.setUserName(getApplicationContext(),
@@ -152,7 +152,7 @@ public class LoginActivity extends SherlockActivity {
 							PersistentStore.setCookie(getApplicationContext(),
 									cookies.get(i).getValue());
 						}
-						Log.i("wichtig", "- " + cookies.get(i).toString());
+						Log.i("Cookies", "- " + cookies.get(i).toString());
 					}
 				}
 				// My Flashmobs
@@ -167,8 +167,8 @@ public class LoginActivity extends SherlockActivity {
 						cookie.getName() + "=" + cookie.getValue());
 				response = client.execute(get);
 				String result = EntityUtils.toString(response.getEntity());
-				Log.i("Login Request URL", "" + get.getURI());
-				Log.i("Login Request Response", result);
+				Log.i("URL", "" + get.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 				ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
 				JSONArray array = new JSONArray();
@@ -182,9 +182,8 @@ public class LoginActivity extends SherlockActivity {
 									+ "/flashmobs/" + f.getId() + "/role");
 					response = client.execute(get);
 					result = EntityUtils.toString(response.getEntity());
-					Log.i("Login Request Role", "" + get.getURI());
-					Log.i("Login Request Role", "" + response.getStatusLine());
-					Log.i("Login Request Role", result);
+					Log.i("URL", "" + get.getURI());
+					Log.i("Status", "" + response.getStatusLine());
 					Role role = RoleJSONParser.parse(result,
 							getApplicationContext());
 					f.setSelectedRole(role);

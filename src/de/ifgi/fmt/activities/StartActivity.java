@@ -32,11 +32,9 @@ public class StartActivity extends SherlockActivity {
 		super.onResume();
 		invalidateOptionsMenu();
 
-		Log.i("wichtig", "User name: " + PersistentStore.getUserName(this));
-		Log.i("wichtig", "Cookie: "
-				+ PersistentStore.getCookie(this).getValue());
-		Log.i("wichtig",
-				"My Flashmobs: " + PersistentStore.getMyFlashmobs(this));
+		Log.i("User", PersistentStore.getUserName(this));
+		Log.i("Cookie", PersistentStore.getCookie(this).getValue());
+		Log.i("Persistent Flashmobs", "" + PersistentStore.getMyFlashmobs(this));
 	}
 
 	public void startMapActivity(View v) {

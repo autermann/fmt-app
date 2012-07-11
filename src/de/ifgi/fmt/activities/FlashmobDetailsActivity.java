@@ -308,9 +308,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				response = client.execute(request);
 				String result = EntityUtils.toString(response.getEntity());
 
-				Log.i("wichtig", "URL: " + request.getURI());
-				Log.i("wichtig", "Status: " + response.getStatusLine());
-				Log.i("wichtig", "Result: " + result);
+				Log.i("URL", "" + request.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 
 				// roleIds
 				ArrayList<String> roleIds = new ArrayList<String>();
@@ -414,8 +413,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 				HttpResponse response = httpclient.execute(httpdelete);
 
-				Log.i("wichtig", "URL: " + httpdelete.getURI());
-				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("URL", "" + httpdelete.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 
 				return response.getStatusLine().getStatusCode();
 			} catch (ClientProtocolException e) {

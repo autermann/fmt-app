@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -229,15 +228,11 @@ public class ParticipateActivity extends SherlockActivity {
 			String value = cookie.getValue();
 			httppost.setHeader("Cookie", name + "=" + value);
 
-			Log.i("wichtig", "URL: " + httppost.getURI());
-
 			try {
 				httppost.setEntity(new StringEntity(jsonString));
 				HttpResponse response = httpclient.execute(httppost);
-				Log.i("wichtig", "Status: " + response.getStatusLine());
-				Log.i("wichtig",
-						"Response: "
-								+ EntityUtils.toString(response.getEntity()));
+				Log.i("URL", ": " + httppost.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 				return response.getStatusLine().getStatusCode();
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -300,8 +295,8 @@ public class ParticipateActivity extends SherlockActivity {
 
 				HttpResponse response = httpclient.execute(httpdelete);
 
-				Log.i("wichtig", "URL: " + httpdelete.getURI());
-				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("URL", "" + httpdelete.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 
 				return response.getStatusLine().getStatusCode();
 			} catch (ClientProtocolException e) {

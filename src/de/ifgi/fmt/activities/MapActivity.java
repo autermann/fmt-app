@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -330,7 +329,7 @@ public class MapActivity extends SherlockMapActivity {
 				Store store = (Store) getApplicationContext();
 				for (Flashmob f : flashmobs) {
 					if (store.hasFlashmob(f)) {
-						Log.i("wichtig", "Flashmob not added to the store.");
+						Log.i("Store", "Flashmob is already in the store.");
 					} else {
 						// get selected Role
 						if (PersistentStore.isMyFlashmob(
@@ -346,25 +345,16 @@ public class MapActivity extends SherlockMapActivity {
 							request.setHeader("Cookie", cookie.getName() + "="
 									+ cookie.getValue());
 							response = client.execute(request);
-							Log.i("wichtig", "URL: " + request.getURI());
-							Log.i("wichtig",
-									"Status: " + response.getStatusLine());
-							if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-								PersistentStore.removeMyFlashmob(
-										getApplicationContext(), f);
-								Log.i("wichtig",
-										"Participation status outdated.");
-							} else {
-								result = EntityUtils.toString(response
-										.getEntity());
-								Role role = RoleJSONParser.parse(result,
-										getApplicationContext());
-								f.setSelectedRole(role);
-							}
+							Log.i("URL", "" + request.getURI());
+							Log.i("Status", "" + response.getStatusLine());
+							result = EntityUtils.toString(response.getEntity());
+							Role role = RoleJSONParser.parse(result,
+									getApplicationContext());
+							f.setSelectedRole(role);
 						}
 						// add to the temporal store
 						store.addFlashmob(f);
-						Log.i("wichtig", "Flashmob added to the store.");
+						Log.i("Store", "Flashmob added to the store.");
 					}
 				}
 				return flashmobs;

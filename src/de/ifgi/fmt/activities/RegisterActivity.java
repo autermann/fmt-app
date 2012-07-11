@@ -15,7 +15,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -162,8 +161,7 @@ public class RegisterActivity extends SherlockActivity {
 			try {
 				// Execute the Request
 				HttpResponse response = httpclient.execute(httppost);
-				Log.d("reg2", response.getStatusLine().toString());
-				Log.d("reg3", response.getEntity().getContent().toString());
+				Log.i("Status", response.getStatusLine().toString());
 				if (HttpStatus.SC_CREATED != response.getStatusLine()
 						.getStatusCode())
 					return response.getStatusLine().getStatusCode();
@@ -181,13 +179,13 @@ public class RegisterActivity extends SherlockActivity {
 				get.setHeader("Authorization", "Basic " + userpassEncoded);
 				response = client.execute(get);
 				HttpEntity resEntityGet = response.getEntity();
-				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("Status", "" + response.getStatusLine());
 				if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 					return INVALID_CREDENTIALS;
 				}
 
 				resEntityGet.consumeContent();
-				Log.i("wichtig", "Initial set of cookies:");
+				Log.i("Cookies", "Server cookies:");
 				List<Cookie> cookies = client.getCookieStore().getCookies();
 				if (!cookies.isEmpty()) {
 					PersistentStore.setUserName(getApplicationContext(),
@@ -198,7 +196,7 @@ public class RegisterActivity extends SherlockActivity {
 							PersistentStore.setCookie(getApplicationContext(),
 									cookies.get(i).getValue());
 						}
-						Log.i("wichtig", "- " + cookies.get(i).toString());
+						Log.i("Cookies", "- " + cookies.get(i).toString());
 					}
 				}
 				// My Flashmobs
@@ -212,7 +210,6 @@ public class RegisterActivity extends SherlockActivity {
 				get.setHeader("Cookie",
 						cookie.getName() + "=" + cookie.getValue());
 				response = client.execute(get);
-				
 
 				// /
 				// /
@@ -279,8 +276,10 @@ public class RegisterActivity extends SherlockActivity {
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 
-		Toast.makeText(this, "Thank you for registering " + username.getText() + ". Now you're logged in.",
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(
+				this,
+				"Thank you for registering " + username.getText()
+						+ ". Now you're logged in.", Toast.LENGTH_LONG).show();
 		finish();
 	}
 

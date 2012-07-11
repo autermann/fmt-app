@@ -104,8 +104,8 @@ public class ContentActivity extends SherlockActivity {
 				HttpResponse response = client.execute(request);
 				String result = EntityUtils.toString(response.getEntity());
 
-				Log.i("wichtig", "URL: " + url[0]);
-				Log.i("wichtig", "Status: " + response.getStatusLine());
+				Log.i("URL", "" + url[0]);
+				Log.i("Status", "" + response.getStatusLine());
 
 				JSONObject root = new JSONObject(result);
 				JSONArray activitiesArray = root.getJSONArray("activities");
@@ -115,14 +115,12 @@ public class ContentActivity extends SherlockActivity {
 					String href = activity.getString("href");
 					href = href
 							.replace("/activities/activities", "/activities");
-					Log.i("wichtig", "href: " + href);
-
 					request = new HttpGet(href);
 					response = client.execute(request);
 					result = EntityUtils.toString(response.getEntity());
 
-					Log.i("wichtig", "URL: " + request.getURI());
-					Log.i("wichtig", "Status: " + response.getStatusLine());
+					Log.i("URL", "" + request.getURI());
+					Log.i("Status", "" + response.getStatusLine());
 
 					Activity a = ActivityJSONParser.parse(result);
 
@@ -130,8 +128,8 @@ public class ContentActivity extends SherlockActivity {
 					String taskHref = href + "/task";
 					request = new HttpGet(taskHref);
 					response = client.execute(request);
-					Log.i("wichtig", "URL: " + request.getURI());
-					Log.i("wichtig", "Status: " + response.getStatusLine());
+					Log.i("URL", "" + request.getURI());
+					Log.i("Status", "" + response.getStatusLine());
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						result = EntityUtils.toString(response.getEntity());
 						Task ta = TaskJSONParser.parse(result);
@@ -143,16 +141,16 @@ public class ContentActivity extends SherlockActivity {
 							.replace("/roles/" + r.getId(), "") + "/trigger";
 					request = new HttpGet(triggerHref);
 					response = client.execute(request);
-					Log.i("wichtig", "URL: " + request.getURI());
-					Log.i("wichtig", "Status: " + response.getStatusLine());
+					Log.i("URL", "" + request.getURI());
+					Log.i("Status", "" + response.getStatusLine());
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						result = EntityUtils.toString(response.getEntity());
 						JSONObject json = new JSONObject(result);
 						triggerHref = json.getString("href");
 						request = new HttpGet(triggerHref);
 						response = client.execute(request);
-						Log.i("wichtig", "URL: " + request.getURI());
-						Log.i("wichtig", "Status: " + response.getStatusLine());
+						Log.i("URL", "" + request.getURI());
+						Log.i("Status", "" + response.getStatusLine());
 						if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 							result = EntityUtils.toString(response.getEntity());
 							Trigger tr = TriggerJSONParser.parse(result);
@@ -165,8 +163,8 @@ public class ContentActivity extends SherlockActivity {
 							+ "/signal";
 					request = new HttpGet(signalHref);
 					response = client.execute(request);
-					Log.i("wichtig", "URL: " + request.getURI());
-					Log.i("wichtig", "Status: " + response.getStatusLine());
+					Log.i("URL", "" + request.getURI());
+					Log.i("Status", "" + response.getStatusLine());
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						result = EntityUtils.toString(response.getEntity());
 						String signal = SignalJSONParser.parse(result);

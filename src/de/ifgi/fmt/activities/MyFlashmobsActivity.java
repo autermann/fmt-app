@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -60,7 +59,6 @@ public class MyFlashmobsActivity extends SherlockActivity {
 			if (userName != null) {
 				String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/?participant="
 						+ userName;
-				Log.i("wichtig", url);
 				new DownloadTask(this).execute(url);
 			}
 		}
@@ -101,6 +99,8 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(url[0]);
 				HttpResponse response = client.execute(request);
+				Log.i("URL", "" + request.getURI());
+				Log.i("Status", "" + response.getStatusLine());
 				String result = EntityUtils.toString(response.getEntity());
 				// parsing the result
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
@@ -109,7 +109,7 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				Store store = (Store) getApplicationContext();
 				for (Flashmob f : flashmobs) {
 					if (store.hasFlashmob(f)) {
-						Log.i("wichtig", "Flashmob not added to the store.");
+						Log.i("Store", "Flashmob is already in the store.");
 					} else {
 						// get selected Role
 						if (PersistentStore.isMyFlashmob(
@@ -124,28 +124,17 @@ public class MyFlashmobsActivity extends SherlockActivity {
 									.getCookie(getApplicationContext());
 							request.setHeader("Cookie", cookie.getName() + "="
 									+ cookie.getValue());
-							Log.i("wichtig", "Cookie: " + cookie.getName()
-									+ "=" + cookie.getValue());
 							response = client.execute(request);
-							Log.i("wichtig", "URL: " + request.getURI());
-							Log.i("wichtig",
-									"Status: " + response.getStatusLine());
-							if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-								PersistentStore.removeMyFlashmob(
-										getApplicationContext(), f);
-								Log.i("wichtig",
-										"Participation status outdated.");
-							} else {
-								result = EntityUtils.toString(response
-										.getEntity());
-								Role role = RoleJSONParser.parse(result,
-										getApplicationContext());
-								f.setSelectedRole(role);
-							}
+							Log.i("URL", "" + request.getURI());
+							Log.i("Status", "" + response.getStatusLine());
+							result = EntityUtils.toString(response.getEntity());
+							Role role = RoleJSONParser.parse(result,
+									getApplicationContext());
+							f.setSelectedRole(role);
 						}
 						// add to the temporal store
 						store.addFlashmob(f);
-						Log.i("wichtig", "Flashmob added to the store.");
+						Log.i("Store", "Flashmob added to the store.");
 					}
 				}
 				return flashmobs;
