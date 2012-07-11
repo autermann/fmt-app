@@ -170,7 +170,8 @@ public class LoginActivity extends SherlockActivity {
 						cookie.getName() + "=" + cookie.getValue());
 				response = client.execute(get);
 				String result = EntityUtils.toString(response.getEntity());
-				Log.i("wichtig", result);
+				Log.i("Login Request URL", "" + get.getURI());
+				Log.i("Login Request Response", result);
 				ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
 						result, getApplicationContext());
 				JSONArray array = new JSONArray();
@@ -184,7 +185,9 @@ public class LoginActivity extends SherlockActivity {
 									+ "/flashmobs/" + f.getId() + "/role");
 					response = client.execute(get);
 					result = EntityUtils.toString(response.getEntity());
-					Log.i("wichtig", result);
+					Log.i("Login Request Role", "" + get.getURI());
+					Log.i("Login Request Role", "" + response.getStatusLine());
+					Log.i("Login Request Role", result);
 					Role role = RoleJSONParser.parse(result,
 							getApplicationContext());
 					f.setSelectedRole(role);

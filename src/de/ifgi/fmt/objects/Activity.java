@@ -6,6 +6,7 @@ public class Activity {
 	private String description;
 	private Task task;
 	private Trigger trigger;
+	private String signal;
 
 	public String getId() {
 		return id;
@@ -45,6 +46,14 @@ public class Activity {
 
 	public void setTrigger(Trigger trigger) {
 		this.trigger = trigger;
+	}
+
+	public String getSignal() {
+		return signal;
+	}
+
+	public void setSignal(String signal) {
+		this.signal = signal;
 	}
 
 }

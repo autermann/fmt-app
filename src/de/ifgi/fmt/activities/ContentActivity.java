@@ -38,6 +38,7 @@ import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.objects.Task;
 import de.ifgi.fmt.objects.Trigger;
 import de.ifgi.fmt.parser.ActivityJSONParser;
+import de.ifgi.fmt.parser.SignalJSONParser;
 import de.ifgi.fmt.parser.TaskJSONParser;
 import de.ifgi.fmt.parser.TriggerJSONParser;
 
@@ -142,8 +143,30 @@ public class ContentActivity extends SherlockActivity {
 					Log.i("wichtig", "Status: " + response.getStatusLine());
 					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						result = EntityUtils.toString(response.getEntity());
-						Trigger tr = TriggerJSONParser.parse(result);
-						a.setTrigger(tr);
+						JSONObject json = new JSONObject(result);
+						triggerHref = json.getString("href");
+						request = new HttpGet(triggerHref);
+						response = client.execute(request);
+						Log.i("wichtig", "URL: " + request.getURI());
+						Log.i("wichtig", "Status: " + response.getStatusLine());
+						if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+							result = EntityUtils.toString(response.getEntity());
+							Trigger tr = TriggerJSONParser.parse(result);
+							a.setTrigger(tr);
+						}
+					}
+
+					// Signal
+					String signalHref = href.replace("/roles/" + r.getId(), "")
+							+ "/signal";
+					request = new HttpGet(signalHref);
+					response = client.execute(request);
+					Log.i("wichtig", "URL: " + request.getURI());
+					Log.i("wichtig", "Status: " + response.getStatusLine());
+					if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+						result = EntityUtils.toString(response.getEntity());
+						String signal = SignalJSONParser.parse(result);
+						a.setSignal(signal);
 					}
 
 					activities.add(a);
@@ -218,8 +241,8 @@ public class ContentActivity extends SherlockActivity {
 									+ trigger.getLocation().getLongitude();
 						}
 						if (trigger.getDescription() != null) {
-							if (trigger.getTime() == null
-									&& trigger.getLocation() == null) {
+							if (trigger.getTime() != null
+									|| trigger.getLocation() != null) {
 								text += " (" + trigger.getDescription() + ")";
 							} else {
 								text += " " + trigger.getDescription();
@@ -228,6 +251,18 @@ public class ContentActivity extends SherlockActivity {
 						triggerText.setText(text);
 					} else {
 						triggerRow.setVisibility(View.GONE);
+					}
+
+					// Signal
+					LinearLayout signalRow = (LinearLayout) ll
+							.findViewById(R.id.signal_row);
+					if (a.getSignal() != null) {
+						TextView signal = (TextView) ll
+								.findViewById(R.id.signal);
+						signal.setText(a.getSignal());
+						signalRow.setVisibility(View.VISIBLE);
+					} else {
+						signalRow.setVisibility(View.GONE);
 					}
 
 					layout.addView(ll, lp);
