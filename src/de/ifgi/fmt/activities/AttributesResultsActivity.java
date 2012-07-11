@@ -34,6 +34,7 @@ import de.ifgi.fmt.adapter.FlashmobListAdapter;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.PasswordDialog;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
@@ -152,10 +153,18 @@ public class AttributesResultsActivity extends SherlockActivity {
 				list.setOnItemClickListener(new OnItemClickListener() {
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
-						Intent intent = new Intent(getApplicationContext(),
-								FlashmobDetailsActivity.class);
-						intent.putExtra("id", flashmobs.get(arg2).getId());
-						startActivity(intent);
+						// Password
+						final String key = flashmobs.get(arg2).getKey();
+						if (key != null
+								&& flashmobs.get(arg2).getSelectedRole() == null) {
+							new PasswordDialog(AttributesResultsActivity.this,
+									flashmobs.get(arg2));
+						} else {
+							Intent intent = new Intent(getApplicationContext(),
+									FlashmobDetailsActivity.class);
+							intent.putExtra("id", flashmobs.get(arg2).getId());
+							startActivity(intent);
+						}
 					}
 				});
 			} else {

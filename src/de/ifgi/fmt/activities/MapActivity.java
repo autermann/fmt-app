@@ -47,6 +47,7 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.objects.PasswordDialog;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
@@ -206,10 +207,17 @@ public class MapActivity extends SherlockMapActivity {
 
 		@Override
 		protected boolean onBalloonTap(int index, OverlayItem item) {
-			Intent intent = new Intent(getApplicationContext(),
-					FlashmobDetailsActivity.class);
-			intent.putExtra("id", flashmobs.get(index).getId());
-			startActivity(intent);
+			// Password
+			final String key = flashmobs.get(index).getKey();
+			if (key != null && flashmobs.get(index).getSelectedRole() == null) {
+				new PasswordDialog(MapActivity.this, flashmobs.get(index));
+			} else {
+				Intent intent = new Intent(getApplicationContext(),
+						FlashmobDetailsActivity.class);
+				intent.putExtra("id", flashmobs.get(index).getId());
+				startActivity(intent);
+			}
+
 			return true;
 		}
 

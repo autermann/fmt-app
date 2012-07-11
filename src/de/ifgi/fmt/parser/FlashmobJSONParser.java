@@ -32,6 +32,9 @@ public class FlashmobJSONParser {
 				f.setParticipants(flashmob.getInt("users"));
 				f.setPublic(flashmob.getBoolean("public"));
 				f.setHref(flashmob.getString("href"));
+				if (flashmob.has("key"))
+					f.setKey(flashmob.getString("key"));
+				f.setHref(flashmob.getString("href"));
 				SimpleDateFormat df = new SimpleDateFormat(
 						"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				try {

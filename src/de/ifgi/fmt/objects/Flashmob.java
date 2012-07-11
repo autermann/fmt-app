@@ -24,6 +24,7 @@ public class Flashmob {
 	private Date startTime;
 	private Date endTime;
 	private String href;
+	private String key;
 	private ArrayList<Role> roles;
 	private Role selectedRole;
 
@@ -173,6 +174,14 @@ public class Flashmob {
 
 	public void setRoles(ArrayList<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 }
