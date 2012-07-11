@@ -404,11 +404,21 @@ public class MapActivity extends SherlockMapActivity {
 				itemizedOverlay.setShowDisclosure(true);
 				// List of Points (FMs) to display
 				for (Flashmob f : flashmobs) {
-					OverlayItem o = new OverlayItem(getPoint(f.getLocation()
-							.getLatitudeE6() / 1e6, f.getLocation()
-							.getLongitudeE6() / 1e6), f.getTitle(),
-							f.getStreetAddress() + " \u00B7 " + f.getDate());
+					OverlayItem o;
+					if (f.getKey() == null) {
+							o = new OverlayItem(getPoint(f.getLocation()
+								.getLatitudeE6() / 1e6, f.getLocation()
+								.getLongitudeE6() / 1e6), f.getTitle(),
+								f.getStreetAddress() + " \u00B7 " + f.getDate());
+						}
+					else {
+							o = new OverlayItem(getPoint(f.getLocation()
+									.getLatitudeE6() / 1e6, f.getLocation()
+									.getLongitudeE6() / 1e6), f.getTitle() + "  [private]",
+									f.getStreetAddress() + " \u00B7 " + f.getDate());
+						}
 					itemizedOverlay.addOverlay(o, f);
+					
 				}
 				mapView.getOverlays().add(itemizedOverlay);
 				if (getIntent().hasExtra("id")) {
