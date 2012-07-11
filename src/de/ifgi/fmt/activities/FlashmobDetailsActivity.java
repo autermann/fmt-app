@@ -435,6 +435,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 				PersistentStore.removeMyFlashmob(getApplicationContext(),
 						flashmob);
 				setParticipateButtonLayout();
+				invalidateOptionsMenu();
 				MyFlashmobsActivity.outdated = true;
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
