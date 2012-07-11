@@ -79,9 +79,6 @@ public class LoginActivity extends SherlockActivity {
 			}
 		});
 
-		username.setText("matthias");
-		password.setText("matthias");
-
 		login = (Button) findViewById(R.id.login);
 		login.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
