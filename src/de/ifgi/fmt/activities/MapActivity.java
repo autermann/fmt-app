@@ -24,6 +24,8 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,17 +61,53 @@ public class MapActivity extends SherlockMapActivity {
 
 	private TapControlledMapView mapView = null;
 	private MapController mc;
-	private GeoPoint p;
+	private GeoPoint p, q;
 	private MyLocationOverlay me = null;
 	private MyLocationOverlay myLocationOverlay;
 	private Drawable marker;
 	private FlashmobsOverlay itemizedOverlay;
 	private int zoomLevel = 15;
-
+	private LocationManager locationManager;
+	private LocationListener locationListener;
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_activity);
+		
+		
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		locationListener = new LocationListener() {
+		    public void onLocationChanged(Location location) {
+		      // Called when a new location is found by the network location provider.
+		    	p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+		    	mc.setCenter(p);
+		    }
+
+			@Override
+			public void onProviderDisabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		
+		
+		
+		
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (TapControlledMapView) findViewById(R.id.mapview);
 		// dismiss balloon upon single tap of MapView (iOS behavior)
@@ -99,10 +137,13 @@ public class MapActivity extends SherlockMapActivity {
 		double coordinates[] = { 51.962956, 7.629592 };
 		double lat = coordinates[0];
 		double lng = coordinates[1];
-		p = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-		mc.setCenter(p);
-		zoomToMyLocation();
-
+		q = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+		mc.setCenter(q);
+//		zoomToMyLocation();
+		
+		
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		
 		mapView.invalidate();
 
 		marker = getResources().getDrawable(R.drawable.marker_blue);
@@ -113,6 +154,18 @@ public class MapActivity extends SherlockMapActivity {
 
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		locationManager.removeUpdates(locationListener);
+		
+	};
+	
+
+	
+	
+	
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
