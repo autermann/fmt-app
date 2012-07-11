@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.activities.ContentActivity;
@@ -70,6 +71,14 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 		}
 		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f
 				.getStreetAddress() + " \u00B7 " + f.getDate());
+		
+		
+		if (f.getKey() == null)
+			((ImageView) v.findViewById(R.id.flashmob_start)).setImageResource(R.drawable.ic_start_flashmob);
+		else
+			((ImageView) v.findViewById(R.id.flashmob_start)).setImageResource(R.drawable.ic_start_fm_lock);
+			
+		
 		FrameLayout startButton = (FrameLayout) v
 				.findViewById(R.id.start_flashmob_button);
 		if (showPlayButton) {
