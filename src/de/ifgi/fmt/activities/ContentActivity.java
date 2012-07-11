@@ -38,6 +38,7 @@ import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.objects.Task;
 import de.ifgi.fmt.objects.TextSignal;
 import de.ifgi.fmt.objects.Trigger;
+import de.ifgi.fmt.objects.VibrationSignal;
 import de.ifgi.fmt.parser.ActivityJSONParser;
 import de.ifgi.fmt.parser.SignalJSONParser;
 import de.ifgi.fmt.parser.TaskJSONParser;
@@ -275,15 +276,13 @@ public class ContentActivity extends SherlockActivity {
 						continue;
 					}
 					String signal = a.getSignal();
+					String message = a.getTask().getDescription();
 					if (signal.equals("Sound")) {
-						new TextSignal(ContentActivity.this, a.getTask()
-								.getDescription());
+						new TextSignal(ContentActivity.this, message);
 					} else if (signal.equals("Text")) {
-						new TextSignal(ContentActivity.this, a.getTask()
-								.getDescription());
+						new TextSignal(ContentActivity.this, message);
 					} else if (signal.equals("Vibration")) {
-						new TextSignal(ContentActivity.this, a.getTask()
-								.getDescription());
+						new VibrationSignal(ContentActivity.this, message);
 					}
 				}
 
