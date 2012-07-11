@@ -125,7 +125,7 @@ public class ParticipateActivity extends SherlockActivity {
 		});
 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (flashmob.getSelectedRole() != null) {
@@ -137,7 +137,7 @@ public class ParticipateActivity extends SherlockActivity {
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;

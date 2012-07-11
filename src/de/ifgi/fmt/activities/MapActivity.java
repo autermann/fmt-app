@@ -69,45 +69,40 @@ public class MapActivity extends SherlockMapActivity {
 	private int zoomLevel = 15;
 	private LocationManager locationManager;
 	private LocationListener locationListener;
-	
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_activity);
-		
-		
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+		locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
 		locationListener = new LocationListener() {
-		    public void onLocationChanged(Location location) {
-		      // Called when a new location is found by the network location provider.
-		    	p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-		    	mc.setCenter(p);
-		    }
+			public void onLocationChanged(Location location) {
+				// Called when a new location is found by the network location
+				// provider.
+				p = new GeoPoint((int) (location.getLatitude() * 1E6),
+						(int) (location.getLongitude() * 1E6));
+				mc.setCenter(p);
+			}
 
 			@Override
 			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onStatusChanged(String provider, int status,
 					Bundle extras) {
-				// TODO Auto-generated method stub
-				
+
 			}
 		};
-		
-		
-		
-		
+
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
 		mapView = (TapControlledMapView) findViewById(R.id.mapview);
 		// dismiss balloon upon single tap of MapView (iOS behavior)
@@ -139,33 +134,29 @@ public class MapActivity extends SherlockMapActivity {
 		double lng = coordinates[1];
 		q = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 		mc.setCenter(q);
-//		zoomToMyLocation();
-		
-		
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-		
+		// zoomToMyLocation();
+
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
 		mapView.invalidate();
 
 		marker = getResources().getDrawable(R.drawable.marker_blue);
 		marker.setBounds(0, 0, marker.getIntrinsicWidth(),
 				marker.getIntrinsicHeight());
-		new DownloadTask(this)
-				.execute("http://giv-flashmob.uni-muenster.de/fmt/flashmobs");
 
+		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
+		// for testing, Jan is creating new flashmobs every five minutes
+		// url += "?limit=10";
+		new DownloadTask(this).execute(url);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		locationManager.removeUpdates(locationListener);
-		
 	};
-	
 
-	
-	
-	
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -406,19 +397,18 @@ public class MapActivity extends SherlockMapActivity {
 				for (Flashmob f : flashmobs) {
 					OverlayItem o;
 					if (f.getKey() == null) {
-							o = new OverlayItem(getPoint(f.getLocation()
+						o = new OverlayItem(getPoint(f.getLocation()
 								.getLatitudeE6() / 1e6, f.getLocation()
 								.getLongitudeE6() / 1e6), f.getTitle(),
 								f.getStreetAddress() + " \u00B7 " + f.getDate());
-						}
-					else {
-							o = new OverlayItem(getPoint(f.getLocation()
-									.getLatitudeE6() / 1e6, f.getLocation()
-									.getLongitudeE6() / 1e6), f.getTitle() + "  [private]",
-									f.getStreetAddress() + " \u00B7 " + f.getDate());
-						}
+					} else {
+						o = new OverlayItem(getPoint(f.getLocation()
+								.getLatitudeE6() / 1e6, f.getLocation()
+								.getLongitudeE6() / 1e6), f.getTitle()
+								+ "  [private]", f.getStreetAddress()
+								+ " \u00B7 " + f.getDate());
+					}
 					itemizedOverlay.addOverlay(o, f);
-					
 				}
 				mapView.getOverlays().add(itemizedOverlay);
 				if (getIntent().hasExtra("id")) {

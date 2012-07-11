@@ -30,11 +30,13 @@
         </activity>
         <activity
             android:name=".activities.MapActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="Map"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.LocationActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="Nearby"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
@@ -45,6 +47,7 @@
         </activity>
         <activity
             android:name=".activities.MyFlashmobsActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="My Flashmobs"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
@@ -65,17 +68,18 @@
         </activity>
         <activity
             android:name=".activities.AttributesResultsActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="Results"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.ParticipateActivity"
-            android:label="Participation"
+            android:configChanges="keyboardHidden|orientation"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
             android:name=".activities.ContentActivity"
-            android:label="Participation"
+            android:configChanges="keyboardHidden|orientation"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
     </application>

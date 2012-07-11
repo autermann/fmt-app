@@ -181,6 +181,9 @@ public class LocationActivity extends SherlockActivity {
 			String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs";
 			url += "?bbox=" + bottom + "," + left + "," + top + "," + right;
 
+			// for testing, Jan is creating new flashmobs every five minutes
+			// url += "&limit=10";
+
 			try {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(url);
