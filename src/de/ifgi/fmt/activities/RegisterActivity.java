@@ -2,14 +2,19 @@ package de.ifgi.fmt.activities;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +22,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +34,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
+import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.network.NetworkRequest;
 
 public class RegisterActivity extends SherlockActivity {
@@ -39,6 +46,7 @@ public class RegisterActivity extends SherlockActivity {
 
 	private EditText username, password, password_rep, email;
 	private Button register;
+	private String userpassEncoded;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +98,14 @@ public class RegisterActivity extends SherlockActivity {
 							"The password is too short. It has to contain at least 8 characters.",
 							Toast.LENGTH_LONG).show();
 				} else {
-					
-					if(username.getText().toString().length() < 4){
+
+					if (username.getText().toString().length() < 4) {
 						Toast.makeText(
 								getApplicationContext(),
 								"The username is too short. It has to contain at least 4 characters.",
 								Toast.LENGTH_LONG).show();
 					} else {
-						
+
 						// if everything is okay, create new account
 						new RegisterTask(this).execute();
 					}
@@ -113,7 +121,7 @@ public class RegisterActivity extends SherlockActivity {
 
 		public RegisterTask(Context context) {
 			progressDialog = new ProgressDialog(context);
-			progressDialog.setMessage("Registering...");
+			progressDialog.setMessage("Creating account and signing in...");
 		}
 
 		@Override
@@ -156,7 +164,63 @@ public class RegisterActivity extends SherlockActivity {
 				HttpResponse response = httpclient.execute(httppost);
 				Log.d("reg2", response.getStatusLine().toString());
 				Log.d("reg3", response.getEntity().getContent().toString());
+				if (HttpStatus.SC_CREATED != response.getStatusLine()
+						.getStatusCode())
+					return response.getStatusLine().getStatusCode();
+
+				// / ab hier neuer absatz test zum direkten login:
+				// /
+				// /
+
+				userpassEncoded = Base64.encodeToString((username.getText()
+						+ ":" + password.getText()).getBytes("UTF-8"),
+						Base64.NO_WRAP);
+				DefaultHttpClient client = new DefaultHttpClient();
+				String getURL = "http://giv-flashmob.uni-muenster.de/fmt/";
+				HttpGet get = new HttpGet(getURL);
+				get.setHeader("Authorization", "Basic " + userpassEncoded);
+				response = client.execute(get);
+				HttpEntity resEntityGet = response.getEntity();
+				Log.i("wichtig", "Status: " + response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+					return INVALID_CREDENTIALS;
+				}
+
+				resEntityGet.consumeContent();
+				Log.i("wichtig", "Initial set of cookies:");
+				List<Cookie> cookies = client.getCookieStore().getCookies();
+				if (!cookies.isEmpty()) {
+					PersistentStore.setUserName(getApplicationContext(),
+							username.getText().toString());
+					for (int i = 0; i < cookies.size(); i++) {
+						if (cookies.get(i).getName()
+								.equals(PersistentStore.KEY_COOKIE)) {
+							PersistentStore.setCookie(getApplicationContext(),
+									cookies.get(i).getValue());
+						}
+						Log.i("wichtig", "- " + cookies.get(i).toString());
+					}
+				}
+				// My Flashmobs
+				get = new HttpGet(
+						"http://giv-flashmob.uni-muenster.de/fmt/users/"
+								+ PersistentStore
+										.getUserName(getApplicationContext())
+								+ "/flashmobs");
+				Cookie cookie = PersistentStore
+						.getCookie(getApplicationContext());
+				get.setHeader("Cookie",
+						cookie.getName() + "=" + cookie.getValue());
+				response = client.execute(get);
+				
+
+				// /
+				// /
+				// /
+				// / bis hier hin ist der neue absatz test zum direkten login
+
 				return response.getStatusLine().getStatusCode();
+
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -189,7 +253,8 @@ public class RegisterActivity extends SherlockActivity {
 						Toast.LENGTH_LONG).show();
 				break;
 			case HttpStatus.SC_PROCESSING:
-				Toast.makeText(getApplicationContext(),
+				Toast.makeText(
+						getApplicationContext(),
 						"An encoding problem occurs. Please try again or ask the supprt.",
 						Toast.LENGTH_LONG).show();
 			case HttpStatus.SC_BAD_REQUEST:
@@ -197,7 +262,7 @@ public class RegisterActivity extends SherlockActivity {
 						"Error! Please try again or ask the supprt.",
 						Toast.LENGTH_LONG).show();
 				break;
-			
+
 			default:
 				redirect();
 				break;
@@ -210,13 +275,11 @@ public class RegisterActivity extends SherlockActivity {
 	// After registering, the app redirects to the start screen and shows a
 	// Toast
 	public void redirect() {
-		Intent intent = null;
-
-		intent = new Intent(this, StartActivity.class);
+		Intent intent = new Intent(this, StartActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 
-		Toast.makeText(this, "Thank you for registering " + username.getText(),
+		Toast.makeText(this, "Thank you for registering " + username.getText() + ". Now you're logged in.",
 				Toast.LENGTH_LONG).show();
 		finish();
 	}
