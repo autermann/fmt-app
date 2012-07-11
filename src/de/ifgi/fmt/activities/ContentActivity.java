@@ -22,6 +22,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -272,10 +273,12 @@ public class ContentActivity extends SherlockActivity {
 				}
 
 				// Signals
+				boolean activityHasSignals = false;
 				for (Activity a : activities) {
 					if (a.getSignal() == null) {
 						continue;
 					}
+					activityHasSignals = true;
 					String signal = a.getSignal();
 					// String signal = "Sound";
 					String message = a.getTask().getDescription();
@@ -286,6 +289,11 @@ public class ContentActivity extends SherlockActivity {
 					} else if (signal.equals("Vibration")) {
 						new VibrationSignal(ContentActivity.this, message);
 					}
+				}
+				if (activityHasSignals) {
+					// keep the screen awake, don't let the user miss anything
+					getWindow().addFlags(
+							WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				}
 
 			} else if (result == 0) {
