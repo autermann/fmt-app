@@ -36,6 +36,7 @@ import de.ifgi.fmt.objects.Activity;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.objects.Task;
+import de.ifgi.fmt.objects.TextSignal;
 import de.ifgi.fmt.objects.Trigger;
 import de.ifgi.fmt.parser.ActivityJSONParser;
 import de.ifgi.fmt.parser.SignalJSONParser;
@@ -87,7 +88,7 @@ public class ContentActivity extends SherlockActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progress = new ProgressDialog(ContentActivity.this);
-			progress.setMessage("Loading activities");
+			progress.setMessage("Loading activities...");
 			progress.show();
 		}
 
@@ -266,6 +267,24 @@ public class ContentActivity extends SherlockActivity {
 					}
 
 					layout.addView(ll, lp);
+				}
+
+				// Signals
+				for (Activity a : activities) {
+					if (a.getSignal() == null) {
+						continue;
+					}
+					String signal = a.getSignal();
+					if (signal.equals("Sound")) {
+						new TextSignal(ContentActivity.this, a.getTask()
+								.getDescription());
+					} else if (signal.equals("Text")) {
+						new TextSignal(ContentActivity.this, a.getTask()
+								.getDescription());
+					} else if (signal.equals("Vibration")) {
+						new TextSignal(ContentActivity.this, a.getTask()
+								.getDescription());
+					}
 				}
 
 			} else if (result == 0) {
