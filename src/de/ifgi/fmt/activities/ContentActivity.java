@@ -268,6 +268,7 @@ public class ContentActivity extends SherlockActivity {
 								.findViewById(R.id.trigger);
 						String text = "";
 						if (trigger.getTime() != null) {
+							text += trigger.getDateAsString() + " \u00B7 ";
 							text += trigger.getTimeAsString();
 						}
 						if (trigger.getLocation() != null) {
@@ -277,9 +278,9 @@ public class ContentActivity extends SherlockActivity {
 						if (trigger.getDescription() != null) {
 							if (trigger.getTime() != null
 									|| trigger.getLocation() != null) {
-								text += " (" + trigger.getDescription() + ")";
+								text += "\n" + trigger.getDescription();
 							} else {
-								text += " " + trigger.getDescription();
+								text += trigger.getDescription();
 							}
 						}
 						triggerText.setText(text);

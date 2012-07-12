@@ -45,6 +45,11 @@ public class Trigger {
 		this.time = time;
 	}
 
+	public String getDateAsString() {
+		DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+		return dateFormat.format(time);
+	}
+
 	public String getTimeAsString() {
 		DateFormat dateFormat = new SimpleDateFormat("hh:mm aa", Locale.US);
 		return dateFormat.format(time);
