@@ -32,8 +32,8 @@ public class StartActivity extends SherlockActivity {
 		super.onResume();
 		invalidateOptionsMenu();
 
-		Log.i("User", PersistentStore.getUserName(this));
-		Log.i("Cookie", PersistentStore.getCookie(this).getValue());
+		Log.i("User", "" + PersistentStore.getUserName(this));
+		Log.i("Cookie", "" + PersistentStore.getCookie(this).getValue());
 		Log.i("Persistent Flashmobs", "" + PersistentStore.getMyFlashmobs(this));
 	}
 
