@@ -53,6 +53,7 @@ import de.ifgi.fmt.parser.RoleJSONParser;
 
 public class FlashmobDetailsActivity extends SherlockMapActivity {
 	public static final int MENU_PLAY = 1;
+	public static final int MENU_CALENDAR = 2;
 
 	// TextViews
 	private TextView fmTitleTV;
@@ -201,6 +202,8 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 			intent = new Intent(this, ContentActivity.class);
 			intent.putExtra("id", flashmob.getId());
 			startActivity(intent);
+		case MENU_CALENDAR:
+			startActivity(createCalendarIntent());
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -209,6 +212,11 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.share_action_provider, menu);
+		menu.add(0, MENU_CALENDAR, 1, "+ Cal")
+				.setIcon(R.drawable.ic_action_calendar)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_IF_ROOM
+								| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		if (flashmob.getSelectedRole() != null) {
 			menu.add(0, MENU_PLAY, 0, "Start")
 					.setIcon(R.drawable.ic_action_play)
@@ -235,6 +243,18 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 		intent.putExtra(Intent.EXTRA_SUBJECT, "Nice flashmob!");
 		intent.putExtra(Intent.EXTRA_TEXT, "Hey, check out this flashmob \""
 				+ flashmob.getTitle() + "\" I found on Flashmobber!");
+		return intent;
+	}
+
+	private Intent createCalendarIntent() {
+		Intent intent = new Intent(Intent.ACTION_EDIT);
+		intent.setType("vnd.android.cursor.item/event");
+		intent.putExtra("eventLocation", flashmob.getStreetAddress());
+		intent.putExtra("description", flashmob.getDescription());
+		intent.putExtra("beginTime", flashmob.getStartTime().getTime());
+		intent.putExtra("endTime", flashmob.getStartTime().getTime() + 2 * 60
+				* 60 * 1000);
+		intent.putExtra("title", "Flashmob: " + flashmob.getTitle());
 		return intent;
 	}
 

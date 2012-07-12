@@ -57,7 +57,7 @@
         <activity
             android:name=".activities.FlashmobDetailsActivity"
             android:label="Details"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar.ForceOverflow" >
         </activity>
         <activity
             android:name=".activities.LoginActivity"
