@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
@@ -52,6 +53,7 @@ import de.ifgi.fmt.parser.TriggerJSONParser;
 import de.ifgi.fmt.signal.Signal;
 
 public class ContentActivity extends SherlockActivity {
+	private static final int MENU_NAVIGATION = 1;
 	Flashmob f;
 	Role r;
 	ArrayList<Signal> signals;
@@ -73,6 +75,37 @@ public class ContentActivity extends SherlockActivity {
 		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 				+ f.getId() + "/roles/" + r.getId() + "/activities";
 		new DownloadActivitiesTask().execute(url);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, MENU_NAVIGATION, 0, "Navigation")
+				.setIcon(R.drawable.ic_action_navigation)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_ALWAYS
+								| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// app icon in action bar clicked; go home
+			Intent intent = new Intent(this, StartActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		case MENU_NAVIGATION:
+			Intent i = new Intent(Intent.ACTION_VIEW,
+					Uri.parse("google.navigation:q="
+							+ f.getLocation().getLatitudeE6() / 1E6 + ","
+							+ f.getLocation().getLongitudeE6() / 1E6));
+			startActivity(i);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	private void checkTimePreference() {
@@ -119,20 +152,6 @@ public class ContentActivity extends SherlockActivity {
 		super.onDestroy();
 		for (Signal s : signals) {
 			s.stopThread();
-		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, StartActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
 		}
 	}
 
