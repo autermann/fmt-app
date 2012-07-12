@@ -12,6 +12,12 @@ public class TaskJSONParser {
 			JSONObject jsonObject = new JSONObject(json);
 			object.setId(jsonObject.getString("id"));
 			object.setDescription(jsonObject.getString("description"));
+			if (jsonObject.has("href")) {
+				object.setHref(jsonObject.getString("href"));
+			}
+			if (jsonObject.has("type")) {
+				object.setType(jsonObject.getString("type"));
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;

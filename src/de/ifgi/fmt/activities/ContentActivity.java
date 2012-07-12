@@ -16,13 +16,16 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -216,15 +219,35 @@ public class ContentActivity extends SherlockActivity {
 					activityDescription.setText(a.getDescription());
 
 					// Task
+					final Task t = a.getTask();
 					LinearLayout taskRow = (LinearLayout) ll
 							.findViewById(R.id.task_row);
-					if (a.getTask() != null) {
+					if (t != null) {
 						TextView taskDescription = (TextView) ll
 								.findViewById(R.id.task_description);
-						taskDescription.setText(a.getTask().getDescription());
+						taskDescription.setText(t.getDescription());
 						taskRow.setVisibility(View.VISIBLE);
 					} else {
 						taskRow.setVisibility(View.GONE);
+					}
+
+					// Task media file
+					ImageButton taskMediaButton = (ImageButton) ll
+							.findViewById(R.id.task_media_button);
+					if (t != null && t.getHref() != null) {
+						taskMediaButton.setVisibility(View.VISIBLE);
+						taskMediaButton
+								.setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										startActivity(new Intent(
+												Intent.ACTION_VIEW, Uri.parse(t
+														.getHref())));
+									}
+								});
+					} else {
+						taskMediaButton.setVisibility(View.GONE);
 					}
 
 					// Trigger
