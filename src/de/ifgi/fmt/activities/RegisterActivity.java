@@ -34,7 +34,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
-import de.ifgi.fmt.network.NetworkRequest;
 
 public class RegisterActivity extends SherlockActivity {
 	public static final int STATUS_NOT_VALID = 12;
@@ -233,11 +232,6 @@ public class RegisterActivity extends SherlockActivity {
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			switch (result) {
-			case NetworkRequest.NETWORK_PROBLEM:
-				Toast.makeText(getApplicationContext(),
-						"There is a problem with the Internet connection.",
-						Toast.LENGTH_LONG).show();
-				break;
 			case INVALID_CREDENTIALS:
 				Toast.makeText(getApplicationContext(),
 						"This username already exists", Toast.LENGTH_LONG)

@@ -39,7 +39,6 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.network.NetworkRequest;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
@@ -198,7 +197,7 @@ public class LoginActivity extends SherlockActivity {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-				return NetworkRequest.NETWORK_PROBLEM;
+				return RegisterActivity.NO_INTERNET_CONNECTION;
 			}
 			return 0;
 		}
@@ -207,7 +206,7 @@ public class LoginActivity extends SherlockActivity {
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			switch (result) {
-			case NetworkRequest.NETWORK_PROBLEM:
+			case RegisterActivity.NO_INTERNET_CONNECTION:
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
 						Toast.LENGTH_LONG).show();
