@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapController;
@@ -207,6 +208,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.share_action_provider, menu);
 		if (flashmob.getSelectedRole() != null) {
 			menu.add(0, MENU_PLAY, 0, "Start")
 					.setIcon(R.drawable.ic_action_play)
@@ -214,7 +216,26 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 							MenuItem.SHOW_AS_ACTION_ALWAYS
 									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		}
+		MenuItem actionItem = menu
+				.findItem(R.id.menu_item_share_action_provider_action_bar);
+		ShareActionProvider actionProvider = (ShareActionProvider) actionItem
+				.getActionProvider();
+		actionProvider
+				.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+		actionProvider.setShareIntent(createShareIntent());
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	private Intent createShareIntent() {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		// Add data to the intent, the receiving app will decide what to do with
+		// it.
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Nice flashmob!");
+		intent.putExtra(Intent.EXTRA_TEXT, "Hey, check out this flashmob \""
+				+ flashmob.getTitle() + "\" I found on Flashmobber!");
+		return intent;
 	}
 
 	/**
