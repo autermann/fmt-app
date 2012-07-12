@@ -202,8 +202,10 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 			intent = new Intent(this, ContentActivity.class);
 			intent.putExtra("id", flashmob.getId());
 			startActivity(intent);
+			return true;
 		case MENU_CALENDAR:
 			startActivity(createCalendarIntent());
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
