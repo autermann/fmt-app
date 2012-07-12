@@ -2,6 +2,7 @@ package de.ifgi.fmt.activities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -39,19 +40,18 @@ import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.objects.Activity;
 import de.ifgi.fmt.objects.Flashmob;
 import de.ifgi.fmt.objects.Role;
-import de.ifgi.fmt.objects.SoundSignal;
 import de.ifgi.fmt.objects.Task;
-import de.ifgi.fmt.objects.TextSignal;
 import de.ifgi.fmt.objects.Trigger;
-import de.ifgi.fmt.objects.VibrationSignal;
 import de.ifgi.fmt.parser.ActivityJSONParser;
 import de.ifgi.fmt.parser.SignalJSONParser;
 import de.ifgi.fmt.parser.TaskJSONParser;
 import de.ifgi.fmt.parser.TriggerJSONParser;
+import de.ifgi.fmt.signal.Signal;
 
 public class ContentActivity extends SherlockActivity {
 	Flashmob f;
 	Role r;
+	ArrayList<Signal> signals;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,14 @@ public class ContentActivity extends SherlockActivity {
 		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 				+ f.getId() + "/roles/" + r.getId() + "/activities";
 		new DownloadActivitiesTask().execute(url);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		for (Signal s : signals) {
+			s.stopThread();
+		}
 	}
 
 	@Override
@@ -191,6 +199,7 @@ public class ContentActivity extends SherlockActivity {
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
+			progress.dismiss();
 			if (result == 1) {
 				LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
 
@@ -294,35 +303,53 @@ public class ContentActivity extends SherlockActivity {
 				}
 
 				// Signals
-				boolean activityHasSignals = false;
+				signals = new ArrayList<Signal>();
 				for (Activity a : activities) {
 					if (a.getSignal() == null) {
 						continue;
 					}
-					activityHasSignals = true;
-					String signal = a.getSignal();
-					// String signal = "Sound";
-					String message = a.getTask().getDescription();
-					if (signal.equals("Sound")) {
-						new SoundSignal(ContentActivity.this, message);
-					} else if (signal.equals("Text")) {
-						new TextSignal(ContentActivity.this, message);
-					} else if (signal.equals("Vibration")) {
-						new VibrationSignal(ContentActivity.this, message);
+					if (a.getTrigger() != null) {
+						Date time = a.getTrigger().getTime();
+						// set trigger time manually for testing
+						// try {
+						// SimpleDateFormat df = new SimpleDateFormat(
+						// "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+						// String t = "2012-07-12T16:51:00.000+02:00";
+						// a.getTrigger().setTime(df.parse(t));
+						// time = a.getTrigger().getTime();
+						// } catch (ParseException e) {
+						// e.printStackTrace();
+						// }
+						String signalType = a.getSignal();
+						// set signal type manually for testing
+						// String signalType = "Vibration";
+						String message = a.getTask().getDescription();
+						Signal signal = null;
+						if (signalType.equals("Sound")) {
+							signal = new Signal(ContentActivity.this,
+									Signal.TYPE_SOUND, time, message);
+						} else if (signalType.equals("Text")) {
+							signal = new Signal(ContentActivity.this,
+									Signal.TYPE_TEXT, time, message);
+						} else if (signalType.equals("Vibration")) {
+							signal = new Signal(ContentActivity.this,
+									Signal.TYPE_VIBRATION, time, message);
+						}
+						if (signal != null)
+							signals.add(signal);
+					}
+					if (signals.size() > 0) {
+						// keep the screen awake, don't let the user miss
+						// anything
+						getWindow().addFlags(
+								WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 					}
 				}
-				if (activityHasSignals) {
-					// keep the screen awake, don't let the user miss anything
-					getWindow().addFlags(
-							WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-				}
-
 			} else if (result == 0) {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",
 						Toast.LENGTH_LONG).show();
 			}
-			progress.dismiss();
 		}
 	}
 
