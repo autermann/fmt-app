@@ -294,7 +294,13 @@ public class ContentActivity extends SherlockActivity {
 					if (a.getSignal() != null) {
 						TextView signal = (TextView) ll
 								.findViewById(R.id.signal);
-						signal.setText(a.getSignal());
+						String signalText = a.getSignal().toLowerCase();
+						char newChar = signalText.charAt(0);
+						newChar = Character.toUpperCase(newChar);
+						signalText = signalText.replaceFirst(
+								String.valueOf(signalText.charAt(0)),
+								String.valueOf(newChar));
+						signal.setText(signalText);
 						signalRow.setVisibility(View.VISIBLE);
 					} else {
 						signalRow.setVisibility(View.GONE);
@@ -326,13 +332,13 @@ public class ContentActivity extends SherlockActivity {
 						// String signalType = "Vibration";
 						String message = a.getTask().getDescription();
 						Signal signal = null;
-						if (signalType.equals("Sound")) {
+						if (signalType.equals("SOUND")) {
 							signal = new Signal(ContentActivity.this,
 									Signal.TYPE_SOUND, time, message);
-						} else if (signalType.equals("Text")) {
+						} else if (signalType.equals("TEXT")) {
 							signal = new Signal(ContentActivity.this,
 									Signal.TYPE_TEXT, time, message);
-						} else if (signalType.equals("Vibration")) {
+						} else if (signalType.equals("VIBRATION")) {
 							signal = new Signal(ContentActivity.this,
 									Signal.TYPE_VIBRATION, time, message);
 						}
