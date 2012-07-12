@@ -71,14 +71,14 @@ public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 		}
 		((TextView) v.findViewById(R.id.flashmob_place_time)).setText(f
 				.getStreetAddress() + " \u00B7 " + f.getDate());
-		
-		
+
 		if (f.getKey() == null)
-			((ImageView) v.findViewById(R.id.flashmob_start)).setImageResource(R.drawable.ic_start_flashmob);
+			((ImageView) v.findViewById(R.id.flashmob_start))
+					.setImageResource(R.drawable.ic_list_flashmob);
 		else
-			((ImageView) v.findViewById(R.id.flashmob_start)).setImageResource(R.drawable.ic_start_fm_lock);
-			
-		
+			((ImageView) v.findViewById(R.id.flashmob_start))
+					.setImageResource(R.drawable.ic_list_flashmob_lock);
+
 		FrameLayout startButton = (FrameLayout) v
 				.findViewById(R.id.start_flashmob_button);
 		if (showPlayButton) {
