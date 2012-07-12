@@ -15,11 +15,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -70,6 +73,45 @@ public class ContentActivity extends SherlockActivity {
 		String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 				+ f.getId() + "/roles/" + r.getId() + "/activities";
 		new DownloadActivitiesTask().execute(url);
+	}
+
+	private void checkTimePreference() {
+		try {
+			if (signals.size() > 0
+					&& android.provider.Settings.System.getInt(
+							getContentResolver(),
+							android.provider.Settings.System.AUTO_TIME) == 0) {
+				AlertDialog.Builder alert = new AlertDialog.Builder(
+						ContentActivity.this);
+				alert.setTitle("Time accuracy");
+				alert.setMessage("This flashmob includes time triggers. "
+						+ "We would therefore recommend to use "
+						+ "network-provided values for the system time. "
+						+ "Do you want to enable this feauture on your device?");
+				alert.setPositiveButton("Ok",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								android.provider.Settings.System
+										.putInt(getContentResolver(),
+												android.provider.Settings.System.AUTO_TIME,
+												1);
+							}
+						});
+				alert.setNegativeButton("No, thanks!",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+
+							}
+						});
+				alert.show();
+			}
+
+		} catch (SettingNotFoundException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -350,6 +392,7 @@ public class ContentActivity extends SherlockActivity {
 						// anything
 						getWindow().addFlags(
 								WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+						checkTimePreference();
 					}
 				}
 			} else if (result == 0) {
