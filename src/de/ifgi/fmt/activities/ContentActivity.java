@@ -150,8 +150,10 @@ public class ContentActivity extends SherlockActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		for (Signal s : signals) {
-			s.stopThread();
+		if (signals != null) {
+			for (Signal s : signals) {
+				s.stopThread();
+			}
 		}
 	}
 
