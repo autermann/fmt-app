@@ -378,7 +378,7 @@ public class ContentActivity extends SherlockActivity {
 					if (a.getSignal() == null) {
 						continue;
 					}
-					if (a.getTrigger() != null) {
+					if (a.getTask() != null && a.getTrigger() != null) {
 						Date time = a.getTrigger().getTime();
 						// set trigger time manually for testing
 						// try {
@@ -393,7 +393,9 @@ public class ContentActivity extends SherlockActivity {
 						String signalType = a.getSignal();
 						// set signal type manually for testing
 						// String signalType = "Vibration";
-						String message = a.getTask().getDescription();
+						String message = "";
+						if (a.getTask().getDescription() != null)
+							message = a.getTask().getDescription();
 						Signal signal = null;
 						if (signalType.equals("SOUND")) {
 							signal = new Signal(ContentActivity.this,
