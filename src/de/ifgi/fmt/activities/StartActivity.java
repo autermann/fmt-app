@@ -63,7 +63,7 @@ public class StartActivity extends SherlockActivity {
 		switch (item.getItemId()) {
 		case MENU_WEBSITE:
 			startActivity(new Intent(Intent.ACTION_VIEW,
-					Uri.parse("http://www.google.com")));
+					Uri.parse("http://giv-flashmob.uni-muenster.de/hp/")));
 			break;
 		case MENU_LOGIN:
 			startActivity(new Intent(this, LoginActivity.class));
