@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.ifgi.fmt.objects.Trigger;
+import de.ifgi.fmt.io.Trigger;
 
 public class TriggerJSONParser {
 	public static Trigger parse(String json) {

@@ -3,7 +3,7 @@ package de.ifgi.fmt.parser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.ifgi.fmt.objects.Task;
+import de.ifgi.fmt.io.Task;
 
 public class TaskJSONParser {
 	public static Task parse(String json) {

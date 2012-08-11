@@ -3,7 +3,7 @@ package de.ifgi.fmt.data;
 import java.util.ArrayList;
 
 import android.app.Application;
-import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.io.Flashmob;
 
 public class Store extends Application {
 	private ArrayList<Flashmob> flashmobs = new ArrayList<Flashmob>();

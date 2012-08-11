@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,11 +47,11 @@ import com.google.android.maps.OverlayItem;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.objects.Flashmob;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Flashmob;
+import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
-public class FlashmobDetailsActivity extends SherlockMapActivity {
+public class DetailsActivity extends SherlockMapActivity {
 	public static final int MENU_PLAY = 1;
 	public static final int MENU_CALENDAR = 2;
 
@@ -160,7 +160,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 					if (flashmob.getSelectedRole() == null) {
 						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 								+ flashmob.getId() + "/roles";
-						new DownloadTask(FlashmobDetailsActivity.this)
+						new DownloadTask(DetailsActivity.this)
 								.execute(url);
 					} else { // is participating: send cancel request
 						// Unregister a user for a role
@@ -171,7 +171,7 @@ public class FlashmobDetailsActivity extends SherlockMapActivity {
 								+ "/users/"
 								+ PersistentStore
 										.getUserName(getApplicationContext());
-						new CancelTask(FlashmobDetailsActivity.this)
+						new CancelTask(DetailsActivity.this)
 								.execute(url);
 					}
 				}

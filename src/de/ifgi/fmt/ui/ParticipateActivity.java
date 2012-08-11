@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.RolesSpinnerAdapter;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.objects.Flashmob;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Flashmob;
+import de.ifgi.fmt.io.Role;
 
 public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
@@ -128,7 +128,7 @@ public class ParticipateActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (flashmob.getSelectedRole() != null) {
-			menu.add(0, FlashmobDetailsActivity.MENU_PLAY, 0, "Start")
+			menu.add(0, DetailsActivity.MENU_PLAY, 0, "Start")
 					.setIcon(R.drawable.ic_action_play)
 					.setShowAsAction(
 							MenuItem.SHOW_AS_ACTION_ALWAYS
@@ -147,7 +147,7 @@ public class ParticipateActivity extends SherlockActivity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
-		case FlashmobDetailsActivity.MENU_PLAY:
+		case DetailsActivity.MENU_PLAY:
 			intent = new Intent(this, ContentActivity.class);
 			intent.putExtra("id", flashmob.getId());
 			startActivity(intent);

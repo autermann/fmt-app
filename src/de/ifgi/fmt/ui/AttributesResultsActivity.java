@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,36 +32,20 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.adapter.FlashmobListAdapter;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.objects.Flashmob;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Flashmob;
+import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
-public class MyFlashmobsActivity extends SherlockActivity {
-	public static boolean outdated;
-	private ListView list;
+public class AttributesResultsActivity extends SherlockActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flashmob_list_activity);
 		getSherlock().getActionBar().setDisplayHomeAsUpEnabled(true);
-		list = (ListView) findViewById(android.R.id.list);
-		outdated = true;
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		String userName = PersistentStore.getUserName(this);
-		if (outdated) {
-			list.setAdapter(null);
-			if (userName != null) {
-				String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/?participant="
-						+ userName;
-				new DownloadTask(this).execute(url);
-			}
-		}
+		Bundle extras = getIntent().getExtras();
+		new DownloadTask(this).execute(extras.getString("URL"));
 	}
 
 	@Override
@@ -99,8 +83,6 @@ public class MyFlashmobsActivity extends SherlockActivity {
 				HttpClient client = new DefaultHttpClient();
 				HttpGet request = new HttpGet(url[0]);
 				HttpResponse response = client.execute(request);
-				Log.i("URL", "" + request.getURI());
-				Log.i("Status", "" + response.getStatusLine());
 				String result = EntityUtils.toString(response.getEntity());
 				// parsing the result
 				final ArrayList<Flashmob> flashmobs = FlashmobJSONParser.parse(
@@ -154,18 +136,26 @@ public class MyFlashmobsActivity extends SherlockActivity {
 			super.onPostExecute(flashmobs);
 			if (flashmobs != null) {
 				ListAdapter adapter = new FlashmobListAdapter(
-						getApplicationContext(), flashmobs, null, false, true);
+						getApplicationContext(), flashmobs);
+				ListView list = (ListView) findViewById(android.R.id.list);
 				list.setAdapter(adapter);
 				list.setOnItemClickListener(new OnItemClickListener() {
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
-						Intent intent = new Intent(getApplicationContext(),
-								FlashmobDetailsActivity.class);
-						intent.putExtra("id", flashmobs.get(arg2).getId());
-						startActivity(intent);
+						// Password
+						final String key = flashmobs.get(arg2).getKey();
+						if (key != null
+								&& flashmobs.get(arg2).getSelectedRole() == null) {
+							new PasswordDialog(AttributesResultsActivity.this,
+									flashmobs.get(arg2));
+						} else {
+							Intent intent = new Intent(getApplicationContext(),
+									DetailsActivity.class);
+							intent.putExtra("id", flashmobs.get(arg2).getId());
+							startActivity(intent);
+						}
 					}
 				});
-				outdated = false;
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"There is a problem with the Internet connection.",

@@ -1,4 +1,4 @@
-package de.ifgi.fmt.objects;
+package de.ifgi.fmt.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import android.widget.Toast;
-import de.ifgi.fmt.activities.FlashmobDetailsActivity;
+import de.ifgi.fmt.io.Flashmob;
 
 public class PasswordDialog {
 
@@ -28,7 +28,7 @@ public class PasswordDialog {
 				String value = input.getText().toString();
 				if (value.equals(f.getKey())) {
 					Intent intent = new Intent(ctx,
-							FlashmobDetailsActivity.class);
+							DetailsActivity.class);
 					intent.putExtra("id", f.getId());
 					ctx.startActivity(intent);
 				} else {

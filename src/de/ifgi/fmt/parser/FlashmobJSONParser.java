@@ -16,7 +16,7 @@ import android.location.Geocoder;
 
 import com.google.android.maps.GeoPoint;
 
-import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.io.Flashmob;
 
 public class FlashmobJSONParser {
 	public static ArrayList<Flashmob> parse(String json, Context context) {

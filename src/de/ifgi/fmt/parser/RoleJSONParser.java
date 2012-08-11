@@ -5,7 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Role;
 
 public class RoleJSONParser
 {

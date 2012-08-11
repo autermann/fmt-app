@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

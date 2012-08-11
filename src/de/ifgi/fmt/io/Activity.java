@@ -1,4 +1,4 @@
-package de.ifgi.fmt.objects;
+package de.ifgi.fmt.io;
 
 public class Activity {
 	private String id;

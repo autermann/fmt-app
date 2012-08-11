@@ -1,4 +1,4 @@
-package de.ifgi.fmt.objects;
+package de.ifgi.fmt.io;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

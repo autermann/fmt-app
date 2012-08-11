@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import de.ifgi.fmt.R;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Role;
 
 public class RolesSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 {

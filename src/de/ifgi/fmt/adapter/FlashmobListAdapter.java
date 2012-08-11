@@ -15,8 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.ifgi.fmt.R;
-import de.ifgi.fmt.activities.ContentActivity;
-import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.io.Flashmob;
+import de.ifgi.fmt.ui.ContentActivity;
 
 public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 	Context context;

@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -39,8 +39,8 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
-import de.ifgi.fmt.objects.Flashmob;
-import de.ifgi.fmt.objects.Role;
+import de.ifgi.fmt.io.Flashmob;
+import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 

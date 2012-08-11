@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import de.ifgi.fmt.objects.Flashmob;
+import de.ifgi.fmt.io.Flashmob;
 
 public class PersistentStore {
 	public static String KEY_USER_NAME = "user_name";

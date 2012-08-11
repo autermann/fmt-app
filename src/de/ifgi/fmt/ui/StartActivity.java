@@ -1,4 +1,4 @@
-package de.ifgi.fmt.activities;
+package de.ifgi.fmt.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
