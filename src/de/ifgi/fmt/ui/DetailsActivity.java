@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -117,6 +118,7 @@ public class DetailsActivity extends SherlockMapActivity {
 		}
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -160,8 +162,7 @@ public class DetailsActivity extends SherlockMapActivity {
 					if (flashmob.getSelectedRole() == null) {
 						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
 								+ flashmob.getId() + "/roles";
-						new DownloadTask(DetailsActivity.this)
-								.execute(url);
+						new DownloadTask(DetailsActivity.this).execute(url);
 					} else { // is participating: send cancel request
 						// Unregister a user for a role
 						String url = "http://giv-flashmob.uni-muenster.de/fmt/flashmobs/"
@@ -171,8 +172,7 @@ public class DetailsActivity extends SherlockMapActivity {
 								+ "/users/"
 								+ PersistentStore
 										.getUserName(getApplicationContext());
-						new CancelTask(DetailsActivity.this)
-								.execute(url);
+						new CancelTask(DetailsActivity.this).execute(url);
 					}
 				}
 			}
