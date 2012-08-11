@@ -16,6 +16,11 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 import de.ifgi.fmt.data.Store;
 
+/**
+ * Start screen of the application that gives access to the main features.
+ * 
+ * @author Matthias Robbers
+ */
 public class StartActivity extends SherlockActivity {
 	private static final int MENU_WEBSITE = 1;
 	private static final int MENU_LOGIN = 2;

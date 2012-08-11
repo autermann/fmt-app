@@ -52,6 +52,12 @@ import de.ifgi.fmt.parser.TaskJSONParser;
 import de.ifgi.fmt.parser.TriggerJSONParser;
 import de.ifgi.fmt.signal.Signal;
 
+/**
+ * This is the Activity where the flashmob actually happens. Participants have
+ * opened this activity when they are live at the flashmob.
+ * 
+ * @author Matthias Robbers
+ */
 public class ContentActivity extends SherlockActivity {
 	private static final int MENU_NAVIGATION = 1;
 	Flashmob f;

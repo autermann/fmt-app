@@ -3,6 +3,11 @@ package de.ifgi.fmt.parser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Parser class for JSON strings that include information about flashmob signals
+ * 
+ * @author Matthias Robbers
+ */
 public class SignalJSONParser {
 	public static String parse(String json) {
 		String signal;

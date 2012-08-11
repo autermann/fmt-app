@@ -44,6 +44,12 @@ import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * Activity that shows a login form and sends an authorization request to the
+ * server.
+ * 
+ * @author Stefan Arndt, Matthias Robbers
+ */
 public class LoginActivity extends SherlockActivity {
 	public static final int STATUS_NOT_VALID = 12;
 	public static final int STATUS_OK = 11;

@@ -37,6 +37,12 @@ import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * Activity that lists all the flashmobs, the user participates in with direct
+ * access to the flashmob's content via a play button.
+ * 
+ * @author Matthias Robbers
+ */
 public class MyFlashmobsActivity extends SherlockActivity {
 	public static boolean outdated;
 	private ListView list;

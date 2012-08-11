@@ -18,6 +18,11 @@ import de.ifgi.fmt.R;
 import de.ifgi.fmt.io.Flashmob;
 import de.ifgi.fmt.ui.ContentActivity;
 
+/**
+ * Basic list adapter to be used in all flashmobs list
+ * 
+ * @author Matthias Robbers
+ */
 public class FlashmobListAdapter extends ArrayAdapter<Flashmob> {
 	Context context;
 	ArrayList<Flashmob> flashmobs;

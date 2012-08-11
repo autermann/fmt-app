@@ -52,6 +52,11 @@ import de.ifgi.fmt.io.Flashmob;
 import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * Activity that shows the details of a flashmob.
+ * 
+ * @author Matthias Robbers, Sascha Koalick
+ */
 public class DetailsActivity extends SherlockMapActivity {
 	public static final int MENU_PLAY = 1;
 	public static final int MENU_CALENDAR = 2;

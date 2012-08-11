@@ -46,6 +46,12 @@ import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * Activity to find flashmobs by the user's current position. Sends a bounding
+ * box to the server, calculated around the position.
+ * 
+ * @author Matthias Robbers
+ */
 public class LocationActivity extends SherlockActivity {
 	private LocationManager locationManager;
 	private LocationListener locationListener;

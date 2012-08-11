@@ -1,5 +1,10 @@
 package de.ifgi.fmt.io;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/activity
+ * 
+ * @author Matthias Robbers
+ */
 public class Activity {
 	private String id;
 	private String title;

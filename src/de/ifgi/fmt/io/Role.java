@@ -1,5 +1,10 @@
 package de.ifgi.fmt.io;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/role
+ * 
+ * @author Matthias Robbers
+ */
 public class Role {
 	private String id;
 	private String title;

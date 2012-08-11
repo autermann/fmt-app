@@ -5,6 +5,11 @@ import org.json.JSONObject;
 
 import de.ifgi.fmt.io.Task;
 
+/**
+ * Parser class for JSON strings that include information about flashmob tasks
+ * 
+ * @author Matthias Robbers
+ */
 public class TaskJSONParser {
 	public static Task parse(String json) {
 		Task object = new Task();

@@ -35,6 +35,12 @@ import com.actionbarsherlock.view.MenuItem;
 import de.ifgi.fmt.R;
 import de.ifgi.fmt.data.PersistentStore;
 
+/**
+ * Activity that shows a registration form and creates a new account at the
+ * server.
+ * 
+ * @author Stefan Arndt, Matthias Robbers
+ */
 public class RegisterActivity extends SherlockActivity {
 	public static final int STATUS_NOT_VALID = 12;
 	public static final int STATUS_OK = 11;

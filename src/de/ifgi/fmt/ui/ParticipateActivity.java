@@ -37,6 +37,12 @@ import de.ifgi.fmt.data.Store;
 import de.ifgi.fmt.io.Flashmob;
 import de.ifgi.fmt.io.Role;
 
+/**
+ * Activity to choose a role of the flashmob and participate or cancel the
+ * participation.
+ * 
+ * @author Sascha Koalick, Matthias Robbers
+ */
 public class ParticipateActivity extends SherlockActivity {
 	private Button participateButton;
 	private Flashmob flashmob;

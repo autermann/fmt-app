@@ -9,6 +9,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 import de.ifgi.fmt.io.Flashmob;
 
+/**
+ * Alert Dialog for a password query that shows after the user requests to see a
+ * private flashmob's details.
+ * 
+ * @author Matthias Robbers
+ */
 public class PasswordDialog {
 
 	public PasswordDialog(final Context ctx, final Flashmob f) {
@@ -27,8 +33,7 @@ public class PasswordDialog {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String value = input.getText().toString();
 				if (value.equals(f.getKey())) {
-					Intent intent = new Intent(ctx,
-							DetailsActivity.class);
+					Intent intent = new Intent(ctx, DetailsActivity.class);
 					intent.putExtra("id", f.getId());
 					ctx.startActivity(intent);
 				} else {

@@ -5,6 +5,12 @@ import org.json.JSONObject;
 
 import de.ifgi.fmt.io.Activity;
 
+/**
+ * Parser class for JSON strings that include information about flashmob
+ * activities
+ * 
+ * @author Matthias Robbers
+ */
 public class ActivityJSONParser {
 	public static Activity parse(String json) {
 		Activity object = new Activity();

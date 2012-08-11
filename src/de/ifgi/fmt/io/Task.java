@@ -1,5 +1,10 @@
 package de.ifgi.fmt.io;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/task
+ * 
+ * @author Matthias Robbers
+ */
 public class Task {
 	private String id;
 	private String description;

@@ -7,6 +7,11 @@ import java.util.Locale;
 
 import android.location.Location;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/trigger
+ * 
+ * @author Matthias Robbers
+ */
 public class Trigger {
 	private String id;
 	private String description;

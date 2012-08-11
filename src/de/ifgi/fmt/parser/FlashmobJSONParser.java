@@ -18,6 +18,11 @@ import com.google.android.maps.GeoPoint;
 
 import de.ifgi.fmt.io.Flashmob;
 
+/**
+ * Parser class for JSON strings that include lists of flashmobs
+ * 
+ * @author Matthias Robbers
+ */
 public class FlashmobJSONParser {
 	public static ArrayList<Flashmob> parse(String json, Context context) {
 		ArrayList<Flashmob> flashmobList = new ArrayList<Flashmob>();

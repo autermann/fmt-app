@@ -52,6 +52,11 @@ import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * The map.
+ * 
+ * @author Stefan Arndt
+ */
 public class MapActivity extends SherlockMapActivity {
 	private static final int MENU_LOCATION = 1;
 	private static final int MENU_LAYER_MAP = 2;

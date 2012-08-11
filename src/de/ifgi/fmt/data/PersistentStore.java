@@ -11,6 +11,11 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import de.ifgi.fmt.io.Flashmob;
 
+/**
+ * Helper class to access persistent storage (SharedPreferences)
+ * 
+ * @author Matthias Robbers
+ */
 public class PersistentStore {
 	public static String KEY_USER_NAME = "user_name";
 	public static String KEY_COOKIE = "fmt_oid";

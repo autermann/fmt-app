@@ -8,6 +8,12 @@ import org.json.JSONObject;
 
 import de.ifgi.fmt.io.Trigger;
 
+/**
+ * Parser class for JSON strings that include information about flashmob
+ * triggers
+ * 
+ * @author Matthias Robbers
+ */
 public class TriggerJSONParser {
 	public static Trigger parse(String json) {
 		Trigger object = new Trigger();

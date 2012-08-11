@@ -1,5 +1,10 @@
 package de.ifgi.fmt.io;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/signal
+ * 
+ * @author Matthias Robbers
+ */
 public class Signal {
 	private String id;
 	private String text;

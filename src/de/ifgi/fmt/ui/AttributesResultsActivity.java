@@ -37,6 +37,12 @@ import de.ifgi.fmt.io.Role;
 import de.ifgi.fmt.parser.FlashmobJSONParser;
 import de.ifgi.fmt.parser.RoleJSONParser;
 
+/**
+ * Activity that expects the request of flashmobs by attributes and gets the
+ * results.
+ * 
+ * @author Matthias Robbers
+ */
 public class AttributesResultsActivity extends SherlockActivity {
 
 	@Override

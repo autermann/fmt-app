@@ -16,6 +16,12 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 
+/**
+ * This class activates a signal of the type text, vibration + text or sound +
+ * text. It executes at a certain time, unless it was cancelled before.
+ * 
+ * @author Matthias Robbers
+ */
 public class Signal {
 	public static final int TYPE_VIBRATION = 1;
 	public static final int TYPE_SOUND = 2;

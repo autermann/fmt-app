@@ -10,6 +10,11 @@ import android.location.Location;
 
 import com.google.android.maps.GeoPoint;
 
+/**
+ * http://giv-flashmob.uni-muenster.de/schema/flashmob
+ * 
+ * @author Matthias Robbers
+ */
 public class Flashmob {
 	// Attributes
 	private String id;

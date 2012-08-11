@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import android.app.Application;
 import de.ifgi.fmt.io.Flashmob;
 
+/**
+ * Class that is available through getApplicationContext() in any Activity. Like
+ * a Singleton, used for temporal storage.
+ * 
+ * @author Matthias Robbers
+ */
 public class Store extends Application {
 	private ArrayList<Flashmob> flashmobs = new ArrayList<Flashmob>();
 

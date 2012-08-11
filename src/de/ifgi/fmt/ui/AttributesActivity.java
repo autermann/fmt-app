@@ -24,6 +24,12 @@ import com.actionbarsherlock.view.MenuItem;
 
 import de.ifgi.fmt.R;
 
+/**
+ * Activity to find flashmobs by attributes. Has inputs for date, number of
+ * participants, private/public, etc.
+ * 
+ * @author Matthias Robbers
+ */
 public class AttributesActivity extends SherlockActivity {
 	EditText search;
 	EditText minParticipants;
