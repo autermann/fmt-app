@@ -38,7 +38,7 @@
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
-            android:name=".ui.LocationActivity"
+            android:name=".ui.NearbyActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="Nearby"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
@@ -55,7 +55,7 @@
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         <activity
-            android:name=".ui.FlashmobDetailsActivity"
+            android:name=".ui.DetailsActivity"
             android:label="Details"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar.ForceOverflow" >
         </activity>

@@ -48,7 +48,7 @@ public class StartActivity extends SherlockActivity {
 	}
 
 	public void startLocationActivity(View v) {
-		startActivity(new Intent(this, LocationActivity.class));
+		startActivity(new Intent(this, NearbyActivity.class));
 	}
 
 	public void startAttributesActivity(View v) {

@@ -52,7 +52,7 @@ import de.ifgi.fmt.parser.RoleJSONParser;
  * 
  * @author Matthias Robbers
  */
-public class LocationActivity extends SherlockActivity {
+public class NearbyActivity extends SherlockActivity {
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private Location currentLocation;
@@ -88,7 +88,7 @@ public class LocationActivity extends SherlockActivity {
 
 				// Remove the listener
 				locationManager.removeUpdates(locationListener);
-				new DownloadTask(LocationActivity.this).execute();
+				new DownloadTask(NearbyActivity.this).execute();
 			}
 
 			public void onStatusChanged(String provider, int status,
@@ -270,7 +270,7 @@ public class LocationActivity extends SherlockActivity {
 						final String key = flashmobs.get(arg2).getKey();
 						if (key != null
 								&& flashmobs.get(arg2).getSelectedRole() == null) {
-							new PasswordDialog(LocationActivity.this, flashmobs
+							new PasswordDialog(NearbyActivity.this, flashmobs
 									.get(arg2));
 						} else {
 							Intent intent = new Intent(getApplicationContext(),
