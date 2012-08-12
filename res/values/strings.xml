@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, StartActivity!</string>
     <string name="app_name">Flashmobber</string>
-    
+    <string name="about_body">
+<![CDATA[
+        <b>Flashmobber</b><br>
+        Version %s<br><br>
+        \u00A9 2012 Institute for Geoinformatics,<br>
+        University of Münster
+    ]]>
+    </string>
+
 </resources>

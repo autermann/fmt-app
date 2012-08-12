@@ -25,6 +25,7 @@ public class StartActivity extends SherlockActivity {
 	private static final int MENU_WEBSITE = 1;
 	private static final int MENU_LOGIN = 2;
 	private static final int MENU_LOGOUT = 3;
+	private static final int MENU_ABOUT = 4;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,11 @@ public class StartActivity extends SherlockActivity {
 			((Store) getApplicationContext()).clear();
 			PersistentStore.clear(getApplicationContext());
 			invalidateOptionsMenu();
-		default:
 			break;
+		case MENU_ABOUT:
+			new AboutDialog(this);
+			break;
+		default:
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -88,22 +92,28 @@ public class StartActivity extends SherlockActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		menu.add(0, MENU_WEBSITE, 0, "Website")
-				.setIcon(R.drawable.ic_action_website)
-				.setShowAsAction(
-						MenuItem.SHOW_AS_ACTION_WITH_TEXT
-								| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		if (preferences.getString("user_name", null) == null) {
 			menu.add(0, MENU_LOGIN, 0, "Login")
 					.setIcon(R.drawable.ic_action_login)
 					.setShowAsAction(
 							MenuItem.SHOW_AS_ACTION_WITH_TEXT
 									| MenuItem.SHOW_AS_ACTION_ALWAYS);
+			menu.add(0, MENU_WEBSITE, 0, "Website")
+					.setIcon(R.drawable.ic_action_website)
+					.setShowAsAction(
+							MenuItem.SHOW_AS_ACTION_IF_ROOM
+									| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		} else {
+			menu.add(0, MENU_WEBSITE, 0, "Website")
+					.setIcon(R.drawable.ic_action_website)
+					.setShowAsAction(
+							MenuItem.SHOW_AS_ACTION_WITH_TEXT
+									| MenuItem.SHOW_AS_ACTION_ALWAYS);
 			menu.add(0, MENU_LOGOUT, 0, "Logout").setShowAsAction(
-					MenuItem.SHOW_AS_ACTION_WITH_TEXT
-							| MenuItem.SHOW_AS_ACTION_ALWAYS);
+					MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
+		menu.add(0, MENU_ABOUT, 0, "About").setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_NEVER);
 		return super.onCreateOptionsMenu(menu);
 	}
 }
