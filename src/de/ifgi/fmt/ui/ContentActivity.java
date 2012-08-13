@@ -272,7 +272,6 @@ public class ContentActivity extends SherlockActivity {
 			if (result == 1) {
 				LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
 
-				int counter = 1;
 				for (Activity a : activities) {
 					LayoutInflater l = getLayoutInflater();
 					LinearLayout ll = (LinearLayout) l.inflate(
@@ -289,8 +288,7 @@ public class ContentActivity extends SherlockActivity {
 
 					TextView activityTitle = (TextView) ll
 							.findViewById(R.id.activity_title);
-					activityTitle.setText("Activity #" + counter++ + ": "
-							+ a.getTitle());
+					activityTitle.setText("Activity: " + a.getTitle());
 
 					TextView activityDescription = (TextView) ll
 							.findViewById(R.id.activity_description);
