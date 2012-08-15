@@ -87,6 +87,7 @@ public class MapActivity extends SherlockMapActivity {
 				p = new GeoPoint((int) (location.getLatitude() * 1E6),
 						(int) (location.getLongitude() * 1E6));
 				mc.setCenter(p);
+				locationManager.removeUpdates(locationListener);
 			}
 
 			@Override
@@ -137,10 +138,10 @@ public class MapActivity extends SherlockMapActivity {
 		double lng = coordinates[1];
 		q = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 		mc.setCenter(q);
-		// zoomToMyLocation();
 
 		locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		myLocationOverlay.enableMyLocation();
 
 		mapView.invalidate();
 
@@ -157,14 +158,11 @@ public class MapActivity extends SherlockMapActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		locationManager.removeUpdates(locationListener);
 	};
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// when our activity resumes, we want to register for location updates
-		myLocationOverlay.enableMyLocation();
 		mc.setZoom(zoomLevel);
 	}
 
