@@ -265,10 +265,6 @@ public class DetailsActivity extends SherlockMapActivity {
 		return intent;
 	}
 
-	/**
-	 * Set the layout of the Participate button depending on the user's
-	 * participation status.
-	 */
 	public void setParticipateButtonLayout() {
 		if (flashmob.getSelectedRole() != null) {
 			participateButton.setText("Cancel Participation");
@@ -305,11 +301,6 @@ public class DetailsActivity extends SherlockMapActivity {
 		}
 	}
 
-	/**
-	 * Fills the TextViews with the flashmob's data.
-	 * 
-	 * @throws IOException
-	 */
 	public void fillTextViews() throws IOException {
 		fmTitleTV.setText(flashmob.getTitle());
 		if (flashmob.isPublic()) {

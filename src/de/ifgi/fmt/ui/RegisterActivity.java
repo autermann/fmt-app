@@ -171,10 +171,6 @@ public class RegisterActivity extends SherlockActivity {
 						.getStatusCode())
 					return response.getStatusLine().getStatusCode();
 
-				// / ab hier neuer absatz test zum direkten login:
-				// /
-				// /
-
 				userpassEncoded = Base64.encodeToString((username.getText()
 						+ ":" + password.getText()).getBytes("UTF-8"),
 						Base64.NO_WRAP);
@@ -215,16 +211,8 @@ public class RegisterActivity extends SherlockActivity {
 				get.setHeader("Cookie",
 						cookie.getName() + "=" + cookie.getValue());
 				response = client.execute(get);
-
-				// /
-				// /
-				// /
-				// / bis hier hin ist der neue absatz test zum direkten login
-
 				return response.getStatusLine().getStatusCode();
-
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
 				return NO_INTERNET_CONNECTION;

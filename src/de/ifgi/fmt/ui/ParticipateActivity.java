@@ -91,8 +91,7 @@ public class ParticipateActivity extends SherlockActivity {
 		setSpinnerStatus();
 
 		// Set the TextViews with the attributes of the role the
-		// spinner
-		// is set on
+		// spinner is set on
 		roleDescriptionTv = (TextView) findViewById(R.id.roleDescriptionTv);
 		roleDescriptionTv.setText(roles.get(spinnerPos()).getDescription());
 		roleItemsTv = (TextView) findViewById(R.id.roleItemsTv);
@@ -162,12 +161,6 @@ public class ParticipateActivity extends SherlockActivity {
 		}
 	}
 
-	/**
-	 * Returns an int to set the role spinner to the position of the saved
-	 * selected role.
-	 * 
-	 * @return
-	 */
 	public int spinnerPos() {
 		// If a role has been selected for this flashmob, get its Id
 		// Otherwise set it to the Id of the first Role in the list of roles
@@ -185,10 +178,6 @@ public class ParticipateActivity extends SherlockActivity {
 		return spinnerPos;
 	}
 
-	/**
-	 * Set the layout of the Participate button depending on the user's
-	 * participation status.
-	 */
 	public void setParticipateButtonLayout() {
 		if (flashmob.getSelectedRole() != null) {
 			participateButton.setText("Cancel Participation");

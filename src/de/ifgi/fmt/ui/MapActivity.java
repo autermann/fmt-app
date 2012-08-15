@@ -291,7 +291,7 @@ public class MapActivity extends SherlockMapActivity {
 
 			// create a rotated copy of the marker
 			Bitmap arrowBitmap = BitmapFactory.decodeResource(
-					mContext.getResources(), R.drawable.arrow_red);
+					mContext.getResources(), R.drawable.blue_location_on);
 			Matrix matrix = new Matrix();
 			matrix.postRotate(mOrientation);
 
